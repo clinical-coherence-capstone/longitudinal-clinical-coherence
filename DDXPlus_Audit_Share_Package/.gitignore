@@ -1,0 +1,4 @@
+﻿# Ignore raw data files if placed here
+*.zip
+*.csv.gz
+node_modules/

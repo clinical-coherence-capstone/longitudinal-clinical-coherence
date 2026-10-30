@@ -1,0 +1,44 @@
+concept_rxcui,concept_tty,concept_name,component_rxcui,component_name,ingredient_rxcui,ingredient_tty,ingredient_name,path,rui_chain,source_file,source_lines
+203191,PIN,metoprolol tartrate,,,6918,IN,metoprolol,form_of,4438213,RXNREL.RRF,2049749
+203344,BN,Lopressor,,,6918,IN,metoprolol,tradename_of,4689812,RXNREL.RRF,2049750
+214621,MIN,hydrochlorothiazide / metoprolol,,,5487,IN,hydrochlorothiazide,has_part,5837280,RXNREL.RRF,2046304
+214621,MIN,hydrochlorothiazide / metoprolol,,,6918,IN,metoprolol,has_part,5837281,RXNREL.RRF,2049751
+221124,PIN,metoprolol succinate,,,6918,IN,metoprolol,form_of,4212171,RXNREL.RRF,2049753
+235743,PIN,metformin hydrochloride,,,6809,IN,metformin,form_of,4226412,RXNREL.RRF,2049243
+729717,MIN,metformin / sitagliptin,,,6809,IN,metformin,has_part,5839067,RXNREL.RRF,2049259
+729717,MIN,metformin / sitagliptin,,,593411,IN,sitagliptin,has_part,5839068,RXNREL.RRF,2180273
+860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,860974,metformin hydrochloride 500 MG,6809,IN,metformin,consists_of>has_ingredient,56248581 > 4551453,RXNREL.RRF,2229617 > 2049260
+860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,860974,metformin hydrochloride 500 MG,235743,PIN,metformin hydrochloride,consists_of>has_precise_ingredient,56248581 > 4551455,RXNREL.RRF,2229617 > 2093651
+861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,860995,metformin hydrochloride 1000 MG,6809,IN,metformin,consists_of>has_ingredient,4550116 > 4548671,RXNREL.RRF,2229725 > 2049262
+861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,860995,metformin hydrochloride 1000 MG,235743,PIN,metformin hydrochloride,consists_of>has_precise_ingredient,4550116 > 4548673,RXNREL.RRF,2229725 > 2093653
+861007,SCD,metformin hydrochloride 500 MG Oral Tablet,860974,metformin hydrochloride 500 MG,6809,IN,metformin,consists_of>has_ingredient,4548750 > 4551453,RXNREL.RRF,2229620 > 2049260
+861007,SCD,metformin hydrochloride 500 MG Oral Tablet,860974,metformin hydrochloride 500 MG,235743,PIN,metformin hydrochloride,consists_of>has_precise_ingredient,4548750 > 4551455,RXNREL.RRF,2229620 > 2093651
+866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,1370489,metoprolol succinate 25 MG,6918,IN,metoprolol,consists_of>has_ingredient,56325531 > 37119263,RXNREL.RRF,2378179 > 2049769
+866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,1370489,metoprolol succinate 25 MG,221124,PIN,metoprolol succinate,consists_of>has_precise_ingredient,56325531 > 37119265,RXNREL.RRF,2378179 > 2092444
+866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,316049,hydrochlorothiazide 25 MG,5487,IN,hydrochlorothiazide,consists_of>has_ingredient,4488946 > 4008724,RXNREL.RRF,2108283 > 2046321
+866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,866435,metoprolol tartrate 50 MG,6918,IN,metoprolol,consists_of>has_ingredient,4488948 > 4475865,RXNREL.RRF,2232920 > 2049760
+866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,866435,metoprolol tartrate 50 MG,203191,PIN,metoprolol tartrate,consists_of>has_precise_ingredient,4488948 > 4475867,RXNREL.RRF,2232920 > 2081495
+866514,SCD,metoprolol tartrate 50 MG Oral Tablet,866435,metoprolol tartrate 50 MG,6918,IN,metoprolol,consists_of>has_ingredient,4982634 > 4475865,RXNREL.RRF,2232923 > 2049760
+866514,SCD,metoprolol tartrate 50 MG Oral Tablet,866435,metoprolol tartrate 50 MG,203191,PIN,metoprolol tartrate,consists_of>has_precise_ingredient,4982634 > 4475867,RXNREL.RRF,2232923 > 2081495
+866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],866435,metoprolol tartrate 50 MG,6918,IN,metoprolol,consists_of>has_ingredient,4982652 > 4475865,RXNREL.RRF,2232925 > 2049760
+866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],866435,metoprolol tartrate 50 MG,203191,PIN,metoprolol tartrate,consists_of>has_precise_ingredient,4982652 > 4475867,RXNREL.RRF,2232925 > 2081495
+866924,SCD,metoprolol tartrate 25 MG Oral Tablet,866426,metoprolol tartrate 25 MG,6918,IN,metoprolol,consists_of>has_ingredient,4482416 > 4475805,RXNREL.RRF,2232901 > 2049759
+866924,SCD,metoprolol tartrate 25 MG Oral Tablet,866426,metoprolol tartrate 25 MG,203191,PIN,metoprolol tartrate,consists_of>has_precise_ingredient,4482416 > 4475807,RXNREL.RRF,2232901 > 2081494
+1368000,PIN,alogliptin benzoate,,,1368001,IN,alogliptin,form_of,36991023,RXNREL.RRF,2377069
+1368006,SCD,alogliptin 25 MG Oral Tablet,1368002,alogliptin 25 MG,1368001,IN,alogliptin,consists_of>has_ingredient,36991044 > 36991026,RXNREL.RRF,2377089 > 2377070
+1368007,BN,Nesina,,,1368001,IN,alogliptin,tradename_of,36991054,RXNREL.RRF,2377074
+1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],1368002,alogliptin 25 MG,1368001,IN,alogliptin,consists_of>has_ingredient,36991100 > 36991026,RXNREL.RRF,2377091 > 2377070
+1368034,SCD,alogliptin 12.5 MG Oral Tablet,1368033,alogliptin 12.5 MG,1368001,IN,alogliptin,consists_of>has_ingredient,36991300 > 36991298,RXNREL.RRF,2377195 > 2377076
+1368384,MIN,alogliptin / metformin,,,6809,IN,metformin,has_part,36995387,RXNREL.RRF,2049292
+1368384,MIN,alogliptin / metformin,,,1368001,IN,alogliptin,has_part,36995385,RXNREL.RRF,2377080
+1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,860995,metformin hydrochloride 1000 MG,6809,IN,metformin,consists_of>has_ingredient,36995392 > 4548671,RXNREL.RRF,2229746 > 2049262
+1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,1368033,alogliptin 12.5 MG,1368001,IN,alogliptin,consists_of>has_ingredient,36995390 > 36991298,RXNREL.RRF,2377198 > 2377076
+1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,860995,metformin hydrochloride 1000 MG,235743,PIN,metformin hydrochloride,consists_of>has_precise_ingredient,36995392 > 4548673,RXNREL.RRF,2229746 > 2093653
+1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,860974,metformin hydrochloride 500 MG,6809,IN,metformin,consists_of>has_ingredient,36995460 > 4551453,RXNREL.RRF,2229640 > 2049260
+1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,1368033,alogliptin 12.5 MG,1368001,IN,alogliptin,consists_of>has_ingredient,36995458 > 36991298,RXNREL.RRF,2377201 > 2377076
+1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,860974,metformin hydrochloride 500 MG,235743,PIN,metformin hydrochloride,consists_of>has_precise_ingredient,36995460 > 4551455,RXNREL.RRF,2229640 > 2093651
+1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],860974,metformin hydrochloride 500 MG,6809,IN,metformin,consists_of>has_ingredient,36995518 > 4551453,RXNREL.RRF,2229642 > 2049260
+1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],1368033,alogliptin 12.5 MG,1368001,IN,alogliptin,consists_of>has_ingredient,36995516 > 36991298,RXNREL.RRF,2377203 > 2377076
+1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],860974,metformin hydrochloride 500 MG,235743,PIN,metformin hydrochloride,consists_of>has_precise_ingredient,36995518 > 4551455,RXNREL.RRF,2229642 > 2093651
+1372692,BN,Kazano,,,6809,IN,metformin,tradename_of,36995404,RXNREL.RRF,2049293
+1372692,BN,Kazano,,,1368001,IN,alogliptin,tradename_of,36995406,RXNREL.RRF,2377085

@@ -1,0 +1,369 @@
+rui,subject_rxcui,subject_tty,subject_name,rela,rel,object_rxcui,object_tty,object_name,subject_selected,object_selected,in_appendix1_table,raw_rxcui1,raw_rxcui2,sab,source_file,source_line
+4981121,5487,IN,hydrochlorothiazide,has_tradename,RB,218072,BN,Lopressor HCT,true,false,true,218072,5487,RXNORM,RXNREL.RRF,2090448
+4192877,5487,IN,hydrochlorothiazide,ingredient_of,RO,316049,SCDC,hydrochlorothiazide 25 MG,true,false,true,316049,5487,RXNORM,RXNREL.RRF,2108239
+5846806,5487,IN,hydrochlorothiazide,part_of,RO,214621,MIN,hydrochlorothiazide / metoprolol,true,true,true,214621,5487,RXNORM,RXNREL.RRF,2088299
+4123262,6809,IN,metformin,has_form,RB,235743,PIN,metformin hydrochloride,true,true,true,235743,6809,RXNORM,RXNREL.RRF,2093646
+4710727,6809,IN,metformin,has_tradename,RB,151827,BN,Glucophage,true,false,true,151827,6809,RXNORM,RXNREL.RRF,2073765
+5058143,6809,IN,metformin,has_tradename,RB,405304,BN,Riomet,true,false,true,405304,6809,RXNORM,RXNREL.RRF,2167652
+3981421,6809,IN,metformin,has_tradename,RB,602411,BN,Actoplus Met,true,false,true,602411,6809,RXNORM,RXNREL.RRF,2181048
+4810367,6809,IN,metformin,has_tradename,RB,645109,BN,Glumetza,true,false,true,645109,6809,RXNORM,RXNREL.RRF,2186931
+36995403,6809,IN,metformin,has_tradename,RB,1372692,BN,Kazano,true,true,true,1372692,6809,RXNORM,RXNREL.RRF,2378627
+25169622,6809,IN,metformin,has_tradename,RB,1372706,BN,Jentadueto,true,false,true,1372706,6809,RXNORM,RXNREL.RRF,2378716
+11500049,6809,IN,metformin,has_tradename,RB,1372730,BN,Kombiglyze,true,false,true,1372730,6809,RXNORM,RXNREL.RRF,2378785
+3951215,6809,IN,metformin,has_tradename,RB,1372738,BN,Janumet,true,false,true,1372738,6809,RXNORM,RXNREL.RRF,2378847
+56445357,6809,IN,metformin,has_tradename,RB,1545151,BN,Invokamet,true,false,true,1545151,6809,RXNORM,RXNREL.RRF,2393300
+78950593,6809,IN,metformin,has_tradename,RB,1592713,BN,Xigduo,true,false,true,1592713,6809,RXNORM,RXNREL.RRF,2396786
+86255837,6809,IN,metformin,has_tradename,RB,1664316,BN,Synjardy,true,false,true,1664316,6809,RXNORM,RXNREL.RRF,2416093
+123718141,6809,IN,metformin,has_tradename,RB,1992686,BN,Segluromet,true,false,true,1992686,6809,RXNORM,RXNREL.RRF,2454888
+159881813,6809,IN,metformin,has_tradename,RB,2359280,BN,Trijardy,true,false,true,2359280,6809,RXNORM,RXNREL.RRF,2484647
+163603486,6809,IN,metformin,has_tradename,RB,2677156,BN,Zituvimet,true,false,true,2677156,6809,RXNORM,RXNREL.RRF,2552949
+4551452,6809,IN,metformin,ingredient_of,RO,860974,SCDC,metformin hydrochloride 500 MG,true,false,true,860974,6809,RXNORM,RXNREL.RRF,2229615
+4551498,6809,IN,metformin,ingredient_of,RO,860980,SCDC,metformin hydrochloride 750 MG,true,false,true,860980,6809,RXNORM,RXNREL.RRF,2229698
+4548670,6809,IN,metformin,ingredient_of,RO,860995,SCDC,metformin hydrochloride 1000 MG,true,false,true,860995,6809,RXNORM,RXNREL.RRF,2229723
+4548767,6809,IN,metformin,ingredient_of,RO,861009,SCDC,metformin hydrochloride 850 MG,true,false,true,861009,6809,RXNORM,RXNREL.RRF,2229844
+4548838,6809,IN,metformin,ingredient_of,RO,861020,SCDC,metformin hydrochloride 625 MG,true,false,true,861020,6809,RXNORM,RXNREL.RRF,2229898
+4548864,6809,IN,metformin,ingredient_of,RO,861024,SCDC,metformin hydrochloride 100 MG/ML,true,false,true,861024,6809,RXNORM,RXNREL.RRF,2229907
+4475612,6809,IN,metformin,ingredient_of,RO,861730,SCDC,metformin hydrochloride 250 MG,true,false,true,861730,6809,RXNORM,RXNREL.RRF,2231269
+5848593,6809,IN,metformin,part_of,RO,729717,MIN,metformin / sitagliptin,true,true,true,729717,6809,RXNORM,RXNREL.RRF,2196240
+36995388,6809,IN,metformin,part_of,RO,1368384,MIN,alogliptin / metformin,true,true,true,1368384,6809,RXNORM,RXNREL.RRF,2377256
+4236587,6918,IN,metoprolol,has_form,RB,203191,PIN,metoprolol tartrate,true,true,true,203191,6918,RXNORM,RXNREL.RRF,2081490
+4317675,6918,IN,metoprolol,has_form,RB,221124,PIN,metoprolol succinate,true,true,true,221124,6918,RXNORM,RXNREL.RRF,2092440
+4689811,6918,IN,metoprolol,has_tradename,RB,203344,BN,Lopressor,true,true,true,203344,6918,RXNORM,RXNREL.RRF,2081794
+4981123,6918,IN,metoprolol,has_tradename,RB,218072,BN,Lopressor HCT,true,false,true,218072,6918,RXNORM,RXNREL.RRF,2090449
+4984397,6918,IN,metoprolol,has_tradename,RB,865575,BN,Toprol,true,false,true,865575,6918,RXNORM,RXNREL.RRF,2232492
+131577779,6918,IN,metoprolol,has_tradename,RB,2047761,BN,Kapspargo,true,false,true,2047761,6918,RXNORM,RXNREL.RRF,2460370
+4487752,6918,IN,metoprolol,ingredient_of,RO,866411,SCDC,metoprolol tartrate 100 MG,true,false,true,866411,6918,RXNORM,RXNREL.RRF,2232858
+4475804,6918,IN,metoprolol,ingredient_of,RO,866426,SCDC,metoprolol tartrate 25 MG,true,false,true,866426,6918,RXNORM,RXNREL.RRF,2232899
+4475864,6918,IN,metoprolol,ingredient_of,RO,866435,SCDC,metoprolol tartrate 50 MG,true,false,true,866435,6918,RXNORM,RXNREL.RRF,2232918
+5073537,6918,IN,metoprolol,ingredient_of,RO,866507,SCDC,metoprolol tartrate 1 MG/ML,true,false,true,866507,6918,RXNORM,RXNREL.RRF,2233046
+37119074,6918,IN,metoprolol,ingredient_of,RO,1370474,SCDC,metoprolol succinate 50 MG,true,false,true,1370474,6918,RXNORM,RXNREL.RRF,2378158
+37119196,6918,IN,metoprolol,ingredient_of,RO,1370483,SCDC,metoprolol succinate 100 MG,true,false,true,1370483,6918,RXNORM,RXNREL.RRF,2378166
+37119262,6918,IN,metoprolol,ingredient_of,RO,1370489,SCDC,metoprolol succinate 25 MG,true,false,true,1370489,6918,RXNORM,RXNREL.RRF,2378177
+37119418,6918,IN,metoprolol,ingredient_of,RO,1370500,SCDC,metoprolol succinate 200 MG,true,false,true,1370500,6918,RXNORM,RXNREL.RRF,2378185
+79294335,6918,IN,metoprolol,ingredient_of,RO,1606346,SCDC,metoprolol tartrate 37.5 MG,true,false,true,1606346,6918,RXNORM,RXNREL.RRF,2402546
+79294349,6918,IN,metoprolol,ingredient_of,RO,1606348,SCDC,metoprolol tartrate 75 MG,true,false,true,1606348,6918,RXNORM,RXNREL.RRF,2402555
+164634312,6918,IN,metoprolol,ingredient_of,RO,2712142,SCDC,metoprolol tartrate 10 MG/ML,true,false,true,2712142,6918,RXNORM,RXNREL.RRF,2568723
+164935080,6918,IN,metoprolol,ingredient_of,RO,2723024,SCDC,metoprolol tartrate 12.5 MG,true,false,true,2723024,6918,RXNORM,RXNREL.RRF,2574325
+5846807,6918,IN,metoprolol,part_of,RO,214621,MIN,hydrochlorothiazide / metoprolol,true,true,true,214621,6918,RXNORM,RXNREL.RRF,2088300
+4210021,151827,BN,Glucophage,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,151827,RXNORM,RXNREL.RRF,2093647
+5060236,151827,BN,Glucophage,tradename_of,RN,6809,IN,metformin,false,true,true,6809,151827,RXNORM,RXNREL.RRF,2049242
+4438213,203191,PIN,metoprolol tartrate,form_of,RN,6918,IN,metoprolol,true,true,true,6918,203191,RXNORM,RXNREL.RRF,2049749
+4225528,203191,PIN,metoprolol tartrate,precise_ingredient_of,RB,203344,BN,Lopressor,true,true,true,203344,203191,RXNORM,RXNREL.RRF,2081795
+4981125,203191,PIN,metoprolol tartrate,precise_ingredient_of,RB,218072,BN,Lopressor HCT,true,false,true,218072,203191,RXNORM,RXNREL.RRF,2090450
+4487754,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,866411,SCDC,metoprolol tartrate 100 MG,true,false,true,866411,203191,RXNORM,RXNREL.RRF,2232859
+4475806,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,866426,SCDC,metoprolol tartrate 25 MG,true,false,true,866426,203191,RXNORM,RXNREL.RRF,2232900
+4475866,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,866435,SCDC,metoprolol tartrate 50 MG,true,false,true,866435,203191,RXNORM,RXNREL.RRF,2232919
+4981186,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,866507,SCDC,metoprolol tartrate 1 MG/ML,true,false,true,866507,203191,RXNORM,RXNREL.RRF,2233047
+79294337,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,1606346,SCDC,metoprolol tartrate 37.5 MG,true,false,true,1606346,203191,RXNORM,RXNREL.RRF,2402547
+79294351,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,1606348,SCDC,metoprolol tartrate 75 MG,true,false,true,1606348,203191,RXNORM,RXNREL.RRF,2402556
+164634310,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,2712142,SCDC,metoprolol tartrate 10 MG/ML,true,false,true,2712142,203191,RXNORM,RXNREL.RRF,2568724
+164935078,203191,PIN,metoprolol tartrate,precise_ingredient_of,RO,2723024,SCDC,metoprolol tartrate 12.5 MG,true,false,true,2723024,203191,RXNORM,RXNREL.RRF,2574326
+4086696,203344,BN,Lopressor,has_precise_ingredient,RN,203191,PIN,metoprolol tartrate,true,true,true,203191,203344,RXNORM,RXNREL.RRF,2081491
+3908579,203344,BN,Lopressor,ingredient_of,RO,368757,SBDF,metoprolol Oral Tablet [Lopressor],true,false,true,368757,203344,RXNORM,RXNREL.RRF,2148485
+4982619,203344,BN,Lopressor,ingredient_of,RO,866512,SBDC,metoprolol tartrate 100 MG [Lopressor],true,false,true,866512,203344,RXNORM,RXNREL.RRF,2233061
+4982623,203344,BN,Lopressor,ingredient_of,RO,866513,SBD,metoprolol tartrate 100 MG Oral Tablet [Lopressor],true,false,true,866513,203344,RXNORM,RXNREL.RRF,2233064
+4982641,203344,BN,Lopressor,ingredient_of,RO,866515,SBDC,metoprolol tartrate 50 MG [Lopressor],true,false,true,866515,203344,RXNORM,RXNREL.RRF,2233080
+4982645,203344,BN,Lopressor,ingredient_of,RO,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],true,true,true,866516,203344,RXNORM,RXNREL.RRF,2233083
+18622971,203344,BN,Lopressor,ingredient_of,RO,1180279,SBDG,Lopressor Oral Product,true,false,true,1180279,203344,RXNORM,RXNREL.RRF,2343657
+18622972,203344,BN,Lopressor,ingredient_of,RO,1180280,SBDG,Lopressor Pill,true,false,true,1180280,203344,RXNORM,RXNREL.RRF,2343667
+164634350,203344,BN,Lopressor,ingredient_of,RO,2712148,SBDC,metoprolol tartrate 10 MG/ML [Lopressor],true,false,true,2712148,203344,RXNORM,RXNREL.RRF,2568757
+164634358,203344,BN,Lopressor,ingredient_of,RO,2712149,SBDG,Lopressor Oral Liquid Product,true,false,true,2712149,203344,RXNORM,RXNREL.RRF,2568760
+164634360,203344,BN,Lopressor,ingredient_of,RO,2712150,SBDF,metoprolol Oral Solution [Lopressor],true,false,true,2712150,203344,RXNORM,RXNREL.RRF,2568766
+164634384,203344,BN,Lopressor,ingredient_of,RO,2712152,SBD,metoprolol tartrate 10 MG/ML Oral Solution [Lopressor],true,false,true,2712152,203344,RXNORM,RXNREL.RRF,2568776
+164935094,203344,BN,Lopressor,ingredient_of,RO,2723026,SBDC,metoprolol tartrate 12.5 MG [Lopressor],true,false,true,2723026,203344,RXNORM,RXNREL.RRF,2574337
+164935110,203344,BN,Lopressor,ingredient_of,RO,2723027,SBD,metoprolol tartrate 12.5 MG Oral Tablet [Lopressor],true,false,true,2723027,203344,RXNORM,RXNREL.RRF,2574340
+4689812,203344,BN,Lopressor,tradename_of,RN,6918,IN,metoprolol,true,true,true,6918,203344,RXNORM,RXNREL.RRF,2049750
+5837280,214621,MIN,hydrochlorothiazide / metoprolol,has_part,RO,5487,IN,hydrochlorothiazide,true,true,true,5487,214621,RXNORM,RXNREL.RRF,2046304
+5837281,214621,MIN,hydrochlorothiazide / metoprolol,has_part,RO,6918,IN,metoprolol,true,true,true,6918,214621,RXNORM,RXNREL.RRF,2049751
+5835592,214621,MIN,hydrochlorothiazide / metoprolol,ingredients_of,RO,866479,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 100 MG Oral Tablet,true,false,true,866479,214621,RXNORM,RXNREL.RRF,2232954
+5835492,214621,MIN,hydrochlorothiazide / metoprolol,ingredients_of,RO,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,true,true,true,866482,214621,RXNORM,RXNREL.RRF,2232963
+5835496,214621,MIN,hydrochlorothiazide / metoprolol,ingredients_of,RO,866491,SCD,hydrochlorothiazide 50 MG / metoprolol tartrate 100 MG Oral Tablet,true,false,true,866491,214621,RXNORM,RXNREL.RRF,2233002
+4981126,218072,BN,Lopressor HCT,has_precise_ingredient,RN,203191,PIN,metoprolol tartrate,false,true,true,203191,218072,RXNORM,RXNREL.RRF,2081492
+4981122,218072,BN,Lopressor HCT,tradename_of,RN,5487,IN,hydrochlorothiazide,false,true,true,5487,218072,RXNORM,RXNREL.RRF,2046309
+4981124,218072,BN,Lopressor HCT,tradename_of,RN,6918,IN,metoprolol,false,true,true,6918,218072,RXNORM,RXNREL.RRF,2049752
+4212171,221124,PIN,metoprolol succinate,form_of,RN,6918,IN,metoprolol,true,true,true,6918,221124,RXNORM,RXNREL.RRF,2049753
+37119210,221124,PIN,metoprolol succinate,precise_ingredient_of,RB,865575,BN,Toprol,true,false,true,865575,221124,RXNORM,RXNREL.RRF,2232493
+37119076,221124,PIN,metoprolol succinate,precise_ingredient_of,RO,1370474,SCDC,metoprolol succinate 50 MG,true,false,true,1370474,221124,RXNORM,RXNREL.RRF,2378159
+37119198,221124,PIN,metoprolol succinate,precise_ingredient_of,RO,1370483,SCDC,metoprolol succinate 100 MG,true,false,true,1370483,221124,RXNORM,RXNREL.RRF,2378167
+37119264,221124,PIN,metoprolol succinate,precise_ingredient_of,RO,1370489,SCDC,metoprolol succinate 25 MG,true,false,true,1370489,221124,RXNORM,RXNREL.RRF,2378178
+37119420,221124,PIN,metoprolol succinate,precise_ingredient_of,RO,1370500,SCDC,metoprolol succinate 200 MG,true,false,true,1370500,221124,RXNORM,RXNREL.RRF,2378186
+131577781,221124,PIN,metoprolol succinate,precise_ingredient_of,RB,2047761,BN,Kapspargo,true,false,true,2047761,221124,RXNORM,RXNREL.RRF,2460371
+4226412,235743,PIN,metformin hydrochloride,form_of,RN,6809,IN,metformin,true,true,true,6809,235743,RXNORM,RXNREL.RRF,2049243
+4448308,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,151827,BN,Glucophage,true,false,true,151827,235743,RXNORM,RXNREL.RRF,2073766
+4548874,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,405304,BN,Riomet,true,false,true,405304,235743,RXNORM,RXNREL.RRF,2167653
+5058926,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,602411,BN,Actoplus Met,true,false,true,602411,235743,RXNORM,RXNREL.RRF,2181050
+4824857,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,645109,BN,Glumetza,true,false,true,645109,235743,RXNORM,RXNREL.RRF,2186932
+4551454,235743,PIN,metformin hydrochloride,precise_ingredient_of,RO,860974,SCDC,metformin hydrochloride 500 MG,true,false,true,860974,235743,RXNORM,RXNREL.RRF,2229616
+4551500,235743,PIN,metformin hydrochloride,precise_ingredient_of,RO,860980,SCDC,metformin hydrochloride 750 MG,true,false,true,860980,235743,RXNORM,RXNREL.RRF,2229699
+4548672,235743,PIN,metformin hydrochloride,precise_ingredient_of,RO,860995,SCDC,metformin hydrochloride 1000 MG,true,false,true,860995,235743,RXNORM,RXNREL.RRF,2229724
+4548769,235743,PIN,metformin hydrochloride,precise_ingredient_of,RO,861009,SCDC,metformin hydrochloride 850 MG,true,false,true,861009,235743,RXNORM,RXNREL.RRF,2229845
+4548840,235743,PIN,metformin hydrochloride,precise_ingredient_of,RO,861020,SCDC,metformin hydrochloride 625 MG,true,false,true,861020,235743,RXNORM,RXNREL.RRF,2229899
+4548866,235743,PIN,metformin hydrochloride,precise_ingredient_of,RO,861024,SCDC,metformin hydrochloride 100 MG/ML,true,false,true,861024,235743,RXNORM,RXNREL.RRF,2229908
+4476811,235743,PIN,metformin hydrochloride,precise_ingredient_of,RO,861730,SCDC,metformin hydrochloride 250 MG,true,false,true,861730,235743,RXNORM,RXNREL.RRF,2231270
+36995407,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1372692,BN,Kazano,true,true,true,1372692,235743,RXNORM,RXNREL.RRF,2378628
+25169626,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1372706,BN,Jentadueto,true,false,true,1372706,235743,RXNORM,RXNREL.RRF,2378717
+11500053,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1372730,BN,Kombiglyze,true,false,true,1372730,235743,RXNORM,RXNREL.RRF,2378786
+4482305,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1372738,BN,Janumet,true,false,true,1372738,235743,RXNORM,RXNREL.RRF,2378848
+56445361,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1545151,BN,Invokamet,true,false,true,1545151,235743,RXNORM,RXNREL.RRF,2393301
+78950597,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1592713,BN,Xigduo,true,false,true,1592713,235743,RXNORM,RXNREL.RRF,2396787
+86255841,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1664316,BN,Synjardy,true,false,true,1664316,235743,RXNORM,RXNREL.RRF,2416094
+123718145,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,1992686,BN,Segluromet,true,false,true,1992686,235743,RXNORM,RXNREL.RRF,2454889
+159881815,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,2359280,BN,Trijardy,true,false,true,2359280,235743,RXNORM,RXNREL.RRF,2484648
+164669443,235743,PIN,metformin hydrochloride,precise_ingredient_of,RB,2677156,BN,Zituvimet,true,false,true,2677156,235743,RXNORM,RXNREL.RRF,2552950
+4488945,316049,SCDC,hydrochlorothiazide 25 MG,constitutes,RO,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,false,true,true,866482,316049,RXNORM,RXNREL.RRF,2232964
+4008724,316049,SCDC,hydrochlorothiazide 25 MG,has_ingredient,RO,5487,IN,hydrochlorothiazide,false,true,true,5487,316049,RXNORM,RXNREL.RRF,2046321
+56255698,316945,DF,Extended Release Oral Tablet,dose_form_of,RO,860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,false,true,true,860975,316945,RXNORM,RXNREL.RRF,2229679
+56253341,316945,DF,Extended Release Oral Tablet,dose_form_of,RO,866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,false,true,true,866427,316945,RXNORM,RXNREL.RRF,2232902
+4550119,317541,DF,Oral Tablet,dose_form_of,RO,861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,false,true,true,861004,317541,RXNORM,RXNREL.RRF,2229819
+4548753,317541,DF,Oral Tablet,dose_form_of,RO,861007,SCD,metformin hydrochloride 500 MG Oral Tablet,false,true,true,861007,317541,RXNORM,RXNREL.RRF,2229838
+4488951,317541,DF,Oral Tablet,dose_form_of,RO,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,false,true,true,866482,317541,RXNORM,RXNREL.RRF,2232965
+4982637,317541,DF,Oral Tablet,dose_form_of,RO,866514,SCD,metoprolol tartrate 50 MG Oral Tablet,false,true,true,866514,317541,RXNORM,RXNREL.RRF,2233073
+4982643,317541,DF,Oral Tablet,dose_form_of,RO,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],false,true,true,866516,317541,RXNORM,RXNREL.RRF,2233084
+5066685,317541,DF,Oral Tablet,dose_form_of,RO,866924,SCD,metoprolol tartrate 25 MG Oral Tablet,false,true,true,866924,317541,RXNORM,RXNREL.RRF,2233161
+36991047,317541,DF,Oral Tablet,dose_form_of,RO,1368006,SCD,alogliptin 25 MG Oral Tablet,false,true,true,1368006,317541,RXNORM,RXNREL.RRF,2377123
+36991091,317541,DF,Oral Tablet,dose_form_of,RO,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],false,true,true,1368012,317541,RXNORM,RXNREL.RRF,2377165
+36991303,317541,DF,Oral Tablet,dose_form_of,RO,1368034,SCD,alogliptin 12.5 MG Oral Tablet,false,true,true,1368034,317541,RXNORM,RXNREL.RRF,2377208
+36995397,317541,DF,Oral Tablet,dose_form_of,RO,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,false,true,true,1368385,317541,RXNORM,RXNREL.RRF,2377260
+36995465,317541,DF,Oral Tablet,dose_form_of,RO,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,false,true,true,1368392,317541,RXNORM,RXNREL.RRF,2377283
+36995507,317541,DF,Oral Tablet,dose_form_of,RO,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],false,true,true,1368398,317541,RXNORM,RXNREL.RRF,2377318
+3962671,368757,SBDF,metoprolol Oral Tablet [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,368757,RXNORM,RXNREL.RRF,2081796
+4548875,405304,BN,Riomet,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,405304,RXNORM,RXNREL.RRF,2093648
+4671423,405304,BN,Riomet,tradename_of,RN,6809,IN,metformin,false,true,true,6809,405304,RXNORM,RXNREL.RRF,2049251
+3951219,593411,IN,sitagliptin,has_tradename,RB,1372738,BN,Janumet,true,false,true,1372738,593411,RXNORM,RXNREL.RRF,2378849
+163603484,593411,IN,sitagliptin,has_tradename,RB,2677156,BN,Zituvimet,true,false,true,2677156,593411,RXNORM,RXNREL.RRF,2552951
+5848594,593411,IN,sitagliptin,part_of,RO,729717,MIN,metformin / sitagliptin,true,true,true,729717,593411,RXNORM,RXNREL.RRF,2196241
+4555457,602411,BN,Actoplus Met,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,602411,RXNORM,RXNREL.RRF,2093649
+3981422,602411,BN,Actoplus Met,tradename_of,RN,6809,IN,metformin,false,true,true,6809,602411,RXNORM,RXNREL.RRF,2049254
+4826413,645109,BN,Glumetza,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,645109,RXNORM,RXNREL.RRF,2093650
+4810368,645109,BN,Glumetza,tradename_of,RN,6809,IN,metformin,false,true,true,6809,645109,RXNORM,RXNREL.RRF,2049257
+5839067,729717,MIN,metformin / sitagliptin,has_part,RO,6809,IN,metformin,true,true,true,6809,729717,RXNORM,RXNREL.RRF,2049259
+5839068,729717,MIN,metformin / sitagliptin,has_part,RO,593411,IN,sitagliptin,true,true,true,593411,729717,RXNORM,RXNREL.RRF,2180273
+5835562,729717,MIN,metformin / sitagliptin,ingredients_of,RO,861769,SCD,metformin hydrochloride 1000 MG / sitagliptin 50 MG Oral Tablet,true,false,true,861769,729717,RXNORM,RXNREL.RRF,2231332
+5835568,729717,MIN,metformin / sitagliptin,ingredients_of,RO,861819,SCD,metformin hydrochloride 500 MG / sitagliptin 50 MG Oral Tablet,true,false,true,861819,729717,RXNORM,RXNREL.RRF,2231374
+56310292,729717,MIN,metformin / sitagliptin,ingredients_of,RO,1243827,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin 100 MG Extended Release Oral Tablet,true,false,true,1243827,729717,RXNORM,RXNREL.RRF,2357061
+56266863,729717,MIN,metformin / sitagliptin,ingredients_of,RO,1243842,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin 50 MG Extended Release Oral Tablet,true,false,true,1243842,729717,RXNORM,RXNREL.RRF,2357089
+56324706,729717,MIN,metformin / sitagliptin,ingredients_of,RO,1243846,SCD,24 HR metformin hydrochloride 500 MG / sitagliptin 50 MG Extended Release Oral Tablet,true,false,true,1243846,729717,RXNORM,RXNREL.RRF,2357108
+164581084,729717,MIN,metformin / sitagliptin,ingredients_of,RO,2709470,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin phosphate 100 MG Extended Release Oral Tablet,true,false,true,2709470,729717,RXNORM,RXNREL.RRF,2567816
+164581188,729717,MIN,metformin / sitagliptin,ingredients_of,RO,2709477,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin phosphate 50 MG Extended Release Oral Tablet,true,false,true,2709477,729717,RXNORM,RXNREL.RRF,2567849
+164581256,729717,MIN,metformin / sitagliptin,ingredients_of,RO,2709482,SCD,24 HR metformin hydrochloride 500 MG / sitagliptin phosphate 50 MG Extended Release Oral Tablet,true,false,true,2709482,729717,RXNORM,RXNREL.RRF,2567863
+164581346,729717,MIN,metformin / sitagliptin,ingredients_of,RO,2709488,SCD,metformin hydrochloride 1000 MG / sitagliptin phosphate 50 MG Oral Tablet,true,false,true,2709488,729717,RXNORM,RXNREL.RRF,2567884
+164581384,729717,MIN,metformin / sitagliptin,ingredients_of,RO,2709491,SCD,metformin hydrochloride 500 MG / sitagliptin phosphate 50 MG Oral Tablet,true,false,true,2709491,729717,RXNORM,RXNREL.RRF,2567897
+56291699,860974,SCDC,metformin hydrochloride 500 MG,constitutes,RO,860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,false,true,true,860975,860974,RXNORM,RXNREL.RRF,2229681
+4548749,860974,SCDC,metformin hydrochloride 500 MG,constitutes,RO,861007,SCD,metformin hydrochloride 500 MG Oral Tablet,false,true,true,861007,860974,RXNORM,RXNREL.RRF,2229840
+36995459,860974,SCDC,metformin hydrochloride 500 MG,constitutes,RO,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,false,true,true,1368392,860974,RXNORM,RXNREL.RRF,2377284
+36995517,860974,SCDC,metformin hydrochloride 500 MG,constitutes,RO,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],false,true,true,1368398,860974,RXNORM,RXNREL.RRF,2377319
+4551453,860974,SCDC,metformin hydrochloride 500 MG,has_ingredient,RO,6809,IN,metformin,false,true,true,6809,860974,RXNORM,RXNREL.RRF,2049260
+4551455,860974,SCDC,metformin hydrochloride 500 MG,has_precise_ingredient,RO,235743,PIN,metformin hydrochloride,false,true,true,235743,860974,RXNORM,RXNREL.RRF,2093651
+56248581,860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,consists_of,RO,860974,SCDC,metformin hydrochloride 500 MG,true,false,true,860974,860975,RXNORM,RXNREL.RRF,2229617
+56335008,860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,has_dose_form,RO,316945,DF,Extended Release Oral Tablet,true,false,true,316945,860975,RXNORM,RXNREL.RRF,2111351
+56242584,860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,has_tradename,RB,860977,SBD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet [Glucophage],true,false,true,860977,860975,RXNORM,RXNREL.RRF,2229693
+56306202,860977,SBD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet [Glucophage],tradename_of,RN,860975,SCD,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,false,true,true,860975,860977,RXNORM,RXNREL.RRF,2229682
+4551499,860980,SCDC,metformin hydrochloride 750 MG,has_ingredient,RO,6809,IN,metformin,false,true,true,6809,860980,RXNORM,RXNREL.RRF,2049261
+4551501,860980,SCDC,metformin hydrochloride 750 MG,has_precise_ingredient,RO,235743,PIN,metformin hydrochloride,false,true,true,235743,860980,RXNORM,RXNREL.RRF,2093652
+4550115,860995,SCDC,metformin hydrochloride 1000 MG,constitutes,RO,861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,false,true,true,861004,860995,RXNORM,RXNREL.RRF,2229821
+36995391,860995,SCDC,metformin hydrochloride 1000 MG,constitutes,RO,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,false,true,true,1368385,860995,RXNORM,RXNREL.RRF,2377261
+4548671,860995,SCDC,metformin hydrochloride 1000 MG,has_ingredient,RO,6809,IN,metformin,false,true,true,6809,860995,RXNORM,RXNREL.RRF,2049262
+4548673,860995,SCDC,metformin hydrochloride 1000 MG,has_precise_ingredient,RO,235743,PIN,metformin hydrochloride,false,true,true,235743,860995,RXNORM,RXNREL.RRF,2093653
+4550116,861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,consists_of,RO,860995,SCDC,metformin hydrochloride 1000 MG,true,false,true,860995,861004,RXNORM,RXNREL.RRF,2229725
+4550120,861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,861004,RXNORM,RXNREL.RRF,2126184
+4548747,861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,has_tradename,RB,861006,SBD,metformin hydrochloride 1000 MG Oral Tablet [Glucophage],true,false,true,861006,861004,RXNORM,RXNREL.RRF,2229833
+4548748,861006,SBD,metformin hydrochloride 1000 MG Oral Tablet [Glucophage],tradename_of,RN,861004,SCD,metformin hydrochloride 1000 MG Oral Tablet,false,true,true,861004,861006,RXNORM,RXNREL.RRF,2229822
+4548750,861007,SCD,metformin hydrochloride 500 MG Oral Tablet,consists_of,RO,860974,SCDC,metformin hydrochloride 500 MG,true,false,true,860974,861007,RXNORM,RXNREL.RRF,2229620
+4548754,861007,SCD,metformin hydrochloride 500 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,861007,RXNORM,RXNREL.RRF,2126186
+4548768,861009,SCDC,metformin hydrochloride 850 MG,has_ingredient,RO,6809,IN,metformin,false,true,true,6809,861009,RXNORM,RXNREL.RRF,2049263
+4548770,861009,SCDC,metformin hydrochloride 850 MG,has_precise_ingredient,RO,235743,PIN,metformin hydrochloride,false,true,true,235743,861009,RXNORM,RXNREL.RRF,2093654
+4548839,861020,SCDC,metformin hydrochloride 625 MG,has_ingredient,RO,6809,IN,metformin,false,true,true,6809,861020,RXNORM,RXNREL.RRF,2049264
+4548841,861020,SCDC,metformin hydrochloride 625 MG,has_precise_ingredient,RO,235743,PIN,metformin hydrochloride,false,true,true,235743,861020,RXNORM,RXNREL.RRF,2093655
+4548865,861024,SCDC,metformin hydrochloride 100 MG/ML,has_ingredient,RO,6809,IN,metformin,false,true,true,6809,861024,RXNORM,RXNREL.RRF,2049265
+4548867,861024,SCDC,metformin hydrochloride 100 MG/ML,has_precise_ingredient,RO,235743,PIN,metformin hydrochloride,false,true,true,235743,861024,RXNORM,RXNREL.RRF,2093656
+4485684,861730,SCDC,metformin hydrochloride 250 MG,has_ingredient,RO,6809,IN,metformin,false,true,true,6809,861730,RXNORM,RXNREL.RRF,2049266
+4476812,861730,SCDC,metformin hydrochloride 250 MG,has_precise_ingredient,RO,235743,PIN,metformin hydrochloride,false,true,true,235743,861730,RXNORM,RXNREL.RRF,2093657
+5825561,861769,SCD,metformin hydrochloride 1000 MG / sitagliptin 50 MG Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,861769,RXNORM,RXNREL.RRF,2196242
+5825567,861819,SCD,metformin hydrochloride 500 MG / sitagliptin 50 MG Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,861819,RXNORM,RXNREL.RRF,2196243
+37119211,865575,BN,Toprol,has_precise_ingredient,RN,221124,PIN,metoprolol succinate,false,true,true,221124,865575,RXNORM,RXNREL.RRF,2092441
+4984398,865575,BN,Toprol,tradename_of,RN,6918,IN,metoprolol,false,true,true,6918,865575,RXNORM,RXNREL.RRF,2049757
+4487753,866411,SCDC,metoprolol tartrate 100 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,866411,RXNORM,RXNREL.RRF,2049758
+4487755,866411,SCDC,metoprolol tartrate 100 MG,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,866411,RXNORM,RXNREL.RRF,2081493
+4482415,866426,SCDC,metoprolol tartrate 25 MG,constitutes,RO,866924,SCD,metoprolol tartrate 25 MG Oral Tablet,false,true,true,866924,866426,RXNORM,RXNREL.RRF,2233163
+4475805,866426,SCDC,metoprolol tartrate 25 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,866426,RXNORM,RXNREL.RRF,2049759
+4475807,866426,SCDC,metoprolol tartrate 25 MG,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,866426,RXNORM,RXNREL.RRF,2081494
+56325531,866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,consists_of,RO,1370489,SCDC,metoprolol succinate 25 MG,true,false,true,1370489,866427,RXNORM,RXNREL.RRF,2378179
+56332663,866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,has_dose_form,RO,316945,DF,Extended Release Oral Tablet,true,false,true,316945,866427,RXNORM,RXNREL.RRF,2111390
+56346976,866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,has_tradename,RB,866429,SBD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet [Toprol],true,false,true,866429,866427,RXNORM,RXNREL.RRF,2232912
+56332664,866429,SBD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet [Toprol],tradename_of,RN,866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,false,true,true,866427,866429,RXNORM,RXNREL.RRF,2232904
+4488947,866435,SCDC,metoprolol tartrate 50 MG,constitutes,RO,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,false,true,true,866482,866435,RXNORM,RXNREL.RRF,2232967
+4982633,866435,SCDC,metoprolol tartrate 50 MG,constitutes,RO,866514,SCD,metoprolol tartrate 50 MG Oral Tablet,false,true,true,866514,866435,RXNORM,RXNREL.RRF,2233075
+4982651,866435,SCDC,metoprolol tartrate 50 MG,constitutes,RO,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],false,true,true,866516,866435,RXNORM,RXNREL.RRF,2233086
+4475865,866435,SCDC,metoprolol tartrate 50 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,866435,RXNORM,RXNREL.RRF,2049760
+4475867,866435,SCDC,metoprolol tartrate 50 MG,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,866435,RXNORM,RXNREL.RRF,2081495
+5825591,866479,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 100 MG Oral Tablet,has_ingredients,RO,214621,MIN,hydrochlorothiazide / metoprolol,false,true,true,214621,866479,RXNORM,RXNREL.RRF,2088301
+4488946,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,consists_of,RO,316049,SCDC,hydrochlorothiazide 25 MG,true,false,true,316049,866482,RXNORM,RXNREL.RRF,2108283
+4488948,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,consists_of,RO,866435,SCDC,metoprolol tartrate 50 MG,true,false,true,866435,866482,RXNORM,RXNREL.RRF,2232920
+4488952,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,866482,RXNORM,RXNREL.RRF,2126257
+5825491,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,has_ingredients,RO,214621,MIN,hydrochlorothiazide / metoprolol,true,true,true,214621,866482,RXNORM,RXNREL.RRF,2088302
+4981183,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,has_tradename,RB,866502,SBD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet [Lopressor HCT],true,false,true,866502,866482,RXNORM,RXNREL.RRF,2233040
+5825495,866491,SCD,hydrochlorothiazide 50 MG / metoprolol tartrate 100 MG Oral Tablet,has_ingredients,RO,214621,MIN,hydrochlorothiazide / metoprolol,false,true,true,214621,866491,RXNORM,RXNREL.RRF,2088303
+4981184,866502,SBD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet [Lopressor HCT],tradename_of,RN,866482,SCD,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,false,true,true,866482,866502,RXNORM,RXNREL.RRF,2232968
+4981185,866507,SCDC,metoprolol tartrate 1 MG/ML,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,866507,RXNORM,RXNREL.RRF,2049761
+4981187,866507,SCDC,metoprolol tartrate 1 MG/ML,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,866507,RXNORM,RXNREL.RRF,2081496
+4982620,866512,SBDC,metoprolol tartrate 100 MG [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,866512,RXNORM,RXNREL.RRF,2081797
+4982624,866513,SBD,metoprolol tartrate 100 MG Oral Tablet [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,866513,RXNORM,RXNREL.RRF,2081798
+4982634,866514,SCD,metoprolol tartrate 50 MG Oral Tablet,consists_of,RO,866435,SCDC,metoprolol tartrate 50 MG,true,false,true,866435,866514,RXNORM,RXNREL.RRF,2232923
+4982638,866514,SCD,metoprolol tartrate 50 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,866514,RXNORM,RXNREL.RRF,2126264
+4982653,866514,SCD,metoprolol tartrate 50 MG Oral Tablet,has_tradename,RB,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],true,true,true,866516,866514,RXNORM,RXNREL.RRF,2233087
+4982649,866515,SBDC,metoprolol tartrate 50 MG [Lopressor],constitutes,RO,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],false,true,true,866516,866515,RXNORM,RXNREL.RRF,2233088
+4982642,866515,SBDC,metoprolol tartrate 50 MG [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,866515,RXNORM,RXNREL.RRF,2081799
+4982652,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],consists_of,RO,866435,SCDC,metoprolol tartrate 50 MG,true,false,true,866435,866516,RXNORM,RXNREL.RRF,2232925
+4982650,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],consists_of,RO,866515,SBDC,metoprolol tartrate 50 MG [Lopressor],true,false,true,866515,866516,RXNORM,RXNREL.RRF,2233082
+4982644,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,866516,RXNORM,RXNREL.RRF,2126265
+4982646,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],has_ingredient,RO,203344,BN,Lopressor,true,true,true,203344,866516,RXNORM,RXNREL.RRF,2081800
+4982654,866516,SBD,metoprolol tartrate 50 MG Oral Tablet [Lopressor],tradename_of,RN,866514,SCD,metoprolol tartrate 50 MG Oral Tablet,true,true,true,866514,866516,RXNORM,RXNREL.RRF,2233076
+4482416,866924,SCD,metoprolol tartrate 25 MG Oral Tablet,consists_of,RO,866426,SCDC,metoprolol tartrate 25 MG,true,false,true,866426,866924,RXNORM,RXNREL.RRF,2232901
+4482419,866924,SCD,metoprolol tartrate 25 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,866924,RXNORM,RXNREL.RRF,2126268
+18656456,1180279,SBDG,Lopressor Oral Product,has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,1180279,RXNORM,RXNREL.RRF,2081801
+18656457,1180280,SBDG,Lopressor Pill,has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,1180280,RXNORM,RXNREL.RRF,2081802
+56295703,1243827,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin 100 MG Extended Release Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,1243827,RXNORM,RXNREL.RRF,2196244
+56331794,1243842,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin 50 MG Extended Release Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,1243842,RXNORM,RXNREL.RRF,2196245
+56266867,1243846,SCD,24 HR metformin hydrochloride 500 MG / sitagliptin 50 MG Extended Release Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,1243846,RXNORM,RXNREL.RRF,2196246
+36991023,1368000,PIN,alogliptin benzoate,form_of,RN,1368001,IN,alogliptin,true,true,true,1368001,1368000,RXNORM,RXNREL.RRF,2377069
+36991055,1368000,PIN,alogliptin benzoate,precise_ingredient_of,RB,1368007,BN,Nesina,true,true,true,1368007,1368000,RXNORM,RXNREL.RRF,2377129
+36995409,1368000,PIN,alogliptin benzoate,precise_ingredient_of,RB,1372692,BN,Kazano,true,true,true,1372692,1368000,RXNORM,RXNREL.RRF,2378629
+36995571,1368000,PIN,alogliptin benzoate,precise_ingredient_of,RB,1372717,BN,Oseni,true,false,true,1372717,1368000,RXNORM,RXNREL.RRF,2378752
+36991024,1368001,IN,alogliptin,has_form,RB,1368000,PIN,alogliptin benzoate,true,true,true,1368000,1368001,RXNORM,RXNREL.RRF,2377065
+36991053,1368001,IN,alogliptin,has_tradename,RB,1368007,BN,Nesina,true,true,true,1368007,1368001,RXNORM,RXNREL.RRF,2377130
+36995405,1368001,IN,alogliptin,has_tradename,RB,1372692,BN,Kazano,true,true,true,1372692,1368001,RXNORM,RXNREL.RRF,2378630
+36995567,1368001,IN,alogliptin,has_tradename,RB,1372717,BN,Oseni,true,false,true,1372717,1368001,RXNORM,RXNREL.RRF,2378753
+36991025,1368001,IN,alogliptin,ingredient_of,RO,1368002,SCDC,alogliptin 25 MG,true,false,true,1368002,1368001,RXNORM,RXNREL.RRF,2377088
+36991297,1368001,IN,alogliptin,ingredient_of,RO,1368033,SCDC,alogliptin 12.5 MG,true,false,true,1368033,1368001,RXNORM,RXNREL.RRF,2377194
+36995386,1368001,IN,alogliptin,part_of,RO,1368384,MIN,alogliptin / metformin,true,true,true,1368384,1368001,RXNORM,RXNREL.RRF,2377257
+36991043,1368002,SCDC,alogliptin 25 MG,constitutes,RO,1368006,SCD,alogliptin 25 MG Oral Tablet,false,true,true,1368006,1368002,RXNORM,RXNREL.RRF,2377124
+36991099,1368002,SCDC,alogliptin 25 MG,constitutes,RO,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],false,true,true,1368012,1368002,RXNORM,RXNREL.RRF,2377166
+36991026,1368002,SCDC,alogliptin 25 MG,has_ingredient,RO,1368001,IN,alogliptin,false,true,true,1368001,1368002,RXNORM,RXNREL.RRF,2377070
+36991044,1368006,SCD,alogliptin 25 MG Oral Tablet,consists_of,RO,1368002,SCDC,alogliptin 25 MG,true,false,true,1368002,1368006,RXNORM,RXNREL.RRF,2377089
+36991048,1368006,SCD,alogliptin 25 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,1368006,RXNORM,RXNREL.RRF,2127429
+36991105,1368006,SCD,alogliptin 25 MG Oral Tablet,has_tradename,RB,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],true,true,true,1368012,1368006,RXNORM,RXNREL.RRF,2377167
+36991056,1368007,BN,Nesina,has_precise_ingredient,RN,1368000,PIN,alogliptin benzoate,true,true,true,1368000,1368007,RXNORM,RXNREL.RRF,2377066
+36991059,1368007,BN,Nesina,ingredient_of,RO,1368008,SBDC,alogliptin 25 MG [Nesina],true,false,true,1368008,1368007,RXNORM,RXNREL.RRF,2377141
+36991075,1368007,BN,Nesina,ingredient_of,RO,1368009,SBDF,alogliptin Oral Tablet [Nesina],true,false,true,1368009,1368007,RXNORM,RXNREL.RRF,2377145
+36991063,1368007,BN,Nesina,ingredient_of,RO,1368010,SBDG,Nesina Oral Product,true,false,true,1368010,1368007,RXNORM,RXNREL.RRF,2377153
+36991069,1368007,BN,Nesina,ingredient_of,RO,1368011,SBDG,Nesina Pill,true,false,true,1368011,1368007,RXNORM,RXNREL.RRF,2377160
+36991093,1368007,BN,Nesina,ingredient_of,RO,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],true,true,true,1368012,1368007,RXNORM,RXNREL.RRF,2377168
+36991161,1368007,BN,Nesina,ingredient_of,RO,1368019,SBDC,alogliptin 6.25 MG [Nesina],true,false,true,1368019,1368007,RXNORM,RXNREL.RRF,2377183
+36991165,1368007,BN,Nesina,ingredient_of,RO,1368020,SBD,alogliptin 6.25 MG Oral Tablet [Nesina],true,false,true,1368020,1368007,RXNORM,RXNREL.RRF,2377187
+36991311,1368007,BN,Nesina,ingredient_of,RO,1368035,SBDC,alogliptin 12.5 MG [Nesina],true,false,true,1368035,1368007,RXNORM,RXNREL.RRF,2377214
+36991318,1368007,BN,Nesina,ingredient_of,RO,1368036,SBD,alogliptin 12.5 MG Oral Tablet [Nesina],true,false,true,1368036,1368007,RXNORM,RXNREL.RRF,2377218
+36991054,1368007,BN,Nesina,tradename_of,RN,1368001,IN,alogliptin,true,true,true,1368001,1368007,RXNORM,RXNREL.RRF,2377074
+36991097,1368008,SBDC,alogliptin 25 MG [Nesina],constitutes,RO,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],false,true,true,1368012,1368008,RXNORM,RXNREL.RRF,2377169
+36991060,1368008,SBDC,alogliptin 25 MG [Nesina],has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368008,RXNORM,RXNREL.RRF,2377131
+36991076,1368009,SBDF,alogliptin Oral Tablet [Nesina],has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368009,RXNORM,RXNREL.RRF,2377132
+36991064,1368010,SBDG,Nesina Oral Product,has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368010,RXNORM,RXNREL.RRF,2377133
+36991070,1368011,SBDG,Nesina Pill,has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368011,RXNORM,RXNREL.RRF,2377134
+36991100,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],consists_of,RO,1368002,SCDC,alogliptin 25 MG,true,false,true,1368002,1368012,RXNORM,RXNREL.RRF,2377091
+36991098,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],consists_of,RO,1368008,SBDC,alogliptin 25 MG [Nesina],true,false,true,1368008,1368012,RXNORM,RXNREL.RRF,2377142
+36991092,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,1368012,RXNORM,RXNREL.RRF,2127431
+36991094,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],has_ingredient,RO,1368007,BN,Nesina,true,true,true,1368007,1368012,RXNORM,RXNREL.RRF,2377135
+36991106,1368012,SBD,alogliptin 25 MG Oral Tablet [Nesina],tradename_of,RN,1368006,SCD,alogliptin 25 MG Oral Tablet,true,true,true,1368006,1368012,RXNORM,RXNREL.RRF,2377128
+36991162,1368019,SBDC,alogliptin 6.25 MG [Nesina],has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368019,RXNORM,RXNREL.RRF,2377136
+36991166,1368020,SBD,alogliptin 6.25 MG Oral Tablet [Nesina],has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368020,RXNORM,RXNREL.RRF,2377137
+36991299,1368033,SCDC,alogliptin 12.5 MG,constitutes,RO,1368034,SCD,alogliptin 12.5 MG Oral Tablet,false,true,true,1368034,1368033,RXNORM,RXNREL.RRF,2377212
+36995389,1368033,SCDC,alogliptin 12.5 MG,constitutes,RO,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,false,true,true,1368385,1368033,RXNORM,RXNREL.RRF,2377262
+36995457,1368033,SCDC,alogliptin 12.5 MG,constitutes,RO,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,false,true,true,1368392,1368033,RXNORM,RXNREL.RRF,2377285
+36995515,1368033,SCDC,alogliptin 12.5 MG,constitutes,RO,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],false,true,true,1368398,1368033,RXNORM,RXNREL.RRF,2377320
+36991298,1368033,SCDC,alogliptin 12.5 MG,has_ingredient,RO,1368001,IN,alogliptin,false,true,true,1368001,1368033,RXNORM,RXNREL.RRF,2377076
+36991300,1368034,SCD,alogliptin 12.5 MG Oral Tablet,consists_of,RO,1368033,SCDC,alogliptin 12.5 MG,true,false,true,1368033,1368034,RXNORM,RXNREL.RRF,2377195
+36991304,1368034,SCD,alogliptin 12.5 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,1368034,RXNORM,RXNREL.RRF,2127434
+36991330,1368034,SCD,alogliptin 12.5 MG Oral Tablet,has_tradename,RB,1368036,SBD,alogliptin 12.5 MG Oral Tablet [Nesina],true,false,true,1368036,1368034,RXNORM,RXNREL.RRF,2377223
+36991312,1368035,SBDC,alogliptin 12.5 MG [Nesina],has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368035,RXNORM,RXNREL.RRF,2377138
+36991319,1368036,SBD,alogliptin 12.5 MG Oral Tablet [Nesina],has_ingredient,RO,1368007,BN,Nesina,false,true,true,1368007,1368036,RXNORM,RXNREL.RRF,2377139
+36991331,1368036,SBD,alogliptin 12.5 MG Oral Tablet [Nesina],tradename_of,RN,1368034,SCD,alogliptin 12.5 MG Oral Tablet,false,true,true,1368034,1368036,RXNORM,RXNREL.RRF,2377213
+36995387,1368384,MIN,alogliptin / metformin,has_part,RO,6809,IN,metformin,true,true,true,6809,1368384,RXNORM,RXNREL.RRF,2049292
+36995385,1368384,MIN,alogliptin / metformin,has_part,RO,1368001,IN,alogliptin,true,true,true,1368001,1368384,RXNORM,RXNREL.RRF,2377080
+36995395,1368384,MIN,alogliptin / metformin,ingredients_of,RO,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,true,true,true,1368385,1368384,RXNORM,RXNREL.RRF,2377266
+36995463,1368384,MIN,alogliptin / metformin,ingredients_of,RO,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,true,true,true,1368392,1368384,RXNORM,RXNREL.RRF,2377289
+36995392,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,consists_of,RO,860995,SCDC,metformin hydrochloride 1000 MG,true,false,true,860995,1368385,RXNORM,RXNREL.RRF,2229746
+36995390,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,consists_of,RO,1368033,SCDC,alogliptin 12.5 MG,true,false,true,1368033,1368385,RXNORM,RXNREL.RRF,2377198
+36995398,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,1368385,RXNORM,RXNREL.RRF,2127437
+36995396,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,has_ingredients,RO,1368384,MIN,alogliptin / metformin,true,true,true,1368384,1368385,RXNORM,RXNREL.RRF,2377258
+36995455,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,has_tradename,RB,1368391,SBD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet [Kazano],true,false,true,1368391,1368385,RXNORM,RXNREL.RRF,2377276
+36995416,1368387,SBDC,alogliptin 12.5 MG / metformin hydrochloride 1000 MG [Kazano],has_ingredient,RO,1372692,BN,Kazano,false,true,true,1372692,1368387,RXNORM,RXNREL.RRF,2378631
+36995442,1368391,SBD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet [Kazano],has_ingredient,RO,1372692,BN,Kazano,false,true,true,1372692,1368391,RXNORM,RXNREL.RRF,2378632
+36995456,1368391,SBD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet [Kazano],tradename_of,RN,1368385,SCD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,false,true,true,1368385,1368391,RXNORM,RXNREL.RRF,2377267
+36995460,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,consists_of,RO,860974,SCDC,metformin hydrochloride 500 MG,true,false,true,860974,1368392,RXNORM,RXNREL.RRF,2229640
+36995458,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,consists_of,RO,1368033,SCDC,alogliptin 12.5 MG,true,false,true,1368033,1368392,RXNORM,RXNREL.RRF,2377201
+36995466,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,1368392,RXNORM,RXNREL.RRF,2127439
+36995464,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,has_ingredients,RO,1368384,MIN,alogliptin / metformin,true,true,true,1368384,1368392,RXNORM,RXNREL.RRF,2377259
+36995523,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,has_tradename,RB,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],true,true,true,1368398,1368392,RXNORM,RXNREL.RRF,2377321
+36995513,1368394,SBDC,alogliptin 12.5 MG / metformin hydrochloride 500 MG [Kazano],constitutes,RO,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],false,true,true,1368398,1368394,RXNORM,RXNREL.RRF,2377322
+36995484,1368394,SBDC,alogliptin 12.5 MG / metformin hydrochloride 500 MG [Kazano],has_ingredient,RO,1372692,BN,Kazano,false,true,true,1372692,1368394,RXNORM,RXNREL.RRF,2378633
+36995500,1368395,SBDF,alogliptin / metformin Oral Tablet [Kazano],has_ingredient,RO,1372692,BN,Kazano,false,true,true,1372692,1368395,RXNORM,RXNREL.RRF,2378634
+36995488,1368396,SBDG,Kazano Oral Product,has_ingredient,RO,1372692,BN,Kazano,false,true,true,1372692,1368396,RXNORM,RXNREL.RRF,2378635
+36995494,1368397,SBDG,Kazano Pill,has_ingredient,RO,1372692,BN,Kazano,false,true,true,1372692,1368397,RXNORM,RXNREL.RRF,2378636
+36995518,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],consists_of,RO,860974,SCDC,metformin hydrochloride 500 MG,true,false,true,860974,1368398,RXNORM,RXNREL.RRF,2229642
+36995516,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],consists_of,RO,1368033,SCDC,alogliptin 12.5 MG,true,false,true,1368033,1368398,RXNORM,RXNREL.RRF,2377203
+36995514,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],consists_of,RO,1368394,SBDC,alogliptin 12.5 MG / metformin hydrochloride 500 MG [Kazano],true,false,true,1368394,1368398,RXNORM,RXNREL.RRF,2377294
+36995508,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],has_dose_form,RO,317541,DF,Oral Tablet,true,false,true,317541,1368398,RXNORM,RXNREL.RRF,2127441
+36995510,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],has_ingredient,RO,1372692,BN,Kazano,true,true,true,1372692,1368398,RXNORM,RXNREL.RRF,2378637
+36995524,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],tradename_of,RN,1368392,SCD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,true,true,true,1368392,1368398,RXNORM,RXNREL.RRF,2377290
+37119075,1370474,SCDC,metoprolol succinate 50 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,1370474,RXNORM,RXNREL.RRF,2049767
+37119077,1370474,SCDC,metoprolol succinate 50 MG,has_precise_ingredient,RO,221124,PIN,metoprolol succinate,false,true,true,221124,1370474,RXNORM,RXNREL.RRF,2092442
+37119197,1370483,SCDC,metoprolol succinate 100 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,1370483,RXNORM,RXNREL.RRF,2049768
+37119199,1370483,SCDC,metoprolol succinate 100 MG,has_precise_ingredient,RO,221124,PIN,metoprolol succinate,false,true,true,221124,1370483,RXNORM,RXNREL.RRF,2092443
+56303809,1370489,SCDC,metoprolol succinate 25 MG,constitutes,RO,866427,SCD,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,false,true,true,866427,1370489,RXNORM,RXNREL.RRF,2232907
+37119263,1370489,SCDC,metoprolol succinate 25 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,1370489,RXNORM,RXNREL.RRF,2049769
+37119265,1370489,SCDC,metoprolol succinate 25 MG,has_precise_ingredient,RO,221124,PIN,metoprolol succinate,false,true,true,221124,1370489,RXNORM,RXNREL.RRF,2092444
+37119419,1370500,SCDC,metoprolol succinate 200 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,1370500,RXNORM,RXNREL.RRF,2049770
+37119421,1370500,SCDC,metoprolol succinate 200 MG,has_precise_ingredient,RO,221124,PIN,metoprolol succinate,false,true,true,221124,1370500,RXNORM,RXNREL.RRF,2092445
+36995408,1372692,BN,Kazano,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,true,true,true,235743,1372692,RXNORM,RXNREL.RRF,2093658
+36995410,1372692,BN,Kazano,has_precise_ingredient,RN,1368000,PIN,alogliptin benzoate,true,true,true,1368000,1372692,RXNORM,RXNREL.RRF,2377067
+36995415,1372692,BN,Kazano,ingredient_of,RO,1368387,SBDC,alogliptin 12.5 MG / metformin hydrochloride 1000 MG [Kazano],true,false,true,1368387,1372692,RXNORM,RXNREL.RRF,2377272
+36995441,1372692,BN,Kazano,ingredient_of,RO,1368391,SBD,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet [Kazano],true,false,true,1368391,1372692,RXNORM,RXNREL.RRF,2377281
+36995483,1372692,BN,Kazano,ingredient_of,RO,1368394,SBDC,alogliptin 12.5 MG / metformin hydrochloride 500 MG [Kazano],true,false,true,1368394,1372692,RXNORM,RXNREL.RRF,2377295
+36995499,1372692,BN,Kazano,ingredient_of,RO,1368395,SBDF,alogliptin / metformin Oral Tablet [Kazano],true,false,true,1368395,1372692,RXNORM,RXNREL.RRF,2377302
+36995487,1372692,BN,Kazano,ingredient_of,RO,1368396,SBDG,Kazano Oral Product,true,false,true,1368396,1372692,RXNORM,RXNREL.RRF,2377309
+36995493,1372692,BN,Kazano,ingredient_of,RO,1368397,SBDG,Kazano Pill,true,false,true,1368397,1372692,RXNORM,RXNREL.RRF,2377316
+36995509,1372692,BN,Kazano,ingredient_of,RO,1368398,SBD,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],true,true,true,1368398,1372692,RXNORM,RXNREL.RRF,2377326
+36995404,1372692,BN,Kazano,tradename_of,RN,6809,IN,metformin,true,true,true,6809,1372692,RXNORM,RXNREL.RRF,2049293
+36995406,1372692,BN,Kazano,tradename_of,RN,1368001,IN,alogliptin,true,true,true,1368001,1372692,RXNORM,RXNREL.RRF,2377085
+25169627,1372706,BN,Jentadueto,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,1372706,RXNORM,RXNREL.RRF,2093659
+25169623,1372706,BN,Jentadueto,tradename_of,RN,6809,IN,metformin,false,true,true,6809,1372706,RXNORM,RXNREL.RRF,2049294
+36995572,1372717,BN,Oseni,has_precise_ingredient,RN,1368000,PIN,alogliptin benzoate,false,true,true,1368000,1372717,RXNORM,RXNREL.RRF,2377068
+36995568,1372717,BN,Oseni,tradename_of,RN,1368001,IN,alogliptin,false,true,true,1368001,1372717,RXNORM,RXNREL.RRF,2377086
+11500054,1372730,BN,Kombiglyze,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,1372730,RXNORM,RXNREL.RRF,2093660
+11500050,1372730,BN,Kombiglyze,tradename_of,RN,6809,IN,metformin,false,true,true,6809,1372730,RXNORM,RXNREL.RRF,2049295
+4482306,1372738,BN,Janumet,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,1372738,RXNORM,RXNREL.RRF,2093661
+3951216,1372738,BN,Janumet,tradename_of,RN,6809,IN,metformin,false,true,true,6809,1372738,RXNORM,RXNREL.RRF,2049296
+3951220,1372738,BN,Janumet,tradename_of,RN,593411,IN,sitagliptin,false,true,true,593411,1372738,RXNORM,RXNREL.RRF,2180279
+56445362,1545151,BN,Invokamet,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,1545151,RXNORM,RXNREL.RRF,2093662
+56445358,1545151,BN,Invokamet,tradename_of,RN,6809,IN,metformin,false,true,true,6809,1545151,RXNORM,RXNREL.RRF,2049302
+78950598,1592713,BN,Xigduo,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,1592713,RXNORM,RXNREL.RRF,2093663
+78950594,1592713,BN,Xigduo,tradename_of,RN,6809,IN,metformin,false,true,true,6809,1592713,RXNORM,RXNREL.RRF,2049305
+79294336,1606346,SCDC,metoprolol tartrate 37.5 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,1606346,RXNORM,RXNREL.RRF,2049771
+79294338,1606346,SCDC,metoprolol tartrate 37.5 MG,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,1606346,RXNORM,RXNREL.RRF,2081497
+79294350,1606348,SCDC,metoprolol tartrate 75 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,1606348,RXNORM,RXNREL.RRF,2049772
+79294352,1606348,SCDC,metoprolol tartrate 75 MG,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,1606348,RXNORM,RXNREL.RRF,2081498
+86255842,1664316,BN,Synjardy,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,1664316,RXNORM,RXNREL.RRF,2093664
+86255838,1664316,BN,Synjardy,tradename_of,RN,6809,IN,metformin,false,true,true,6809,1664316,RXNORM,RXNREL.RRF,2049311
+123718146,1992686,BN,Segluromet,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,1992686,RXNORM,RXNREL.RRF,2093665
+123718142,1992686,BN,Segluromet,tradename_of,RN,6809,IN,metformin,false,true,true,6809,1992686,RXNORM,RXNREL.RRF,2049319
+131577782,2047761,BN,Kapspargo,has_precise_ingredient,RN,221124,PIN,metoprolol succinate,false,true,true,221124,2047761,RXNORM,RXNREL.RRF,2092446
+131577780,2047761,BN,Kapspargo,tradename_of,RN,6918,IN,metoprolol,false,true,true,6918,2047761,RXNORM,RXNREL.RRF,2049775
+159881816,2359280,BN,Trijardy,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,2359280,RXNORM,RXNREL.RRF,2093666
+159881814,2359280,BN,Trijardy,tradename_of,RN,6809,IN,metformin,false,true,true,6809,2359280,RXNORM,RXNREL.RRF,2049324
+164668842,2677156,BN,Zituvimet,has_precise_ingredient,RN,235743,PIN,metformin hydrochloride,false,true,true,235743,2677156,RXNORM,RXNREL.RRF,2093687
+163603487,2677156,BN,Zituvimet,tradename_of,RN,6809,IN,metformin,false,true,true,6809,2677156,RXNORM,RXNREL.RRF,2049325
+163603485,2677156,BN,Zituvimet,tradename_of,RN,593411,IN,sitagliptin,false,true,true,593411,2677156,RXNORM,RXNREL.RRF,2180288
+164581085,2709470,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin phosphate 100 MG Extended Release Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,2709470,RXNORM,RXNREL.RRF,2196247
+164581189,2709477,SCD,24 HR metformin hydrochloride 1000 MG / sitagliptin phosphate 50 MG Extended Release Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,2709477,RXNORM,RXNREL.RRF,2196248
+164581257,2709482,SCD,24 HR metformin hydrochloride 500 MG / sitagliptin phosphate 50 MG Extended Release Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,2709482,RXNORM,RXNREL.RRF,2196249
+164581347,2709488,SCD,metformin hydrochloride 1000 MG / sitagliptin phosphate 50 MG Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,2709488,RXNORM,RXNREL.RRF,2196250
+164581385,2709491,SCD,metformin hydrochloride 500 MG / sitagliptin phosphate 50 MG Oral Tablet,has_ingredients,RO,729717,MIN,metformin / sitagliptin,false,true,true,729717,2709491,RXNORM,RXNREL.RRF,2196251
+164634313,2712142,SCDC,metoprolol tartrate 10 MG/ML,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,2712142,RXNORM,RXNREL.RRF,2049776
+164634311,2712142,SCDC,metoprolol tartrate 10 MG/ML,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,2712142,RXNORM,RXNREL.RRF,2081502
+164634351,2712148,SBDC,metoprolol tartrate 10 MG/ML [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,2712148,RXNORM,RXNREL.RRF,2081803
+164634359,2712149,SBDG,Lopressor Oral Liquid Product,has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,2712149,RXNORM,RXNREL.RRF,2081804
+164634361,2712150,SBDF,metoprolol Oral Solution [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,2712150,RXNORM,RXNREL.RRF,2081805
+164634385,2712152,SBD,metoprolol tartrate 10 MG/ML Oral Solution [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,2712152,RXNORM,RXNREL.RRF,2081806
+164935081,2723024,SCDC,metoprolol tartrate 12.5 MG,has_ingredient,RO,6918,IN,metoprolol,false,true,true,6918,2723024,RXNORM,RXNREL.RRF,2049779
+164935079,2723024,SCDC,metoprolol tartrate 12.5 MG,has_precise_ingredient,RO,203191,PIN,metoprolol tartrate,false,true,true,203191,2723024,RXNORM,RXNREL.RRF,2081504
+164935095,2723026,SBDC,metoprolol tartrate 12.5 MG [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,2723026,RXNORM,RXNREL.RRF,2081807
+164935111,2723027,SBD,metoprolol tartrate 12.5 MG Oral Tablet [Lopressor],has_ingredient,RO,203344,BN,Lopressor,false,true,true,203344,2723027,RXNORM,RXNREL.RRF,2081808

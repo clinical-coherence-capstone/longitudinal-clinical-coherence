@@ -1,0 +1,9 @@
+rxcui,name,tty,candidate_scd_total,candidate_scd_single_ingredient,candidate_scd_combination,candidate_sbd_via_has_tradename,fanout_gt_1,derivation
+1368001,alogliptin,IN,10,3,7,9,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"
+5487,hydrochlorothiazide,IN,71,5,66,49,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"
+6809,metformin,IN,70,12,58,58,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"
+6918,metoprolol,IN,19,16,3,14,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"
+593411,sitagliptin,IN,19,7,12,19,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"
+1368384,alogliptin / metformin,MIN,2,0,2,2,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"
+214621,hydrochlorothiazide / metoprolol,MIN,3,0,3,2,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"
+729717,metformin / sitagliptin,MIN,10,0,10,10,true,"IN: ingredient_of>SCDC, constitutes>SCD; MIN: ingredients_of>SCD; SBD via SCD has_tradename"

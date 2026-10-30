@@ -1,0 +1,231 @@
+{
+  "totalRecords": 134529,
+  "sha256": "f7ac3eae934c85780fc9b109a6cac5771540619a02690bee6fc0ab402baec186",
+  "demographics": {
+    "minAge": 0,
+    "maxAge": 109,
+    "meanAge": "39.8",
+    "medianAge": 39,
+    "pediatrics": 24591,
+    "adults": 89949,
+    "geriatrics": 19989,
+    "females": 69342,
+    "males": 65187
+  },
+  "evidences": {
+    "minEvid": 2,
+    "maxEvid": 44,
+    "meanEvid": "20.1",
+    "medianEvid": 20
+  },
+  "differentialAccuracy": {
+    "presentPct": "100.00",
+    "top1Pct": "73.28",
+    "top3Pct": "92.87",
+    "meanProbPct": "28.87"
+  },
+  "duplicatesAndLeakage": {
+    "intraTestDuplicates": 270,
+    "intraTestDuplicatePct": "0.20",
+    "crossSplitLeakageValTest": 509,
+    "crossSplitLeakageValTestPct": "0.38"
+  },
+  "conditionDistribution": [
+    [
+      "URTI",
+      8743
+    ],
+    [
+      "Viral pharyngitis",
+      8334
+    ],
+    [
+      "Anemia",
+      6842
+    ],
+    [
+      "HIV (initial infection)",
+      3919
+    ],
+    [
+      "Anaphylaxis",
+      3799
+    ],
+    [
+      "Localized edema",
+      3734
+    ],
+    [
+      "Pulmonary embolism",
+      3679
+    ],
+    [
+      "Bronchitis",
+      3594
+    ],
+    [
+      "Influenza",
+      3554
+    ],
+    [
+      "GERD",
+      3543
+    ],
+    [
+      "Pneumonia",
+      3542
+    ],
+    [
+      "Acute otitis media",
+      3516
+    ],
+    [
+      "Panic attack",
+      3387
+    ],
+    [
+      "Acute dystonic reactions",
+      3302
+    ],
+    [
+      "Acute laryngitis",
+      3217
+    ],
+    [
+      "Pericarditis",
+      3095
+    ],
+    [
+      "Possible NSTEMI / STEMI",
+      2911
+    ],
+    [
+      "Sarcoidosis",
+      2902
+    ],
+    [
+      "Unstable angina",
+      2880
+    ],
+    [
+      "Atrial fibrillation",
+      2831
+    ],
+    [
+      "Cluster headache",
+      2825
+    ],
+    [
+      "Inguinal hernia",
+      2751
+    ],
+    [
+      "Chronic rhinosinusitis",
+      2747
+    ],
+    [
+      "Guillain-Barré syndrome",
+      2601
+    ],
+    [
+      "Acute pulmonary edema",
+      2598
+    ],
+    [
+      "Pancreatic neoplasm",
+      2585
+    ],
+    [
+      "Scombroid food poisoning",
+      2486
+    ],
+    [
+      "Bronchiectasis",
+      2454
+    ],
+    [
+      "PSVT",
+      2443
+    ],
+    [
+      "Allergic sinusitis",
+      2411
+    ],
+    [
+      "Stable angina",
+      2386
+    ],
+    [
+      "Epiglottitis",
+      2364
+    ],
+    [
+      "Bronchospasm / acute asthma exacerbation",
+      2222
+    ],
+    [
+      "Myasthenia gravis",
+      2215
+    ],
+    [
+      "Acute COPD exacerbation / infection",
+      2153
+    ],
+    [
+      "Boerhaave",
+      2083
+    ],
+    [
+      "Tuberculosis",
+      2080
+    ],
+    [
+      "Pulmonary neoplasm",
+      1918
+    ],
+    [
+      "Acute rhinosinusitis",
+      1829
+    ],
+    [
+      "SLE",
+      1564
+    ],
+    [
+      "Myocarditis",
+      1478
+    ],
+    [
+      "Spontaneous pneumothorax",
+      1343
+    ],
+    [
+      "Chagas",
+      1077
+    ],
+    [
+      "Larygospasm",
+      785
+    ],
+    [
+      "Spontaneous rib fracture",
+      778
+    ],
+    [
+      "Whooping cough",
+      549
+    ],
+    [
+      "Croup",
+      344
+    ],
+    [
+      "Ebola",
+      100
+    ],
+    [
+      "Bronchiolitis",
+      36
+    ]
+  ]
+}

@@ -1,0 +1,650 @@
+{
+  "generated_utc": "2026-10-26T13:42:46+00:00",
+  "script": "scripts/build_rxnorm_component.py",
+  "archive": {
+    "file": "RxNorm_full_prescribe_10052026.zip",
+    "sha256": "8ed351c29f3cb56bedeb8e2bcb8fa56931f8d7eb88e2280dc9772d7d3eb16977",
+    "bytes": 74994831,
+    "inventory": [
+      {
+        "name": "Readme_Full_Prescribe_10052026.txt",
+        "bytes": 3073
+      },
+      {
+        "name": "rrf/RXNCONSO.RRF",
+        "bytes": 30680217
+      },
+      {
+        "name": "rrf/RXNREL.RRF",
+        "bytes": 198901737
+      },
+      {
+        "name": "rrf/RXNSAT.RRF",
+        "bytes": 284273759
+      },
+      {
+        "name": "scripts/mysql/Indexes_mysql_rxn.sql",
+        "bytes": 463
+      },
+      {
+        "name": "scripts/mysql/Load_scripts_mysql_rxn_unix.sql",
+        "bytes": 1469
+      },
+      {
+        "name": "scripts/mysql/Load_scripts_mysql_rxn_win.sql",
+        "bytes": 1468
+      },
+      {
+        "name": "scripts/mysql/Table_scripts_mysql_rxn.sql",
+        "bytes": 1749
+      },
+      {
+        "name": "scripts/mysql/Populate_mysql_rxn.bat",
+        "bytes": 777
+      },
+      {
+        "name": "scripts/mysql/populate_mysql_rxn.sh",
+        "bytes": 1609
+      },
+      {
+        "name": "scripts/oracle/RXNCONSO.ctl",
+        "bytes": 512
+      },
+      {
+        "name": "scripts/oracle/RXNREL.ctl",
+        "bytes": 471
+      },
+      {
+        "name": "scripts/oracle/RXNSAT.ctl",
+        "bytes": 378
+      },
+      {
+        "name": "scripts/oracle/rxn_index.sql",
+        "bytes": 460
+      },
+      {
+        "name": "scripts/oracle/RxNormDDL.sql",
+        "bytes": 1373
+      },
+      {
+        "name": "scripts/oracle/populate_oracle_rxn_db.bat",
+        "bytes": 699
+      }
+    ],
+    "release_label": {
+      "readme_title_date": "10/05/2026",
+      "readme_full_release_date": "October 05, 2026",
+      "readme_first_line": "October 05, 2026"
+    },
+    "readme_self_size": {
+      "declared_bytes": 1035,
+      "actual_bytes": 3073
+    }
+  },
+  "rrf_structure": {
+    "RXNCONSO.RRF": {
+      "lines": 247028,
+      "malformed_lines": 0
+    },
+    "RXNREL.RRF": {
+      "lines": 2589722,
+      "malformed_lines": 0
+    },
+    "RXNSAT.RRF": {
+      "lines": 3382290,
+      "malformed_lines": 0
+    }
+  },
+  "rxnconso_profile": {
+    "cvf:4096": 247028,
+    "sab:MTHCMSFRF": 11,
+    "sab:MTHSPL": 105943,
+    "sab:RXNORM": 141074,
+    "suppress:N": 247028
+  },
+  "rxnrel_profile": {
+    "cui_level_rxnorm": 553500,
+    "sab:MTHSPL": 1976750,
+    "sab:RXNORM": 612972
+  },
+  "metrics": {
+    "input_rows_total": 41,
+    "input_rows_canonical": 29,
+    "input_rows_probe": 12,
+    "unique_normalized_input_terms": 40,
+    "unique_rxcuis_in_concepts_csv": 29,
+    "ingredient_concepts_IN": 5,
+    "precise_ingredient_concepts_PIN": 4,
+    "multiple_ingredient_concepts_MIN": 3,
+    "clinical_drug_concepts_SCD": 11,
+    "branded_drug_concepts_SBD": 3,
+    "brand_name_concepts_BN": 3,
+    "branded_concepts_BN_plus_SBD": 6,
+    "verified_product_to_IN_pairs_SCD_SBD": 18,
+    "verified_MIN_to_ingredient_links": 6,
+    "verified_PIN_to_IN_links": 4,
+    "verified_BN_to_IN_links": 4,
+    "relationship_rows_exported": 368,
+    "rxnorm_normalized_strings_total": 119768,
+    "rxnorm_normalized_strings_mapping_to_multiple_rxcuis": 0,
+    "probe_inputs_resolving_NONE": 11,
+    "probe_inputs_resolving_MULTIPLE": 0,
+    "probe_inputs_resolving_UNIQUE": 1,
+    "seed_concepts_unresolved": 0,
+    "duplicate_rxcui_rows": 0,
+    "duplicate_alias_mapping_rows": 0,
+    "selected_products_missing_relevant_info": 0,
+    "ndc_rows_rxnorm_selected": 2196,
+    "selected_concepts_with_any_MTHSPL_SPL_SET_ID_in_RXNSAT": 23
+  },
+  "seed_resolution": [
+    {
+      "input_name": "metformin",
+      "expected_tty": "IN",
+      "status": "UNIQUE",
+      "rxcui": "6809",
+      "candidates": [
+        "6809"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin",
+      "expected_tty": "IN",
+      "status": "UNIQUE",
+      "rxcui": "1368001",
+      "candidates": [
+        "1368001"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metoprolol",
+      "expected_tty": "IN",
+      "status": "UNIQUE",
+      "rxcui": "6918",
+      "candidates": [
+        "6918"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "sitagliptin",
+      "expected_tty": "IN",
+      "status": "UNIQUE",
+      "rxcui": "593411",
+      "candidates": [
+        "593411"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "hydrochlorothiazide",
+      "expected_tty": "IN",
+      "status": "UNIQUE",
+      "rxcui": "5487",
+      "candidates": [
+        "5487"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metformin hydrochloride",
+      "expected_tty": "PIN",
+      "status": "UNIQUE",
+      "rxcui": "235743",
+      "candidates": [
+        "235743"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin benzoate",
+      "expected_tty": "PIN",
+      "status": "UNIQUE",
+      "rxcui": "1368000",
+      "candidates": [
+        "1368000"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metoprolol tartrate",
+      "expected_tty": "PIN",
+      "status": "UNIQUE",
+      "rxcui": "203191",
+      "candidates": [
+        "203191"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metoprolol succinate",
+      "expected_tty": "PIN",
+      "status": "UNIQUE",
+      "rxcui": "221124",
+      "candidates": [
+        "221124"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin / metformin",
+      "expected_tty": "MIN",
+      "status": "UNIQUE",
+      "rxcui": "1368384",
+      "candidates": [
+        "1368384"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metformin / sitagliptin",
+      "expected_tty": "MIN",
+      "status": "UNIQUE",
+      "rxcui": "729717",
+      "candidates": [
+        "729717"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "hydrochlorothiazide / metoprolol",
+      "expected_tty": "MIN",
+      "status": "UNIQUE",
+      "rxcui": "214621",
+      "candidates": [
+        "214621"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "Kazano",
+      "expected_tty": "BN",
+      "status": "UNIQUE",
+      "rxcui": "1372692",
+      "candidates": [
+        "1372692"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "Nesina",
+      "expected_tty": "BN",
+      "status": "UNIQUE",
+      "rxcui": "1368007",
+      "candidates": [
+        "1368007"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "Lopressor",
+      "expected_tty": "BN",
+      "status": "UNIQUE",
+      "rxcui": "203344",
+      "candidates": [
+        "203344"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metformin hydrochloride 500 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "861007",
+      "candidates": [
+        "861007"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metformin hydrochloride 1000 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "861004",
+      "candidates": [
+        "861004"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "860975",
+      "candidates": [
+        "860975"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin 12.5 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "1368034",
+      "candidates": [
+        "1368034"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin 25 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "1368006",
+      "candidates": [
+        "1368006"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "1368392",
+      "candidates": [
+        "1368392"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "1368385",
+      "candidates": [
+        "1368385"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metoprolol tartrate 25 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "866924",
+      "candidates": [
+        "866924"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metoprolol tartrate 50 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "866514",
+      "candidates": [
+        "866514"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "24 HR metoprolol succinate 25 MG Extended Release Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "866427",
+      "candidates": [
+        "866427"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet",
+      "expected_tty": "SCD",
+      "status": "UNIQUE",
+      "rxcui": "866482",
+      "candidates": [
+        "866482"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano]",
+      "expected_tty": "SBD",
+      "status": "UNIQUE",
+      "rxcui": "1368398",
+      "candidates": [
+        "1368398"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "alogliptin 25 MG Oral Tablet [Nesina]",
+      "expected_tty": "SBD",
+      "status": "UNIQUE",
+      "rxcui": "1368012",
+      "candidates": [
+        "1368012"
+      ],
+      "pinned_ok": true
+    },
+    {
+      "input_name": "metoprolol tartrate 50 MG Oral Tablet [Lopressor]",
+      "expected_tty": "SBD",
+      "status": "UNIQUE",
+      "rxcui": "866516",
+      "candidates": [
+        "866516"
+      ],
+      "pinned_ok": true
+    }
+  ],
+  "checks": [
+    {
+      "id": "A1",
+      "description": "Archive contains RXNCONSO/RXNREL/RXNSAT.RRF and a README",
+      "status": "PASS",
+      "critical": true,
+      "detail": "all present"
+    },
+    {
+      "id": "A2",
+      "description": "README states a release date matching the ZIP file name (10052026 = October 05, 2026)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "{\"readme_title_date\": \"10/05/2026\", \"readme_full_release_date\": \"October 05, 2026\", \"readme_first_line\": \"October 05, 2026\"}"
+    },
+    {
+      "id": "A3",
+      "description": "RRF file sizes listed in the archive README equal actual sizes",
+      "status": "PASS",
+      "critical": true,
+      "detail": "{\"RXNCONSO.RRF\": 30680217, \"RXNREL.RRF\": 198901737, \"RXNSAT.RRF\": 284273759}"
+    },
+    {
+      "id": "A4",
+      "description": "README declared size of itself equals actual size",
+      "status": "FAIL",
+      "critical": false,
+      "detail": "declared 1035 vs actual 3073 (cosmetic: README text edited after size was written)"
+    },
+    {
+      "id": "B1",
+      "description": "RXNCONSO/RXNREL lines have exactly the documented field count with a trailing delimiter",
+      "status": "PASS",
+      "critical": true,
+      "detail": "{\"RXNCONSO.RRF\": {\"lines\": 247028, \"malformed_lines\": 0}, \"RXNREL.RRF\": {\"lines\": 2589722, \"malformed_lines\": 0}}"
+    },
+    {
+      "id": "B2",
+      "description": "Each RXNORM concept has at most one main-term-type atom (Appendix 5 statement)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "violations: 0"
+    },
+    {
+      "id": "B3",
+      "description": "Prescribable subset contains no suppressed/obsolete RXNCONSO rows (SUPPRESS=N, CVF=4096 everywhere)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "{\"suppress:N\": 247028, \"cvf:4096\": 247028}"
+    },
+    {
+      "id": "B6",
+      "description": "RXNREL CUI-level RXNORM rows: SUPPRESS values are only blank or N (blank = 'not yet in use' per Tech Doc 12.7)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "{\"\": 553500}"
+    },
+    {
+      "id": "B4",
+      "description": "Relationship direction (subject=RXCUI2, object=RXCUI1) agrees with Appendix 1 TTY pairs across all exported-RELA CUI-level rows in the subset",
+      "status": "PASS",
+      "critical": true,
+      "detail": "361048/361048 rows documented; undocumented pairs: {}"
+    },
+    {
+      "id": "D1",
+      "description": "Every seed concept resolves to exactly one RXNORM concept of the expected term type (no substitution)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "29/29 resolved"
+    },
+    {
+      "id": "D2",
+      "description": "Resolved RXCUIs equal the RXCUIs pinned in config (regression check; pins were taken from this same release, so this detects drift between releases, not independent truth)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "mismatches: []"
+    },
+    {
+      "id": "D3",
+      "description": "For every selected concept the input name equals the SAB=RXNORM normalized-name atom (not just a synonym)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "mismatches: []"
+    },
+    {
+      "id": "D4",
+      "description": "Selected concepts' main atoms are SUPPRESS=N and CVF=4096",
+      "status": "PASS",
+      "critical": true,
+      "detail": "violations: []"
+    },
+    {
+      "id": "E1",
+      "description": "Every selected concept: ingredient chain resolved via RXNREL; each SCD/SBD has exactly one dose form, strength components and (SBD) one brand; names are consistent with relationship-derived components; cross-paths (SCDC-path vs MIN-path, SBD vs its generic SCD) agree",
+      "status": "PASS",
+      "critical": true,
+      "detail": "problems: []"
+    },
+    {
+      "id": "E2",
+      "description": "All exported relationship rows are of a (subject TTY, RELA, object TTY) combination documented in Appendix 1 (and at least one row was exported)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "undocumented: 0 of 368"
+    },
+    {
+      "id": "E3",
+      "description": "No duplicate relationship identifiers (RUI) in relationships.csv (non-empty set)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "368 rows"
+    },
+    {
+      "id": "E4",
+      "description": "Every exported relationship row has its inverse-direction row in the exported set (RxNorm stores one row per direction)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "rows lacking inverse: 0 of 368"
+    },
+    {
+      "id": "B5",
+      "description": "RXNSAT lines have exactly the documented field count with a trailing delimiter",
+      "status": "PASS",
+      "critical": true,
+      "detail": "{\"lines\": 3382290, \"malformed_lines\": 0}"
+    },
+    {
+      "id": "E5",
+      "description": "No duplicate RXCUI rows in concepts.csv",
+      "status": "PASS",
+      "critical": true,
+      "detail": "29 rows"
+    },
+    {
+      "id": "F1",
+      "description": "Probe/canonical inputs behave as designed where an expectation was declared (UNIQUE/NONE); OBSERVE inputs carry no expectation",
+      "status": "PASS",
+      "critical": false,
+      "detail": "mismatches: []"
+    },
+    {
+      "id": "E6",
+      "description": "Every selected SCD/SBD has at least one verified ingredient link",
+      "status": "PASS",
+      "critical": true,
+      "detail": "14 products checked"
+    },
+    {
+      "id": "G2",
+      "description": "Every selected IN/MIN concept is contained in more than one SCD in the subset (ingredient-level mention is not product-unique)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "alogliptin=10; hydrochlorothiazide=71; metformin=70; metoprolol=19; sitagliptin=19; alogliptin / metformin=2; hydrochlorothiazide / metoprolol=3; metformin / sitagliptin=10"
+    },
+    {
+      "id": "G1",
+      "description": "All declared contrast checks hold on relationship-derived data",
+      "status": "PASS",
+      "critical": true,
+      "detail": "21/21 pass; failing: []"
+    },
+    {
+      "id": "H1",
+      "description": "No DailyMed set ID is populated; all link statuses are PENDING_NOT_VERIFIED",
+      "status": "PASS",
+      "critical": true,
+      "detail": ""
+    },
+    {
+      "id": "I1",
+      "description": "Headline counts recomputed from the written CSV files equal the counts in the validation report",
+      "status": "PASS",
+      "critical": true,
+      "detail": ""
+    },
+    {
+      "id": "I2",
+      "description": "Required concept fields are non-empty and RXCUIs are numeric",
+      "status": "PASS",
+      "critical": true,
+      "detail": "empty: []"
+    },
+    {
+      "id": "I3",
+      "description": "Source ZIP SHA-256 identical before and after the run (archive not modified)",
+      "status": "PASS",
+      "critical": true,
+      "detail": "8ed351c29f3cb56bedeb8e2bcb8fa56931f8d7eb88e2280dc9772d7d3eb16977"
+    },
+    {
+      "id": "X1",
+      "description": "Release notes data counts (TTY counts, NDC counts) for the 10/05/2026 release compared with this archive",
+      "status": "NOT_VERIFIED",
+      "critical": true,
+      "detail": "No 2026 release-notes page could be retrieved; official page not inspected for this release"
+    },
+    {
+      "id": "X2",
+      "description": "ZIP authenticity versus an NLM-published MD5/SHA for RxNorm_full_prescribe_10052026.zip",
+      "status": "NOT_VERIFIED",
+      "critical": true,
+      "detail": "No published checksum for this file was retrieved; local SHA-256 recorded for future comparison"
+    },
+    {
+      "id": "X3",
+      "description": "Semantic type (STY) per concept",
+      "status": "NOT_VERIFIED",
+      "critical": true,
+      "detail": "RXNSTY.RRF is not part of the Current Prescribable Content ZIP; concept_type is derived from TTY (Appendix 5) only"
+    }
+  ],
+  "summary": {
+    "PASS": 26,
+    "FAIL": 1,
+    "NOT_VERIFIED": 3,
+    "critical_failures": []
+  }
+}

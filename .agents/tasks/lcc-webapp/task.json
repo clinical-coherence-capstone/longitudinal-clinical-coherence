@@ -1,0 +1,7 @@
+{
+  "task_id": "task-lcc-webapp",
+  "task_description": "Extend the Longitudinal Clinical Coherence system with a Streamlit web chatbot: user auth (SQLite + bcrypt), per-user conversation isolation, full backend pipeline integration, verification expander UI, and tests for auth/database/pipeline. All existing src/ and tests/ files are untouched.",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}

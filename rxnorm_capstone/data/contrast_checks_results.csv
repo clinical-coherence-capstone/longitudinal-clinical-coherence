@@ -1,0 +1,22 @@
+check_id,contrast_id,a_input_name,a_rxcui,b_input_name,b_rxcui,predicate,result,detail
+K01,C1,metformin,6809,metformin hydrochloride 500 MG Oral Tablet,861007,ingredient_in,PASS,a=6809(IN) b=861007(SCD) ing_a=['6809'] ing_b=['6809']
+K02,C1,alogliptin,1368001,alogliptin 12.5 MG Oral Tablet,1368034,ingredient_in,PASS,a=1368001(IN) b=1368034(SCD) ing_a=['1368001'] ing_b=['1368001']
+K03,C1,metoprolol,6918,metoprolol tartrate 50 MG Oral Tablet,866514,ingredient_in,PASS,a=6918(IN) b=866514(SCD) ing_a=['6918'] ing_b=['6918']
+K04,C2,alogliptin 12.5 MG Oral Tablet,1368034,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,1368392,ingredient_proper_subset,PASS,"a=1368034(SCD) b=1368392(SCD) ing_a=['1368001'] ing_b=['1368001', '6809']"
+K05,C2,alogliptin,1368001,alogliptin / metformin,1368384,ingredient_proper_subset,PASS,"a=1368001(IN) b=1368384(MIN) ing_a=['1368001'] ing_b=['1368001', '6809']"
+K06,C3,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,1368392,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,1368385,same_ingredients_diff_strength,PASS,"a=1368392(SCD) b=1368385(SCD) ing_a=['1368001', '6809'] ing_b=['1368001', '6809']"
+K07,C4,metformin hydrochloride 500 MG Oral Tablet,861007,metformin hydrochloride 1000 MG Oral Tablet,861004,same_ingredients_diff_strength,PASS,a=861007(SCD) b=861004(SCD) ing_a=['6809'] ing_b=['6809']
+K08,C4,alogliptin 12.5 MG Oral Tablet,1368034,alogliptin 25 MG Oral Tablet,1368006,same_ingredients_diff_strength,PASS,a=1368034(SCD) b=1368006(SCD) ing_a=['1368001'] ing_b=['1368001']
+K09,C4,metoprolol tartrate 25 MG Oral Tablet,866924,metoprolol tartrate 50 MG Oral Tablet,866514,same_ingredients_diff_strength,PASS,a=866924(SCD) b=866514(SCD) ing_a=['6918'] ing_b=['6918']
+K10,C5,metformin hydrochloride 500 MG Oral Tablet,861007,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,860975,same_ingredients_diff_doseform,PASS,a=861007(SCD) b=860975(SCD) ing_a=['6809'] ing_b=['6809']
+K11,C5,metoprolol tartrate 25 MG Oral Tablet,866924,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,866427,same_ingredients_diff_doseform,PASS,a=866924(SCD) b=866427(SCD) ing_a=['6918'] ing_b=['6918']
+K12,C6,metoprolol tartrate,203191,metoprolol succinate,221124,same_ingredient_diff_pin,PASS,a=203191(PIN) b=221124(PIN) ing_a=['6918'] ing_b=['6918']
+K13,C6,metoprolol tartrate 25 MG Oral Tablet,866924,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,866427,same_ingredient_diff_pin,PASS,a=866924(SCD) b=866427(SCD) ing_a=['6918'] ing_b=['6918']
+K14,C7,metformin,6809,metoprolol,6918,ingredient_sets_disjoint,PASS,a=6809(IN) b=6918(IN) ing_a=['6809'] ing_b=['6918']
+K15,C7,metformin hydrochloride 500 MG Oral Tablet,861007,metoprolol tartrate 50 MG Oral Tablet,866514,ingredient_sets_disjoint,PASS,a=861007(SCD) b=866514(SCD) ing_a=['6809'] ing_b=['6918']
+K16,C8,alogliptin / metformin,1368384,metformin / sitagliptin,729717,share_exactly_one_ingredient,PASS,"a=1368384(MIN) b=729717(MIN) ing_a=['1368001', '6809'] ing_b=['593411', '6809']"
+K17,C8,metoprolol,6918,hydrochlorothiazide / metoprolol,214621,ingredient_proper_subset,PASS,"a=6918(IN) b=214621(MIN) ing_a=['6918'] ing_b=['5487', '6918']"
+K18,C8,metoprolol tartrate 50 MG Oral Tablet,866514,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,866482,ingredient_proper_subset,PASS,"a=866514(SCD) b=866482(SCD) ing_a=['6918'] ing_b=['5487', '6918']"
+K19,C9,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,1368392,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],1368398,brand_of,PASS,"a=1368392(SCD) b=1368398(SBD) ing_a=['1368001', '6809'] ing_b=['1368001', '6809']"
+K20,C9,alogliptin 25 MG Oral Tablet,1368006,alogliptin 25 MG Oral Tablet [Nesina],1368012,brand_of,PASS,a=1368006(SCD) b=1368012(SBD) ing_a=['1368001'] ing_b=['1368001']
+K21,C9,metoprolol tartrate 50 MG Oral Tablet,866514,metoprolol tartrate 50 MG Oral Tablet [Lopressor],866516,brand_of,PASS,a=866514(SCD) b=866516(SBD) ing_a=['6918'] ing_b=['6918']

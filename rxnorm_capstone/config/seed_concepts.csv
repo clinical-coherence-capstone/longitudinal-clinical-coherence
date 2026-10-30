@@ -1,0 +1,30 @@
+input_name,expected_tty,pinned_rxcui,contrast_tags,inclusion_reason
+metformin,IN,6809,C1;C7,Core ingredient; ingredient-level anchor for metformin products; look-alike wrong-target pair with metoprolol
+alogliptin,IN,1368001,C1;C2,Core ingredient; single-ingredient anchor for the alogliptin/metformin combination
+metoprolol,IN,6918,C1;C7;C8,Distinct-medication wrong-target candidate named in project brief
+sitagliptin,IN,593411,C8,Partner ingredient of a different metformin combination (different-partner contrast)
+hydrochlorothiazide,IN,5487,C8,Partner ingredient of a metoprolol-containing combination (metoprolol-alone vs metoprolol-containing)
+metformin hydrochloride,PIN,235743,C6,Precise (salt) form of metformin as used in metformin product names
+alogliptin benzoate,PIN,1368000,C6,Precise (salt) form of alogliptin
+metoprolol tartrate,PIN,203191,C6,Salt form: tartrate (immediate-release products)
+metoprolol succinate,PIN,221124,C6,Salt form: succinate (extended-release products)
+alogliptin / metformin,MIN,1368384,C2;C8,Core combination concept from project brief
+metformin / sitagliptin,MIN,729717,C8,Different-partner combination sharing metformin
+hydrochlorothiazide / metoprolol,MIN,214621,C8,Metoprolol-containing combination that is not metoprolol alone
+Kazano,BN,1372692,C9,Brand name of the alogliptin/metformin product
+Nesina,BN,1368007,C9,Brand name of single-ingredient alogliptin
+Lopressor,BN,203344,C9,Brand name of metoprolol tartrate
+metformin hydrochloride 500 MG Oral Tablet,SCD,861007,C1;C4;C5,IR metformin; strength and dose-form anchor
+metformin hydrochloride 1000 MG Oral Tablet,SCD,861004,C4,"Same ingredient/dose form, different strength"
+24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,SCD,860975,C5,"Same ingredient/strength, different dose form (extended release)"
+alogliptin 12.5 MG Oral Tablet,SCD,1368034,C2;C4,Single-ingredient alogliptin product
+alogliptin 25 MG Oral Tablet,SCD,1368006,C4,"Alogliptin, different strength"
+alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,SCD,1368392,C2;C3,"Combination product, strength variant A"
+alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,SCD,1368385,C3,"Combination product, strength variant B (same combination, different metformin strength)"
+metoprolol tartrate 25 MG Oral Tablet,SCD,866924,C4;C5;C6,"Metoprolol tartrate, lower strength; IR counterpart of the succinate ER product"
+metoprolol tartrate 50 MG Oral Tablet,SCD,866514,C4;C7,Metoprolol tartrate IR tablet; wrong-target product vs metformin products
+24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,SCD,866427,C5;C6,"Same ingredient (metoprolol), different salt and dose form"
+hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,SCD,866482,C8,Metoprolol-containing combination product
+alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],SBD,1368398,C9,Branded counterpart of SCD alogliptin 12.5/metformin 500
+alogliptin 25 MG Oral Tablet [Nesina],SBD,1368012,C9,Branded counterpart of SCD alogliptin 25
+metoprolol tartrate 50 MG Oral Tablet [Lopressor],SBD,866516,C9,Branded counterpart of SCD metoprolol tartrate 50

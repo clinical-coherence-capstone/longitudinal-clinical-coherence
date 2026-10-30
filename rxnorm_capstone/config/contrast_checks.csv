@@ -1,0 +1,22 @@
+check_id,contrast_id,a_input_name,b_input_name,predicate
+K01,C1,metformin,metformin hydrochloride 500 MG Oral Tablet,ingredient_in
+K02,C1,alogliptin,alogliptin 12.5 MG Oral Tablet,ingredient_in
+K03,C1,metoprolol,metoprolol tartrate 50 MG Oral Tablet,ingredient_in
+K04,C2,alogliptin 12.5 MG Oral Tablet,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,ingredient_proper_subset
+K05,C2,alogliptin,alogliptin / metformin,ingredient_proper_subset
+K06,C3,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,alogliptin 12.5 MG / metformin hydrochloride 1000 MG Oral Tablet,same_ingredients_diff_strength
+K07,C4,metformin hydrochloride 500 MG Oral Tablet,metformin hydrochloride 1000 MG Oral Tablet,same_ingredients_diff_strength
+K08,C4,alogliptin 12.5 MG Oral Tablet,alogliptin 25 MG Oral Tablet,same_ingredients_diff_strength
+K09,C4,metoprolol tartrate 25 MG Oral Tablet,metoprolol tartrate 50 MG Oral Tablet,same_ingredients_diff_strength
+K10,C5,metformin hydrochloride 500 MG Oral Tablet,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,same_ingredients_diff_doseform
+K11,C5,metoprolol tartrate 25 MG Oral Tablet,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,same_ingredients_diff_doseform
+K12,C6,metoprolol tartrate,metoprolol succinate,same_ingredient_diff_pin
+K13,C6,metoprolol tartrate 25 MG Oral Tablet,24 HR metoprolol succinate 25 MG Extended Release Oral Tablet,same_ingredient_diff_pin
+K14,C7,metformin,metoprolol,ingredient_sets_disjoint
+K15,C7,metformin hydrochloride 500 MG Oral Tablet,metoprolol tartrate 50 MG Oral Tablet,ingredient_sets_disjoint
+K16,C8,alogliptin / metformin,metformin / sitagliptin,share_exactly_one_ingredient
+K17,C8,metoprolol,hydrochlorothiazide / metoprolol,ingredient_proper_subset
+K18,C8,metoprolol tartrate 50 MG Oral Tablet,hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet,ingredient_proper_subset
+K19,C9,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet,alogliptin 12.5 MG / metformin hydrochloride 500 MG Oral Tablet [Kazano],brand_of
+K20,C9,alogliptin 25 MG Oral Tablet,alogliptin 25 MG Oral Tablet [Nesina],brand_of
+K21,C9,metoprolol tartrate 50 MG Oral Tablet,metoprolol tartrate 50 MG Oral Tablet [Lopressor],brand_of

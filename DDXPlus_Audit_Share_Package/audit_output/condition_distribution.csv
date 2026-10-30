@@ -1,0 +1,50 @@
+condition_name,train_count,val_count,test_count,total_count,total_share_pct
+"URTI",64368,8656,8743,81767,6.33%
+"Viral pharyngitis",61642,8246,8334,78222,6.05%
+"Anemia",50665,6903,6842,64410,4.98%
+"HIV (initial infection)",29013,3852,3919,36784,2.85%
+"Anaphylaxis",27718,3754,3799,35271,2.73%
+"Localized edema",27825,3694,3734,35253,2.73%
+"Pulmonary embolism",27468,3725,3679,34872,2.70%
+"Influenza",26812,3590,3554,33956,2.63%
+"Bronchitis",26400,3543,3594,33537,2.59%
+"GERD",25979,3426,3543,32948,2.55%
+"Acute otitis media",25917,3474,3516,32907,2.55%
+"Pneumonia",25761,3484,3542,32787,2.54%
+"Acute dystonic reactions",25982,3281,3302,32565,2.52%
+"Panic attack",25019,3237,3387,31643,2.45%
+"Acute laryngitis",24129,3407,3217,30753,2.38%
+"Allergic sinusitis",26203,2136,2411,30750,2.38%
+"Pericarditis",22785,3032,3095,28912,2.24%
+"Guillain-Barré syndrome",22867,2557,2601,28025,2.17%
+"Sarcoidosis",21285,3028,2902,27215,2.11%
+"Possible NSTEMI / STEMI",21260,2943,2911,27114,2.10%
+"Unstable angina",21244,2748,2880,26872,2.08%
+"Atrial fibrillation",21036,2609,2831,26476,2.05%
+"Cluster headache",20804,2841,2825,26470,2.05%
+"Chronic rhinosinusitis",20579,2717,2747,26043,2.01%
+"Inguinal hernia",20235,2632,2751,25618,1.98%
+"Bronchospasm / acute asthma exacerbation",19875,2209,2222,24306,1.88%
+"Acute pulmonary edema",19018,2500,2598,24116,1.87%
+"Pancreatic neoplasm",18846,2582,2585,24013,1.86%
+"PSVT",18781,2376,2443,23600,1.83%
+"Bronchiectasis",18795,2319,2454,23568,1.82%
+"Scombroid food poisoning",18535,2250,2486,23271,1.80%
+"Myasthenia gravis",18566,2159,2215,22940,1.77%
+"Acute COPD exacerbation / infection",17661,2076,2153,21890,1.69%
+"Epiglottitis",17209,2248,2364,21821,1.69%
+"Stable angina",16995,2340,2386,21721,1.68%
+"Tuberculosis",16245,2007,2080,20332,1.57%
+"Boerhaave",15080,2075,2083,19238,1.49%
+"Pulmonary neoplasm",14457,1891,1918,18266,1.41%
+"Acute rhinosinusitis",13578,1866,1829,17273,1.34%
+"SLE",11867,1579,1564,15010,1.16%
+"Myocarditis",11073,1547,1478,14098,1.09%
+"Spontaneous pneumothorax",10162,1405,1343,12910,1.00%
+"Larygospasm",10998,668,785,12451,0.96%
+"Chagas",9252,1124,1077,11453,0.89%
+"Spontaneous rib fracture",5712,782,778,7272,0.56%
+"Whooping cough",6070,545,549,7164,0.55%
+"Croup",2852,267,344,3463,0.27%
+"Ebola",718,90,100,908,0.07%
+"Bronchiolitis",261,28,36,325,0.03%

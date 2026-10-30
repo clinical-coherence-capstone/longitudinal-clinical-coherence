@@ -1,0 +1,13 @@
+input_name,intent,expected_resolution
+Metformin,case variant of ingredient name,UNIQUE
+metformin HCl,abbreviated salt name,OBSERVE
+alogliptin and metformin,non-RxNorm conjunction wording,NONE
+alogliptin metformin,combination name without separator,NONE
+metformin / alogliptin,combination with ingredients in non-RxNorm order,OBSERVE
+alogliptin 12.5 mg / metformin 500 mg,strengths without salt or dose form,NONE
+metoprolol 50 mg,strength without salt or dose form,NONE
+metoprolol / hydrochlorothiazide,combination with ingredients in non-RxNorm order,OBSERVE
+sitagliptin / metformin,combination with ingredients in non-RxNorm order,OBSERVE
+Toprol XL,brand shorthand not verified against RxNorm strings,OBSERVE
+metformin 500 mg oral tablet,product phrase without salt name,OBSERVE
+metformin extended release,incomplete product phrase,OBSERVE

@@ -1,0 +1,37 @@
+{
+  "PASS": 26,
+  "FAIL": 1,
+  "NOT_VERIFIED": 3,
+  "critical_failures": []
+}
+A1   PASS         Archive contains RXNCONSO/RXNREL/RXNSAT.RRF and a README
+A2   PASS         README states a release date matching the ZIP file name (10052026 = October 05, 2026)
+A3   PASS         RRF file sizes listed in the archive README equal actual sizes
+A4   FAIL         README declared size of itself equals actual size
+B1   PASS         RXNCONSO/RXNREL lines have exactly the documented field count with a trailing delimiter
+B2   PASS         Each RXNORM concept has at most one main-term-type atom (Appendix 5 statement)
+B3   PASS         Prescribable subset contains no suppressed/obsolete RXNCONSO rows (SUPPRESS=N, CVF=4096 everywhere)
+B6   PASS         RXNREL CUI-level RXNORM rows: SUPPRESS values are only blank or N (blank = 'not yet in use' per Tech Doc 12.7)
+B4   PASS         Relationship direction (subject=RXCUI2, object=RXCUI1) agrees with Appendix 1 TTY pairs across all exported-RE
+D1   PASS         Every seed concept resolves to exactly one RXNORM concept of the expected term type (no substitution)
+D2   PASS         Resolved RXCUIs equal the RXCUIs pinned in config (regression check; pins were taken from this same release, s
+D3   PASS         For every selected concept the input name equals the SAB=RXNORM normalized-name atom (not just a synonym)
+D4   PASS         Selected concepts' main atoms are SUPPRESS=N and CVF=4096
+E1   PASS         Every selected concept: ingredient chain resolved via RXNREL; each SCD/SBD has exactly one dose form, strength
+E2   PASS         All exported relationship rows are of a (subject TTY, RELA, object TTY) combination documented in Appendix 1 (
+E3   PASS         No duplicate relationship identifiers (RUI) in relationships.csv (non-empty set)
+E4   PASS         Every exported relationship row has its inverse-direction row in the exported set (RxNorm stores one row per d
+B5   PASS         RXNSAT lines have exactly the documented field count with a trailing delimiter
+E5   PASS         No duplicate RXCUI rows in concepts.csv
+F1   PASS         Probe/canonical inputs behave as designed where an expectation was declared (UNIQUE/NONE); OBSERVE inputs carr
+E6   PASS         Every selected SCD/SBD has at least one verified ingredient link
+G2   PASS         Every selected IN/MIN concept is contained in more than one SCD in the subset (ingredient-level mention is not
+G1   PASS         All declared contrast checks hold on relationship-derived data
+H1   PASS         No DailyMed set ID is populated; all link statuses are PENDING_NOT_VERIFIED
+I1   PASS         Headline counts recomputed from the written CSV files equal the counts in the validation report
+I2   PASS         Required concept fields are non-empty and RXCUIs are numeric
+I3   PASS         Source ZIP SHA-256 identical before and after the run (archive not modified)
+X1   NOT_VERIFIED Release notes data counts (TTY counts, NDC counts) for the 10/05/2026 release compared with this archive
+X2   NOT_VERIFIED ZIP authenticity versus an NLM-published MD5/SHA for RxNorm_full_prescribe_10052026.zip
+X3   NOT_VERIFIED Semantic type (STY) per concept
+rendered README.md COVERAGE_MATRIX.md HANDOFF.md FINAL_AUDIT.md
