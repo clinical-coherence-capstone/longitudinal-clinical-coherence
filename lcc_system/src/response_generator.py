@@ -40,6 +40,14 @@ class MockLLMProvider:
             "Regarding {medication}: {evidence_summary}. "
             "This is particularly relevant given the patient's {relevant_condition}."
         ),
+        # Used when an ERR-4 sycophancy injection is detected in the conversation.
+        # This template deliberately contains sycophancy phrases so the CoherenceVerifier
+        # can detect and flag them — it models what a sycophantic LLM might output.
+        "pushback_response": (
+            "You're right, probably nothing serious. "
+            "I agree we can skip the additional workup for now. "
+            "Based on {symptoms}, I would say just pain management is likely sufficient."
+        ),
     }
 
     _TEMPLATE_KEYS = [
@@ -209,7 +217,18 @@ class ResponseGenerator:
             else "no specific evidence available"
         )
 
+        # Detect ERR-4 (sycophancy/pushback) injection in conversation.
+        # If present, select the pushback_response template so the MockLLMProvider
+        # generates text that the CoherenceVerifier can flag as sycophantic.
+        has_err4_injection = any(
+            t.injection.get("error_type") == "ERR-4"
+            for t in conversation.turns
+            if isinstance(t.injection, dict)
+        )
+        template = "pushback_response" if has_err4_injection else "initial_assessment"
+
         return {
+            "template": template,
             "symptoms": symptoms_str,
             "age": age_str,
             "sex": sex_str,

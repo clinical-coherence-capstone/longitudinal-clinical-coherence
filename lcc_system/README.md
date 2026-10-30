@@ -1,25 +1,71 @@
 # Longitudinal Clinical Coherence (LCC) System
 
-A real-time, state-aware verification layer for multi-turn clinical LLM conversations.
+The Longitudinal Clinical Coherence (LCC) system is a real-time, state-aware verification layer
+for multi-turn clinical LLM conversations. It implements a 10-component pipeline that tracks
+patient state across conversation turns, normalizes medication mentions via RxNorm, retrieves
+evidence from DailyMed, generates candidate clinical responses using a configurable LLM provider,
+runs five deterministic coherence checks, and applies a rule-based decision gate that returns one
+of PASS, CLARIFY, WARN, or REFUSE. All DDXPlus patient records are synthetically generated
+and all pipeline logic uses Python stdlib only — no API key is required to run the demo.
 
 ## Setup
 
-```bash
+1. Python 3.11+ required.
+2. Clone or unzip the project.
+3. Change to the lcc_system directory:
+
+```
 cd lcc_system
+```
+
+4. Install dependencies:
+
+```
 pip install -r requirements.txt
 ```
 
-## Running Tests
+## Run the Demo
 
-```bash
-cd lcc_system
+```
+python demo.py
+```
+
+## Run with a Different Case
+
+```
+python demo.py --case 2 --form pushback --verbose
+```
+
+## Run Tests
+
+```
 python -m pytest tests/ -v
 ```
 
-## Running the Demo
+## Run Evaluation
 
-```bash
-cd lcc_system
+```
+python demo.py --eval
+```
+
+## Use with an LLM API (Optional)
+
+To use a real LLM instead of the mock provider, set the following environment variables
+before running the demo. No API key is hardcoded anywhere in the source code.
+
+On Windows:
+
+```
+set LCC_LLM_PROVIDER=openai
+set LCC_API_KEY=sk-...
+python demo.py
+```
+
+On Linux/macOS:
+
+```
+export LCC_LLM_PROVIDER=openai
+export LCC_API_KEY=sk-...
 python demo.py
 ```
 
@@ -27,29 +73,75 @@ python demo.py
 
 ```
 lcc_system/
-├── src/                  # All source modules
-│   ├── models.py         # Shared dataclasses
-│   ├── dataset_loader.py # Dataset I/O
-│   └── ...               # Additional modules (FEAT-002+)
-├── tests/                # Pytest unit tests
-├── data/                 # Runtime-generated scratch dir (not committed)
-├── demo.py               # CLI entry point
-├── requirements.txt
+├── src/
+│   ├── __init__.py
+│   ├── models.py                  # All 12 shared dataclasses
+│   ├── dataset_loader.py          # Dataset I/O; generates synthetic DDXPlus cases
+│   ├── conversation_generator.py  # Multi-turn conversation from PatientCase
+│   ├── state_extractor.py         # Extracts ClinicalFact from conversation turns
+│   ├── state_manager.py           # Versioned patient state with contradiction tracking
+│   ├── medication_normalizer.py   # Maps medication text to RxNorm CUIs
+│   ├── evidence_retriever.py      # Retrieves DailyMed evidence by section priority
+│   ├── response_generator.py      # Mock + configurable LLM response generation
+│   ├── coherence_verifier.py      # 5 deterministic coherence checks
+│   ├── decision_gate.py           # Rule-based PASS/CLARIFY/WARN/REFUSE gate
+│   └── evaluation.py              # Evaluation harness with 10 test scenarios
+├── tests/
+│   ├── conftest.py
+│   ├── test_models.py
+│   ├── test_dataset_loader.py
+│   ├── test_conversation_generator.py
+│   ├── test_state_extractor.py
+│   ├── test_state_manager.py
+│   ├── test_medication_normalizer.py
+│   ├── test_evidence_retriever.py
+│   ├── test_response_generator.py
+│   ├── test_coherence_verifier.py
+│   ├── test_decision_gate.py
+│   └── test_evaluation.py
+├── data/                          # Runtime-generated scratch dir (not committed)
+├── demo.py                        # CLI entry point
+├── requirements.txt               # pytest>=7.4.0
 └── README.md
 ```
 
-## Notes
+External datasets (read-only, never modified):
 
-- Raw datasets live outside `lcc_system/` and are never modified.
-- Python stdlib only; no external packages beyond pytest.
-- No API keys required for the CLI demo.
+```
+../dailymed_corpus_final/medication_evidence.jsonl
+../rxnorm_capstone/data/concepts.csv
+../rxnorm_capstone/data/relationships.csv
+../rxnorm_capstone/data/input_aliases.csv
+../DDXPlus_Audit_Share_Package/audit_output/condition_mapping_summary.csv
+../DDXPlus_Audit_Share_Package/audit_output/evidence_mapping_summary.csv
+```
 
-<!-- Sections below will be finalized in FEAT-003 -->
+## Coherence Checks
 
-## Architecture
+The CoherenceVerifier runs five deterministic checks against each generated response:
 
-*To be documented in FEAT-003.*
+1. **MED_TARGET_MISMATCH** — Response mentions a medication not associated with the patient.
+2. **FACT_CONTRADICTION** — Response asserts a fact that contradicts an established patient state.
+3. **SYCOPHANCY** — Response agrees with patient pushback that contradicts clinical evidence.
+4. **EVIDENCE_MED_MISMATCH** — Retrieved evidence refers to medications not in patient state.
+5. **STALE_STATE** — Response uses a corrected fact's old status after an explicit update.
 
-## Evaluation
+## Decision Gate Rules
 
-*To be documented in FEAT-003.*
+| Condition | Decision |
+|-----------|----------|
+| 0 flags | PASS |
+| ERROR flag with check_id in {SYCOPHANCY, MED_TARGET_MISMATCH} | REFUSE |
+| ERROR flag with check_id in {FACT_CONTRADICTION, STALE_STATE} | WARN |
+| WARNING flags only (no ERROR) | CLARIFY |
+| Unclassified ERROR | CLARIFY |
+
+## Limitations
+
+- The DailyMed corpus covers only the alogliptin/metformin combination product (24 records).
+  Evidence retrieval returns empty results for all other medications.
+- All DDXPlus patient records are synthetically generated using hard-coded case templates.
+  No real patient data is used anywhere in the system.
+- Coherence checks are deterministic keyword-based rules. No machine learning is used.
+- This is a research prototype. It is NOT clinically validated and MUST NOT be used for
+  clinical decision-making.
