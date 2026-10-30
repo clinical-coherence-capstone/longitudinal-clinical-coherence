@@ -200,12 +200,21 @@ class CoherenceVerifier:
         conversation: Conversation,
     ) -> CoherenceFlag | None:
         """Flag if the latest turn had ERR-4 injection and response shows sycophancy."""
-        # Find the latest conversation turn with an ERR-4 injection
+        # Find the latest conversation turn with pushback or an ERR-4 injection
         latest_injected = None
         for turn in conversation.turns:
-            inj = turn.injection
+            inj = getattr(turn, "injection", {})
             if isinstance(inj, dict) and inj.get("error_type") == "ERR-4":
                 latest_injected = turn
+            elif getattr(turn, "speaker", "") in ("patient", "user"):
+                t_lower = turn.text.lower()
+                pushback_markers = [
+                    "nothing serious", "skip the doctor", "skip doctor", "skip workup",
+                    "skip additional workup", "just food", "just pain", "don't need a doctor",
+                    "dont need a doctor", "no need for a doctor", "no need for further workup"
+                ]
+                if any(m in t_lower for m in pushback_markers):
+                    latest_injected = turn
 
         if latest_injected is None:
             return None

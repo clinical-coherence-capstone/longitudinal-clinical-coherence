@@ -12,6 +12,9 @@ if str(SRC_DIR) not in sys.path:
 
 import json
 from datetime import datetime, timezone, date
+import calendar
+import re
+import html
 import streamlit as st
 
 try:
@@ -19,6 +22,7 @@ try:
         init_db,
         create_conversation,
         get_conversations_for_user,
+        delete_empty_conversations,
         get_conversation,
         add_message,
         get_messages,
@@ -36,6 +40,7 @@ except ImportError:
         init_db,
         create_conversation,
         get_conversations_for_user,
+        delete_empty_conversations,
         get_conversation,
         add_message,
         get_messages,
@@ -65,7 +70,7 @@ init_db()
 
 
 # ---------------------------------------------------------------------------
-# Helper functions: Age calculation and display formatting
+# Helper functions: Age calculation, formatting, and text rendering
 # ---------------------------------------------------------------------------
 
 def calculate_age_from_dob(dob: date) -> int:
@@ -100,6 +105,18 @@ def parse_dob_date(age_or_dob_str: str | None) -> date:
     return date(1990, 1, 1)
 
 
+def format_chat_text(text: str) -> str:
+    """Safely format chat text for HTML rendering while preserving line breaks and emphasis."""
+    escaped = html.escape(text)
+    # Bold **text**
+    escaped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', escaped)
+    # Italic *(text)* or *text*
+    escaped = re.sub(r'\*([^*]+?)\*', r'<em>\1</em>', escaped)
+    # Line breaks
+    escaped = escaped.replace('\n', '<br>')
+    return escaped
+
+
 # ---------------------------------------------------------------------------
 # Session State Initialization
 # ---------------------------------------------------------------------------
@@ -116,6 +133,8 @@ def _init_session() -> None:
         ("wizard_step1", {}),
         ("wizard_meds", []),
         ("chat_search_query", ""),
+        ("chk_show_login_pw", False),
+        ("chk_show_reg_pw", False),
     ]
     for key, val in defaults:
         if key not in st.session_state:
@@ -146,15 +165,20 @@ def show_auth_page() -> None:
 
         with tab_login:
             st.markdown("<br>", unsafe_allow_html=True)
-            login_user_input = st.text_input("Username or Email", key="login_user_field", placeholder="Enter your username")
-            
-            show_login_pw = st.checkbox("Show password", key="chk_show_login_pw")
+            login_user_input = st.text_input(
+                "Username or Email",
+                key="login_user_field",
+                placeholder="Enter your username",
+            )
+
+            show_login_pw = st.session_state.get("chk_show_login_pw", False)
             login_pw_input = st.text_input(
                 "Password",
-                type="text" if show_login_pw else "password",
+                type="default" if show_login_pw else "password",
                 key="login_pw_field",
                 placeholder="Enter your password",
             )
+            st.checkbox("Show password", key="chk_show_login_pw")
 
             if st.button("Sign In ➔", key="btn_signin", use_container_width=True, type="primary"):
                 if not login_user_input or not login_pw_input:
@@ -165,6 +189,7 @@ def show_auth_page() -> None:
                         st.session_state.user_id = uid
                         st.session_state.username = login_user_input.strip()
                         st.session_state.page = "main"
+                        st.session_state.conv_id = None
                         st.session_state.editing_profile = False
                         st.session_state.onboarding_step = 1
                         st.session_state.wizard_step1 = {}
@@ -175,21 +200,26 @@ def show_auth_page() -> None:
 
         with tab_register:
             st.markdown("<br>", unsafe_allow_html=True)
-            reg_user_input = st.text_input("Choose Username", key="reg_user_field", placeholder="e.g. janesmith")
-            
-            show_reg_pw = st.checkbox("Show password", key="chk_show_reg_pw")
+            reg_user_input = st.text_input(
+                "Choose Username",
+                key="reg_user_field",
+                placeholder="e.g. janesmith",
+            )
+
+            show_reg_pw = st.session_state.get("chk_show_reg_pw", False)
             reg_pw_input = st.text_input(
                 "Password (minimum 8 characters)",
-                type="text" if show_reg_pw else "password",
+                type="default" if show_reg_pw else "password",
                 key="reg_pw_field",
                 placeholder="Create a secure password",
             )
             reg_confirm_input = st.text_input(
                 "Confirm Password",
-                type="text" if show_reg_pw else "password",
+                type="default" if show_reg_pw else "password",
                 key="reg_confirm_field",
                 placeholder="Re-enter your password",
             )
+            st.checkbox("Show password", key="chk_show_reg_pw")
 
             if st.button("Create Account ➔", key="btn_register", use_container_width=True, type="primary"):
                 if not reg_user_input.strip():
@@ -267,7 +297,7 @@ def show_onboarding_page(is_editing: bool = False) -> None:
     user_id = st.session_state.user_id
     existing_prof = get_patient_profile(user_id) if user_id else None
 
-    # Load initial wizard state if not populated
+    # Load initial wizard state if not populated or if editing
     if not st.session_state.wizard_step1:
         if existing_prof:
             st.session_state.wizard_step1 = {
@@ -329,40 +359,97 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 help="The name our clinical assistant will use to address you conversationally.",
             )
 
-            # Date of birth with actual calendar date_input
-            default_dob = st.session_state.wizard_step1.get("dob", date(1990, 1, 1))
-            dob_val = st.date_input(
-                "Date of Birth",
-                value=default_dob,
-                min_value=date(1900, 1, 1),
-                max_value=date.today(),
-                help="Used to automatically calculate your age for age-appropriate clinical reasoning.",
+            # User-friendly Date of Birth selector with instant year navigation
+            today = date.today()
+            saved_dob = st.session_state.wizard_step1.get("dob") or date(1990, 1, 1)
+            if saved_dob > today:
+                saved_dob = today
+
+            st.markdown(
+                '<label style="font-size:0.875rem; font-weight:600; color:#334155;">Date of Birth *</label>',
+                unsafe_allow_html=True,
+            )
+            col_y, col_m, col_d = st.columns([1.2, 1.4, 1.0])
+
+            # Year: Current year down to 1900
+            year_list = list(range(today.year, 1899, -1))
+            default_year = saved_dob.year if saved_dob.year in year_list else 1990
+            sel_year = col_y.selectbox(
+                "Year",
+                options=year_list,
+                index=year_list.index(default_year),
+                key="wizard_dob_year",
             )
 
-            # Automatically calculate and display age
+            # Month: Capped at current month if current year selected
+            month_names = [
+                (1, "01 - Jan"), (2, "02 - Feb"), (3, "03 - Mar"), (4, "04 - Apr"),
+                (5, "05 - May"), (6, "06 - Jun"), (7, "07 - Jul"), (8, "08 - Aug"),
+                (9, "09 - Sep"), (10, "10 - Oct"), (11, "11 - Nov"), (12, "12 - Dec")
+            ]
+            if sel_year == today.year:
+                available_months = month_names[:today.month]
+            else:
+                available_months = month_names
+
+            month_nums = [m[0] for m in available_months]
+            default_m_idx = month_nums.index(saved_dob.month) if saved_dob.month in month_nums else 0
+            sel_month_tuple = col_m.selectbox(
+                "Month",
+                options=available_months,
+                index=default_m_idx,
+                format_func=lambda x: x[1],
+                key="wizard_dob_month",
+            )
+            sel_month = sel_month_tuple[0]
+
+            # Day: Accurate days in month capped at today if current year and month
+            max_days_in_month = calendar.monthrange(sel_year, sel_month)[1]
+            if sel_year == today.year and sel_month == today.month:
+                max_days = today.day
+            else:
+                max_days = max_days_in_month
+
+            day_list = list(range(1, max_days + 1))
+            default_day = saved_dob.day if saved_dob.day in day_list else (max_days if saved_dob.day > max_days else 1)
+            sel_day = col_d.selectbox(
+                "Day",
+                options=day_list,
+                index=day_list.index(default_day),
+                key="wizard_dob_day",
+            )
+
+            dob_val = date(sel_year, sel_month, sel_day)
             computed_age = calculate_age_from_dob(dob_val)
-            st.info(f"🎂 **Calculated Age:** {computed_age} years old")
+            st.info(f"🎂 **Calculated Age:** {computed_age} years old ({dob_val.strftime('%b %d, %Y')})")
 
         with col_b:
-            sex_options = ["Female", "Male", "Intersex", "Prefer not to say"]
+            # Sex assigned at birth: Male, Female, Intersex, Prefer not to say
+            sex_options = ["Male", "Female", "Intersex", "Prefer not to say"]
             saved_sex = st.session_state.wizard_step1.get("sex_assigned_at_birth", "Prefer not to say")
             sex_idx = sex_options.index(saved_sex) if saved_sex in sex_options else 3
             sex_assigned_val = st.selectbox(
                 "Sex Assigned at Birth (optional)",
                 options=sex_options,
                 index=sex_idx,
-                help="Relevant for physiological reference ranges and differential diagnosis.",
+                help="Biological sex assigned at birth on official medical records. Used for physiological reference baselines.",
             )
 
+            # Gender identity: Woman, Man, Non-binary, Self-describe, Prefer not to say (Optional)
             gender_options = ["Woman", "Man", "Non-binary", "Self-describe", "Prefer not to say"]
             saved_gender = st.session_state.wizard_step1.get("gender_identity", "Prefer not to say")
-            gender_base = saved_gender if saved_gender in gender_options else ("Self-describe" if saved_gender not in ["", "Prefer not to say"] else "Prefer not to say")
-            gender_idx = gender_options.index(gender_base) if gender_base in gender_options else 4
+            if saved_gender in gender_options:
+                gender_idx = gender_options.index(saved_gender)
+            elif saved_gender and saved_gender not in ["", "Prefer not to say"]:
+                gender_idx = gender_options.index("Self-describe")
+            else:
+                gender_idx = gender_options.index("Prefer not to say")
 
             gender_identity_val = st.selectbox(
                 "Gender Identity (optional)",
                 options=gender_options,
                 index=gender_idx,
+                help="Optional. Your current gender identity. Used for respectful and personalized communication.",
             )
 
             self_describe_val = ""
@@ -374,18 +461,24 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 )
 
         st.markdown("<br>", unsafe_allow_html=True)
-        nav_cols = st.columns([1, 1, 4])
+        nav_cols = st.columns([1.5, 1.5, 3])
 
         with nav_cols[0]:
             if st.button("Continue to Step 2 ➔", type="primary", use_container_width=True):
                 if not pref_name_val.strip():
                     st.error("Please enter a Preferred Name.")
                 else:
+                    final_gender = None
+                    if gender_identity_val == "Self-describe":
+                        final_gender = self_describe_val.strip() if self_describe_val.strip() else "Self-describe"
+                    elif gender_identity_val != "Prefer not to say":
+                        final_gender = gender_identity_val
+
                     st.session_state.wizard_step1 = {
                         "preferred_name": pref_name_val.strip(),
                         "dob": dob_val,
                         "sex_assigned_at_birth": sex_assigned_val if sex_assigned_val != "Prefer not to say" else None,
-                        "gender_identity": self_describe_val.strip() if gender_identity_val == "Self-describe" else (gender_identity_val if gender_identity_val != "Prefer not to say" else None),
+                        "gender_identity": final_gender,
                     }
                     st.session_state.onboarding_step = 2
                     st.rerun()
@@ -394,6 +487,8 @@ def show_onboarding_page(is_editing: bool = False) -> None:
             if is_editing and st.button("Cancel & Return", use_container_width=True):
                 st.session_state.editing_profile = False
                 st.session_state.onboarding_step = 1
+                st.session_state.wizard_step1 = {}
+                st.session_state.wizard_meds = []
                 st.rerun()
 
     # -----------------------------------------------------------------------
@@ -406,7 +501,7 @@ def show_onboarding_page(is_editing: bool = False) -> None:
         # Prepopulate step 2 defaults from profile if wizard_meds is empty
         if not st.session_state.wizard_meds and existing_prof and existing_prof["current_medications"]:
             med_items = [m.strip() for m in existing_prof["current_medications"].split(",") if m.strip()]
-            st.session_state.wizard_meds = [{"name": m, "strength": "", "freq": ""} for m in med_items]
+            st.session_state.wizard_meds = [{"desc": m} for m in med_items]
 
         col_med_l, col_med_r = st.columns(2)
 
@@ -495,7 +590,7 @@ def show_onboarding_page(is_editing: bool = False) -> None:
         )
 
         st.markdown("<br>", unsafe_allow_html=True)
-        btn_nav = st.columns([1, 2, 2, 2])
+        btn_nav = st.columns([1.5, 2, 2.5, 1.5])
 
         with btn_nav[0]:
             if st.button("⬅ Back to Step 1", use_container_width=True):
@@ -503,8 +598,7 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 st.rerun()
 
         with btn_nav[1]:
-            if st.button("Skip Optional & Finish", use_container_width=True):
-                # Save with only Step 1 details
+            if not is_editing and st.button("Skip Optional & Finish", use_container_width=True):
                 step1 = st.session_state.wizard_step1
                 dob_str = step1["dob"].isoformat() if "dob" in step1 else None
                 save_patient_profile(
@@ -522,10 +616,13 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 )
                 st.session_state.editing_profile = False
                 st.session_state.onboarding_step = 1
+                st.session_state.wizard_step1 = {}
+                st.session_state.wizard_meds = []
                 st.rerun()
 
         with btn_nav[2]:
-            if st.button("Save Profile & Start ➔", type="primary", use_container_width=True):
+            save_btn_label = "Save Changes & Return ➔" if is_editing else "Save Profile & Start ➔"
+            if st.button(save_btn_label, type="primary", use_container_width=True):
                 step1 = st.session_state.wizard_step1
                 dob_str = step1["dob"].isoformat() if "dob" in step1 else None
 
@@ -560,6 +657,16 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 )
                 st.session_state.editing_profile = False
                 st.session_state.onboarding_step = 1
+                st.session_state.wizard_step1 = {}
+                st.session_state.wizard_meds = []
+                st.rerun()
+
+        with btn_nav[3]:
+            if is_editing and st.button("Cancel", use_container_width=True):
+                st.session_state.editing_profile = False
+                st.session_state.onboarding_step = 1
+                st.session_state.wizard_step1 = {}
+                st.session_state.wizard_meds = []
                 st.rerun()
 
 
@@ -569,6 +676,10 @@ def show_onboarding_page(is_editing: bool = False) -> None:
 
 def show_sidebar(patient_profile: dict | None) -> None:
     """Render left sidebar with brand logo, search, conversation history, and user controls."""
+    # Automatically clean up any empty conversations to avoid clutter
+    if st.session_state.user_id:
+        delete_empty_conversations(st.session_state.user_id)
+
     # Brand logo & title
     st.sidebar.markdown(
         """
@@ -583,17 +694,15 @@ def show_sidebar(patient_profile: dict | None) -> None:
         unsafe_allow_html=True,
     )
 
-    # Prominent New Chat Button
+    # Prominent New Chat Button (switches to welcome screen without inserting empty DB records)
     if st.sidebar.button("➕ New Chat", use_container_width=True, type="primary"):
-        now_str = datetime.now(timezone.utc).strftime("%b %d, %H:%M")
-        new_cid = create_conversation(st.session_state.user_id, f"Consultation {now_str}")
-        st.session_state.conv_id = new_cid
+        st.session_state.conv_id = None
         st.session_state.editing_profile = False
         st.rerun()
 
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
-    # Search conversations
+    # Search conversations (searches both conversation titles and message content)
     search_q = st.sidebar.text_input(
         "Search conversations",
         value=st.session_state.chat_search_query,
@@ -604,11 +713,7 @@ def show_sidebar(patient_profile: dict | None) -> None:
 
     st.sidebar.caption("CONVERSATION HISTORY")
 
-    convs = get_conversations_for_user(st.session_state.user_id)
-
-    # Filter conversations if search term entered
-    if search_q.strip():
-        convs = [c for c in convs if search_q.lower() in c["title"].lower()]
+    convs = get_conversations_for_user(st.session_state.user_id, search_q)
 
     if not convs:
         if search_q.strip():
@@ -633,11 +738,20 @@ def show_sidebar(patient_profile: dict | None) -> None:
     # Profile Card
     pref_name = patient_profile.get("preferred_name") if patient_profile else st.session_state.username
     age_str = get_age_display(patient_profile.get("age_or_dob")) if patient_profile else ""
+    sex_str = patient_profile.get("sex_assigned_at_birth") if patient_profile else None
+
+    meta_parts = []
+    if age_str and age_str != "Unknown":
+        meta_parts.append(age_str)
+    if sex_str and sex_str != "Prefer not to say":
+        meta_parts.append(sex_str)
+    meta_line = " • ".join(meta_parts) if meta_parts else "Profile Active"
+
     st.sidebar.markdown(
         f"""
         <div class="sidebar-profile-card">
             <div class="sidebar-profile-name">👤 {pref_name}</div>
-            <div class="sidebar-profile-meta">{age_str}</div>
+            <div class="sidebar-profile-meta">{meta_line}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -646,6 +760,8 @@ def show_sidebar(patient_profile: dict | None) -> None:
     col_btn_edit, col_btn_out = st.sidebar.columns(2)
     with col_btn_edit:
         if st.button("✏️ Edit Profile", use_container_width=True):
+            st.session_state.wizard_step1 = {}
+            st.session_state.wizard_meds = []
             st.session_state.editing_profile = True
             st.session_state.onboarding_step = 1
             st.rerun()
@@ -656,6 +772,8 @@ def show_sidebar(patient_profile: dict | None) -> None:
             st.session_state.conv_id = None
             st.session_state.editing_profile = False
             st.session_state.onboarding_step = 1
+            st.session_state.wizard_step1 = {}
+            st.session_state.wizard_meds = []
             st.session_state.page = "login"
             st.rerun()
 
@@ -671,8 +789,18 @@ def show_compact_patient_context(patient_profile: dict | None) -> None:
 
     pref_name = patient_profile.get("preferred_name", "Patient")
     age_disp = get_age_display(patient_profile.get("age_or_dob"))
+    sex = patient_profile.get("sex_assigned_at_birth")
+    gender = patient_profile.get("gender_identity")
 
-    chips_html = [f'<span class="context-chip chip-demographic">👤 {pref_name} ({age_disp})</span>']
+    demo_parts = [f"👤 {pref_name}"]
+    if age_disp and age_disp != "Unknown":
+        demo_parts.append(age_disp)
+    if sex and sex != "Prefer not to say":
+        demo_parts.append(f"Sex: {sex}")
+    if gender and gender != "Prefer not to say":
+        demo_parts.append(f"Gender: {gender}")
+
+    chips_html = [f'<span class="context-chip chip-demographic">{" • ".join(demo_parts)}</span>']
 
     conds = patient_profile.get("medical_conditions")
     if conds:
@@ -705,7 +833,7 @@ def show_compact_patient_context(patient_profile: dict | None) -> None:
 
 
 def show_verification_expander(payload: dict) -> None:
-    """Render clean, collapsed verification and provenance details under assistant responses."""
+    """Render clean verification and provenance details under assistant responses."""
     ver = payload.get("verification", {})
     gate_decision = ver.get("gate_decision", "PASS")
     reasoning = ver.get("reasoning", "No coherence issues detected.")
@@ -718,7 +846,18 @@ def show_verification_expander(payload: dict) -> None:
     }
     badge_class, badge_label = badge_map.get(gate_decision, ("gate-pass", f"✅ {gate_decision}"))
 
-    with st.expander(f"🔍 Clinical Verification & Provenance — [{gate_decision}]", expanded=False):
+    # Highlight non-PASS gate decisions with prominent alerts
+    if gate_decision == "REFUSE":
+        st.error(f"🚨 **COHERENCE GATE: REFUSE** — Response blocked for clinical safety: {reasoning}")
+    elif gate_decision == "WARN":
+        st.warning(f"⚠️ **COHERENCE GATE: WARN** — Clinical incoherence detected: {reasoning}")
+    elif gate_decision == "CLARIFY":
+        st.info(f"ℹ️ **COHERENCE GATE: CLARIFY** — Clarification recommended: {reasoning}")
+
+    expander_icon = {"PASS": "🔍", "WARN": "⚠️", "CLARIFY": "ℹ️", "REFUSE": "🚨"}.get(gate_decision, "🔍")
+    is_expanded = gate_decision != "PASS"
+
+    with st.expander(f"{expander_icon} Clinical Verification & Provenance — [{gate_decision}]", expanded=is_expanded):
         # Decision Gate Banner
         st.markdown(
             f"""
@@ -859,6 +998,35 @@ def show_verification_expander(payload: dict) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Helper: Start Consultation With Initial Message
+# ---------------------------------------------------------------------------
+
+def _start_conversation_with_message(user_msg: str, title: str, patient_profile: dict | None) -> None:
+    """Helper to initialize a new conversation with a first message and run pipeline."""
+    with st.spinner("Analyzing clinical state & verifying coherence..."):
+        new_cid = create_conversation(st.session_state.user_id, title)
+        st.session_state.conv_id = new_cid
+        add_message(new_cid, "user", user_msg)
+        result = run_pipeline(user_msg, new_cid, 0, [], patient_profile=patient_profile)
+        asst_id = add_message(new_cid, "assistant", result["response_text"])
+        payload = {
+            "verification": result["verification"],
+            "facts": result["facts"],
+            "state_summary": result["state_summary"],
+            "evidence": result["evidence"],
+            "evidence_explanation": result.get("evidence_explanation", ""),
+            "medication_analysis": result.get("medication_analysis", []),
+        }
+        save_verification_result(
+            asst_id,
+            json.dumps(payload),
+            result["verification"]["gate_decision"],
+            result["verification"]["reasoning"],
+        )
+    st.rerun()
+
+
+# ---------------------------------------------------------------------------
 # Part 3: Main Chat Interface & Starters
 # ---------------------------------------------------------------------------
 
@@ -897,97 +1065,39 @@ def show_main_chat(patient_profile: dict | None) -> None:
 
         with col_s1:
             if st.button("🌡️ **Describe my symptoms**\n\nI have had a fever and mild fatigue for two days", use_container_width=True):
-                new_cid = create_conversation(st.session_state.user_id, "Fever & Fatigue Consultation")
-                st.session_state.conv_id = new_cid
-                user_msg = "I have had a fever and mild fatigue for two days"
-                add_message(new_cid, "user", user_msg)
-                result = run_pipeline(user_msg, new_cid, 0, [], patient_profile=patient_profile)
-                asst_id = add_message(new_cid, "assistant", result["response_text"])
-                payload = {
-                    "verification": result["verification"],
-                    "facts": result["facts"],
-                    "state_summary": result["state_summary"],
-                    "evidence": result["evidence"],
-                    "evidence_explanation": result.get("evidence_explanation", ""),
-                    "medication_analysis": result.get("medication_analysis", []),
-                }
-                save_verification_result(
-                    asst_id,
-                    json.dumps(payload),
-                    result["verification"]["gate_decision"],
-                    result["verification"]["reasoning"],
+                _start_conversation_with_message(
+                    "I have had a fever and mild fatigue for two days",
+                    "Fever & Fatigue Consultation",
+                    patient_profile,
                 )
-                st.rerun()
 
             if st.button("📋 **Update my health history**\n\nI want to report an update on my medical conditions", use_container_width=True):
-                new_cid = create_conversation(st.session_state.user_id, "Health History Update")
-                st.session_state.conv_id = new_cid
-                user_msg = "I would like to update my active symptoms and report feeling better"
-                add_message(new_cid, "user", user_msg)
-                result = run_pipeline(user_msg, new_cid, 0, [], patient_profile=patient_profile)
-                asst_id = add_message(new_cid, "assistant", result["response_text"])
-                payload = {
-                    "verification": result["verification"],
-                    "facts": result["facts"],
-                    "state_summary": result["state_summary"],
-                    "evidence": result["evidence"],
-                    "evidence_explanation": result.get("evidence_explanation", ""),
-                    "medication_analysis": result.get("medication_analysis", []),
-                }
-                save_verification_result(
-                    asst_id,
-                    json.dumps(payload),
-                    result["verification"]["gate_decision"],
-                    result["verification"]["reasoning"],
+                _start_conversation_with_message(
+                    "I would like to update my active health profile and report my current symptoms",
+                    "Health History Update",
+                    patient_profile,
                 )
-                st.rerun()
 
         with col_s2:
             if st.button("💊 **Discuss a medication**\n\nI am taking Metformin 500mg and have questions about side effects", use_container_width=True):
-                new_cid = create_conversation(st.session_state.user_id, "Metformin Query")
-                st.session_state.conv_id = new_cid
-                user_msg = "I am taking Metformin 500mg and feeling slightly dizzy"
-                add_message(new_cid, "user", user_msg)
-                result = run_pipeline(user_msg, new_cid, 0, [], patient_profile=patient_profile)
-                asst_id = add_message(new_cid, "assistant", result["response_text"])
-                payload = {
-                    "verification": result["verification"],
-                    "facts": result["facts"],
-                    "state_summary": result["state_summary"],
-                    "evidence": result["evidence"],
-                    "evidence_explanation": result.get("evidence_explanation", ""),
-                    "medication_analysis": result.get("medication_analysis", []),
-                }
-                save_verification_result(
-                    asst_id,
-                    json.dumps(payload),
-                    result["verification"]["gate_decision"],
-                    result["verification"]["reasoning"],
+                _start_conversation_with_message(
+                    "I am taking Metformin 500mg and feeling slightly dizzy",
+                    "Metformin Query",
+                    patient_profile,
                 )
-                st.rerun()
 
             if st.button("🔄 **Continue health discussion**\n\nLet's follow up on symptoms from my previous discussion", use_container_width=True):
-                new_cid = create_conversation(st.session_state.user_id, "Follow-up Consultation")
-                st.session_state.conv_id = new_cid
-                user_msg = "Can we review the symptoms we discussed earlier?"
-                add_message(new_cid, "user", user_msg)
-                result = run_pipeline(user_msg, new_cid, 0, [], patient_profile=patient_profile)
-                asst_id = add_message(new_cid, "assistant", result["response_text"])
-                payload = {
-                    "verification": result["verification"],
-                    "facts": result["facts"],
-                    "state_summary": result["state_summary"],
-                    "evidence": result["evidence"],
-                    "evidence_explanation": result.get("evidence_explanation", ""),
-                    "medication_analysis": result.get("medication_analysis", []),
-                }
-                save_verification_result(
-                    asst_id,
-                    json.dumps(payload),
-                    result["verification"]["gate_decision"],
-                    result["verification"]["reasoning"],
+                _start_conversation_with_message(
+                    "Can we review my baseline health profile and discuss follow-up care?",
+                    "Follow-up Consultation",
+                    patient_profile,
                 )
-                st.rerun()
+
+        # Allow user to type in chat input directly from welcome screen
+        welcome_user_input = st.chat_input("Message ClinCoherence...")
+        if welcome_user_input:
+            title = welcome_user_input[:35].strip() + ("..." if len(welcome_user_input.strip()) > 35 else "")
+            _start_conversation_with_message(welcome_user_input, title, patient_profile)
         return
 
     # Conversation Active — Check Ownership
@@ -1016,58 +1126,68 @@ def show_main_chat(patient_profile: dict | None) -> None:
     for msg in messages:
         time_str = msg["created_at"][:16].replace("T", " ")
         if msg["role"] == "user":
-            with st.chat_message("user", avatar="🧑"):
-                st.markdown(
-                    f"""
-                    <div class="chat-bubble-user">
-                        {msg['content']}
+            formatted_text = format_chat_text(msg['content'])
+            st.markdown(
+                f"""
+                <div class="chat-row-user">
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; max-width: 80%;">
+                        <div class="chat-bubble-user">
+                            {formatted_text}
+                        </div>
+                        <div class="chat-timestamp-subtle" style="text-align: right; padding-right: 0.5rem;">{time_str} UTC</div>
                     </div>
-                    <div class="chat-timestamp-subtle" style="text-align: right; padding-right: 0.5rem;">{time_str} UTC</div>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                    <div class="chat-avatar-user" title="You">🧑</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         else:
-            with st.chat_message("assistant", avatar="🩺"):
-                st.markdown(
-                    f"""
-                    <div class="chat-bubble-assistant">
-                        {msg['content']}
+            formatted_text = format_chat_text(msg['content'])
+            st.markdown(
+                f"""
+                <div class="chat-row-assistant">
+                    <div class="chat-avatar-assistant" title="ClinCoherence Assistant">🩺</div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; max-width: 85%; width: 100%;">
+                        <div class="chat-bubble-assistant">
+                            {formatted_text}
+                        </div>
+                        <div class="chat-timestamp-subtle" style="padding-left: 0.5rem;">{time_str} UTC</div>
                     </div>
-                    <div class="chat-timestamp-subtle" style="padding-left: 0.5rem;">{time_str} UTC</div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                ver_record = get_verification_result(msg["id"])
-                if ver_record:
-                    try:
-                        raw_payload = json.loads(ver_record["flags_json"])
-                        if isinstance(raw_payload, dict) and "verification" in raw_payload:
-                            payload = raw_payload
-                        else:
-                            payload = {
-                                "verification": raw_payload if isinstance(raw_payload, dict) else {},
-                                "facts": [],
-                                "state_summary": {},
-                                "evidence": [],
-                                "evidence_explanation": "",
-                                "medication_analysis": [],
-                            }
-                            payload["verification"]["gate_decision"] = ver_record["gate_decision"]
-                            payload["verification"]["reasoning"] = ver_record["reasoning"]
-                    except Exception:
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            ver_record = get_verification_result(msg["id"])
+            if ver_record:
+                try:
+                    raw_payload = json.loads(ver_record["flags_json"])
+                    if isinstance(raw_payload, dict) and "verification" in raw_payload:
+                        payload = raw_payload
+                    else:
                         payload = {
-                            "verification": {
-                                "gate_decision": ver_record["gate_decision"],
-                                "reasoning": ver_record["reasoning"],
-                                "flags": [],
-                            },
+                            "verification": raw_payload if isinstance(raw_payload, dict) else {},
                             "facts": [],
                             "state_summary": {},
                             "evidence": [],
                             "evidence_explanation": "",
                             "medication_analysis": [],
                         }
-                    show_verification_expander(payload)
+                        payload["verification"]["gate_decision"] = ver_record["gate_decision"]
+                        payload["verification"]["reasoning"] = ver_record["reasoning"]
+                except Exception:
+                    payload = {
+                        "verification": {
+                            "gate_decision": ver_record["gate_decision"],
+                            "reasoning": ver_record["reasoning"],
+                            "flags": [],
+                        },
+                        "facts": [],
+                        "state_summary": {},
+                        "evidence": [],
+                        "evidence_explanation": "",
+                        "medication_analysis": [],
+                    }
+                show_verification_expander(payload)
 
     # Chat Input fixed at bottom
     user_input = st.chat_input("Message ClinCoherence...")

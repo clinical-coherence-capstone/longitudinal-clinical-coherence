@@ -239,20 +239,51 @@ def create_conversation(user_id: int, title: str) -> int:
         conn.close()
 
 
-def get_conversations_for_user(user_id: int) -> list[sqlite3.Row]:
-    """Retrieve conversations ordered by most recently updated."""
+def get_conversations_for_user(user_id: int, search_query: str | None = None) -> list[sqlite3.Row]:
+    """Retrieve conversations ordered by most recently updated, optionally filtering by search query."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        if search_query and search_query.strip():
+            pattern = f"%{search_query.strip()}%"
+            cursor.execute(
+                """
+                SELECT DISTINCT c.* FROM conversations c
+                LEFT JOIN messages m ON c.id = m.conversation_id
+                WHERE c.user_id = ? AND (c.title LIKE ? OR m.content LIKE ?)
+                ORDER BY c.updated_at DESC
+                """,
+                (user_id, pattern, pattern),
+            )
+        else:
+            cursor.execute(
+                """
+                SELECT * FROM conversations
+                WHERE user_id = ?
+                ORDER BY updated_at DESC
+                """,
+                (user_id,),
+            )
+        return cursor.fetchall()
+    finally:
+        conn.close()
+
+
+def delete_empty_conversations(user_id: int) -> None:
+    """Delete conversations that have no messages to prevent sidebar clutter."""
     conn = get_connection()
     try:
         cursor = conn.cursor()
         cursor.execute(
             """
-            SELECT * FROM conversations
-            WHERE user_id = ?
-            ORDER BY updated_at DESC
+            DELETE FROM conversations
+            WHERE user_id = ? AND id NOT IN (
+                SELECT DISTINCT conversation_id FROM messages WHERE conversation_id IS NOT NULL
+            )
             """,
             (user_id,),
         )
-        return cursor.fetchall()
+        conn.commit()
     finally:
         conn.close()
 
