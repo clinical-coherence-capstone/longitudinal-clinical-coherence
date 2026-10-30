@@ -15,7 +15,14 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from webapp import database, auth, pipeline
-from webapp.app import calculate_age_from_dob, get_age_display, parse_dob_date, format_chat_text
+from webapp.app import (
+    calculate_age_from_dob,
+    get_age_display,
+    parse_dob_date,
+    format_chat_text,
+    COMMON_CONDITIONS,
+    COMMON_ALLERGIES,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -274,3 +281,45 @@ def test_sycophancy_pushback_triggers_refuse():
     assert any(
         f["check_id"] == "SYCOPHANCY" for f in res_pushback["verification"]["flags"]
     )
+
+
+def test_yet_to_discover_in_conditions_and_allergies():
+    assert "Yet to discover" in COMMON_CONDITIONS
+    assert "Yet to discover" in COMMON_ALLERGIES
+    assert COMMON_CONDITIONS[0] == "Yet to discover"
+
+    # Test combining 'Yet to discover' with another condition in patient profile
+    uid = database.create_user("undiscovered_patient", "securepass123")
+    database.save_patient_profile(
+        uid,
+        {
+            "preferred_name": "Sam",
+            "age_or_dob": "2000-01-01",
+            "sex_assigned_at_birth": "Male",
+            "gender_identity": "Man",
+            "medical_conditions": "Yet to discover, Hypertension (High Blood Pressure)",
+            "known_allergies": "Yet to discover",
+        },
+    )
+    prof = database.get_patient_profile(uid)
+    assert "Yet to discover" in prof["medical_conditions"]
+    assert "Hypertension" in prof["medical_conditions"]
+    assert prof["known_allergies"] == "Yet to discover"
+
+
+def test_pipeline_inspector_payload_completeness():
+    uid = database.create_user("inspector_test_user", "securepass123")
+    cid = database.create_conversation(uid, "Inspector Diagnostic Test")
+
+    res = pipeline.run_pipeline("I have chest pain and am taking Metformin 500mg", cid, 0, [])
+    # Verify all 6 inspector stages are present in the response payload
+    assert "facts" in res
+    assert "state_summary" in res
+    assert "medication_analysis" in res
+    assert "evidence" in res
+    assert "verification" in res
+    assert "gate_decision" in res["verification"]
+    assert isinstance(res["facts"], list)
+    assert isinstance(res["medication_analysis"], list)
+
+
