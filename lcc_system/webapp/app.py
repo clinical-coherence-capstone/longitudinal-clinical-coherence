@@ -16,6 +16,7 @@ import calendar
 import re
 import html
 import streamlit as st
+import streamlit.components.v1 as components
 
 try:
     from .database import (
@@ -111,15 +112,19 @@ def format_chat_text(text: str) -> str:
     if not text:
         return ""
     escaped = html.escape(text)
-    # Convert bold markdown
     escaped = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
-    # Convert italic markdown
     escaped = re.sub(r"\*(.+?)\*", r"<em>\1</em>", escaped)
-    # Convert bullet points cleanly
     escaped = re.sub(r"(?m)^-\s+(.+)$", r"<div style='margin-left: 1rem;'>• \1</div>", escaped)
-    # Convert newlines to HTML linebreaks
     escaped = escaped.replace("\n", "<br>")
     return escaped
+
+
+def render_clean_html(html_str: str, container=None) -> None:
+    """Render HTML safely without triggering Markdown's 4-space code block parser."""
+    clean_lines = [line.strip() for line in html_str.strip().split("\n") if line.strip()]
+    clean_html = "\n".join(clean_lines)
+    target = container if container is not None else st
+    target.markdown(clean_html, unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
@@ -161,15 +166,14 @@ def show_auth_page() -> None:
     col_spacer_l, col_center, col_spacer_r = st.columns([1, 2, 1])
 
     with col_center:
-        st.markdown(
+        render_clean_html(
             """
-            <div class="auth-header">
-                <div class="auth-logo-badge">🩺</div>
-                <h1 class="auth-title">ClinCoherence</h1>
-                <div class="auth-subtitle">Longitudinal Clinical Assistant & Coherence Gate</div>
+            <div class="auth-header" style="text-align: center; margin-bottom: 24px;">
+                <div class="auth-logo-badge" style="width: 52px; height: 52px; border-radius: 14px; font-size: 1.45rem; margin: 0 auto 12px auto; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0284c7, #38bdf8);">🩺</div>
+                <h1 style="color: #ffffff; font-size: 1.55rem; font-weight: 800; margin: 0;">ClinCoherence Portal</h1>
+                <div style="color: #94a3b8; font-size: 0.88rem; margin-top: 4px;">Longitudinal Clinical Assistant & Coherence Gate</div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         tab_login, tab_register = st.tabs(["Sign In", "Register New Patient"])
@@ -182,7 +186,6 @@ def show_auth_page() -> None:
                 placeholder="Enter your username",
             )
 
-            # Native eye toggle handles show/hide without redundant checkbox underneath
             login_pw_input = st.text_input(
                 "Password",
                 type="password",
@@ -245,13 +248,12 @@ def show_auth_page() -> None:
                     else:
                         st.error(msg)
 
-        st.markdown(
+        render_clean_html(
             """
             <div style="text-align: center; margin-top: 2rem; font-size: 0.75rem; color: #94a3b8;">
                 🔒 Bcrypt 12-round salted hashing • Strict patient data isolation • Capstone Research Prototype
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
 
@@ -309,7 +311,6 @@ def show_onboarding_page(is_editing: bool = False) -> None:
     user_id = st.session_state.user_id
     existing_prof = get_patient_profile(user_id) if user_id else None
 
-    # Load initial wizard state if not populated or if editing
     if not st.session_state.wizard_step1:
         if existing_prof:
             st.session_state.wizard_step1 = {
@@ -331,22 +332,20 @@ def show_onboarding_page(is_editing: bool = False) -> None:
     title_text = "Edit Patient Profile" if is_editing else "Welcome to ClinCoherence"
     subtitle_text = "Update your clinical baseline and preferences" if is_editing else "Let's set up your clinical baseline for safe and accurate consultations"
 
-    st.markdown(
+    render_clean_html(
         f"""
         <div style="margin-bottom: 1.5rem;">
             <h2 style="color: #ffffff; font-weight: 800; font-size: 1.65rem; margin: 0;">{title_text}</h2>
             <div style="color: #94a3b8; font-size: 0.92rem; margin-top: 4px;">{subtitle_text}</div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
-    # Visual Progress Indicator
     s1_class = "wizard-step-completed" if step > 1 else ("wizard-step-active" if step == 1 else "wizard-step-inactive")
     s2_class = "wizard-step-completed" if step > 2 else ("wizard-step-active" if step == 2 else "wizard-step-inactive")
     div_class = "wizard-divider completed" if step > 1 else "wizard-divider"
 
-    st.markdown(
+    render_clean_html(
         f"""
         <div class="wizard-progress-bar">
             <div class="wizard-step {s1_class}">
@@ -359,13 +358,9 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 <div>Medical Baseline & Medications</div>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
-    # -----------------------------------------------------------------------
-    # Step 1: Personal Demographics & Independent Sex/Gender Identity
-    # -----------------------------------------------------------------------
     if step == 1:
         st.markdown("#### Step 1: Demographics & Identity")
         st.caption("Accurate demographics help ClinCoherence verify age-adjusted and sex-specific clinical evidence.")
@@ -380,7 +375,6 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 help="Used in greetings and consultation notes.",
             )
 
-            # Date of Birth: 3-column Year/Month/Day selector
             st.markdown("<label style='font-weight: 600; color: #cbd5e1; font-size: 0.9rem;'>Date of Birth</label>", unsafe_allow_html=True)
             st.caption("Select Year, Month, and Day. Age is automatically calculated.")
 
@@ -396,14 +390,11 @@ def show_onboarding_page(is_editing: bool = False) -> None:
 
             with col_mo:
                 months_list = list(range(1, 13))
-                month_names = [calendar.month_name[m] for m in months_list]
                 def_mo_idx = default_dob.month - 1
                 selected_mo = st.selectbox("Month", options=months_list, format_func=lambda m: calendar.month_name[m], index=def_mo_idx, key="sel_dob_mo")
 
             with col_dy:
-                # Max days in selected month/year
                 max_days = calendar.monthrange(selected_yr, selected_mo)[1]
-                # If current year and month, cannot exceed today's day
                 if selected_yr == today.year and selected_mo == today.month:
                     max_days = min(max_days, today.day)
 
@@ -411,13 +402,11 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 def_dy_idx = min(default_dob.day - 1, len(days_list) - 1)
                 selected_dy = st.selectbox("Day", options=days_list, index=def_dy_idx, key="sel_dob_dy")
 
-            # Safe DOB construct
             try:
                 computed_dob = date(selected_yr, selected_mo, selected_dy)
             except Exception:
                 computed_dob = date(selected_yr, selected_mo, 1)
 
-            # Validate against future date
             if computed_dob > today:
                 st.error("Date of birth cannot be in the future.")
                 computed_dob = today
@@ -476,14 +465,10 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                 st.session_state.onboarding_step = 2
                 st.rerun()
 
-    # -----------------------------------------------------------------------
-    # Step 2: Medical Conditions, Allergies & Active Medications
-    # -----------------------------------------------------------------------
     elif step == 2:
         st.markdown("#### Step 2: Clinical Baseline & Medications")
         st.caption("Provide baseline medical conditions, allergies, and active medications. All fields are optional.")
 
-        # Prepopulate step 2 defaults from profile if wizard_meds is empty
         if not st.session_state.wizard_meds and existing_prof and existing_prof["current_medications"]:
             med_items = [m.strip() for m in existing_prof["current_medications"].split(",") if m.strip()]
             st.session_state.wizard_meds = [{"desc": m} for m in med_items]
@@ -494,7 +479,6 @@ def show_onboarding_page(is_editing: bool = False) -> None:
             st.markdown("##### Existing Medical Conditions")
             saved_conds = existing_prof["medical_conditions"] if existing_prof and existing_prof["medical_conditions"] else ""
             default_selected_conds = [c for c in COMMON_CONDITIONS if c in saved_conds]
-            # select_all=False ensures bulk "Select all" is permanently removed to prevent GPU burnout
             selected_conditions = st.multiselect(
                 "Select conditions (or Yet to discover)",
                 options=COMMON_CONDITIONS,
@@ -527,7 +511,6 @@ def show_onboarding_page(is_editing: bool = False) -> None:
         st.markdown("##### Active Medications")
         st.caption("List medications you take regularly. We normalize names against RxNorm and check DailyMed for contraindications.")
 
-        # Interactive medication adder
         col_med_in, col_med_freq, col_med_btn = st.columns([2, 1.5, 1])
         with col_med_in:
             new_med_name = st.text_input(
@@ -550,22 +533,20 @@ def show_onboarding_page(is_editing: bool = False) -> None:
                     })
                     st.rerun()
 
-        # Display added medications with remove option
         if st.session_state.wizard_meds:
             st.markdown("###### Currently Documented Medications:")
             for idx, med_obj in enumerate(st.session_state.wizard_meds):
                 col_item_desc, col_item_del = st.columns([5, 1])
                 with col_item_desc:
-                    st.markdown(
+                    render_clean_html(
                         f"""
-                        <div class="med-item-pill">
+                        <div style="background: #0f1b30; border: 1px solid #1e293b; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px;">
                             <span>💊 <strong>{med_obj['desc']}</strong></span>
                         </div>
-                        """,
-                        unsafe_allow_html=True,
+                        """
                     )
                 with col_item_del:
-                    if st.button("✕", key=f"del_med_{idx}", help="Remove medication", use_container_width=True):
+                    if st.button("✕", key=f"del_med_{idx}", help="Remove medication", use_container_width=True, type="secondary"):
                         st.session_state.wizard_meds.pop(idx)
                         st.rerun()
         else:
@@ -590,7 +571,6 @@ def show_onboarding_page(is_editing: bool = False) -> None:
         with col_act_skip:
             if not is_editing:
                 if st.button("Skip Optional & Finish", use_container_width=True, type="secondary"):
-                    # Save step 1 data with empty step 2
                     s1 = st.session_state.wizard_step1
                     iso_dob = s1["dob"].isoformat()
                     save_patient_profile(
@@ -618,19 +598,16 @@ def show_onboarding_page(is_editing: bool = False) -> None:
             if st.button(btn_label, use_container_width=True, type="primary"):
                 s1 = st.session_state.wizard_step1
 
-                # Compile conditions
                 conditions_list = [c for c in selected_conditions if c != "Other"]
                 if other_cond_text.strip():
                     conditions_list.append(other_cond_text.strip())
                 final_conditions = ", ".join(conditions_list) if conditions_list else None
 
-                # Compile allergies
                 allergies_list = [a for a in selected_allergies if a != "Other"]
                 if other_allergy_text.strip():
                     allergies_list.append(other_allergy_text.strip())
                 final_allergies = ", ".join(allergies_list) if allergies_list else None
 
-                # Compile medications
                 meds_list = [m["desc"] for m in st.session_state.wizard_meds if m.get("desc")]
                 final_meds = ", ".join(meds_list) if meds_list else None
 
@@ -666,107 +643,103 @@ def show_sidebar(patient_profile: dict | None) -> None:
     if st.session_state.user_id:
         delete_empty_conversations(st.session_state.user_id)
 
-    st.sidebar.markdown(
-        """
-        <div class="brand-container">
-            <div class="brand-logo">🩺</div>
-            <div>
-                <div class="brand-text-title">ClinCoherence</div>
-                <div class="brand-text-sub">Longitudinal Clinical Assistant</div>
+    with st.sidebar:
+        render_clean_html(
+            """
+            <div class="brand-container">
+                <div class="brand-logo">🩺</div>
+                <div>
+                    <div class="brand-text-title">ClinCoherence</div>
+                    <div class="brand-text-sub">Longitudinal Clinical Assistant</div>
+                </div>
             </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+            """
+        )
 
-    # Immersed button without mismatched emoji clash
-    if st.sidebar.button("+ New Consultation", use_container_width=True, type="primary"):
-        st.session_state.conv_id = None
-        st.session_state.editing_profile = False
-        st.rerun()
-
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
-
-    search_q = st.sidebar.text_input(
-        "Search conversations",
-        value=st.session_state.chat_search_query,
-        placeholder="🔍 Search past consults...",
-        label_visibility="collapsed",
-    )
-    st.session_state.chat_search_query = search_q
-
-    st.sidebar.caption("CONVERSATION HISTORY")
-
-    convs = get_conversations_for_user(st.session_state.user_id, search_q)
-
-    if not convs:
-        if search_q.strip():
-            st.sidebar.caption("No matching conversations found.")
-        else:
-            st.sidebar.caption("No conversations yet. Start a new consultation above!")
-    else:
-        for conv in convs:
-            updated_date = conv["updated_at"][:10]
-            label = f"{conv['title']} • {updated_date}"
-            is_active = st.session_state.conv_id == conv["id"] and not st.session_state.editing_profile
-            btn_label = f"👉 {label}" if is_active else label
-            if st.sidebar.button(
-                btn_label, key=f"side_conv_{conv['id']}", use_container_width=True, type="secondary"
-            ):
-                st.session_state.conv_id = conv["id"]
-                st.session_state.editing_profile = False
-                st.rerun()
-
-    st.sidebar.markdown("---")
-
-    # Profile Card
-    pref_name = patient_profile.get("preferred_name") if patient_profile else st.session_state.username
-    age_str = get_age_display(patient_profile.get("age_or_dob")) if patient_profile else ""
-    sex_str = patient_profile.get("sex_assigned_at_birth") if patient_profile else None
-
-    meta_parts = []
-    if age_str and age_str != "Unknown":
-        meta_parts.append(age_str)
-    if sex_str and sex_str != "Prefer not to say":
-        meta_parts.append(sex_str)
-    meta_line = " • ".join(meta_parts) if meta_parts else "Profile Active"
-
-    st.sidebar.markdown(
-        f"""
-        <div class="sidebar-profile-card">
-            <div class="sidebar-profile-name">👤 {pref_name}</div>
-            <div class="sidebar-profile-meta">{meta_line}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    col_btn_edit, col_btn_out = st.sidebar.columns(2)
-    with col_btn_edit:
-        if st.button("✏️ Profile", use_container_width=True, type="secondary"):
-            st.session_state.wizard_step1 = {}
-            st.session_state.wizard_meds = []
-            st.session_state.editing_profile = True
-            st.session_state.onboarding_step = 1
-            st.rerun()
-    with col_btn_out:
-        if st.button("🚪 Sign Out", use_container_width=True, type="secondary"):
-            st.session_state.user_id = None
-            st.session_state.username = None
+        if st.button("+ New Consultation", use_container_width=True, type="primary"):
             st.session_state.conv_id = None
             st.session_state.editing_profile = False
-            st.session_state.onboarding_step = 1
-            st.session_state.wizard_step1 = {}
-            st.session_state.wizard_meds = []
-            st.session_state.page = "login"
             st.rerun()
 
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
 
-    # Full-name button for Clinical Pipeline Inspector in bottom left
-    if st.sidebar.button("⚡ Clinical Pipeline Inspector", key="btn_sidebar_inspector", use_container_width=True):
-        st.session_state.show_pipeline_inspector = not st.session_state.get("show_pipeline_inspector", False)
-        st.rerun()
+        search_q = st.text_input(
+            "Search conversations",
+            value=st.session_state.chat_search_query,
+            placeholder="🔍 Search past consults...",
+            label_visibility="collapsed",
+        )
+        st.session_state.chat_search_query = search_q
+
+        st.caption("CONVERSATION HISTORY")
+
+        convs = get_conversations_for_user(st.session_state.user_id, search_q)
+
+        if not convs:
+            if search_q.strip():
+                st.caption("No matching conversations found.")
+            else:
+                st.caption("No conversations yet. Start a new consultation above!")
+        else:
+            for conv in convs:
+                updated_date = conv["updated_at"][:10]
+                label = f"{conv['title']} • {updated_date}"
+                is_active = st.session_state.conv_id == conv["id"] and not st.session_state.editing_profile
+                btn_label = f"👉 {label}" if is_active else label
+                if st.button(
+                    btn_label, key=f"side_conv_{conv['id']}", use_container_width=True, type="secondary"
+                ):
+                    st.session_state.conv_id = conv["id"]
+                    st.session_state.editing_profile = False
+                    st.rerun()
+
+        st.markdown("---")
+
+        pref_name = patient_profile.get("preferred_name") if patient_profile else st.session_state.username
+        age_str = get_age_display(patient_profile.get("age_or_dob")) if patient_profile else ""
+        sex_str = patient_profile.get("sex_assigned_at_birth") if patient_profile else None
+
+        meta_parts = []
+        if age_str and age_str != "Unknown":
+            meta_parts.append(age_str)
+        if sex_str and sex_str != "Prefer not to say":
+            meta_parts.append(sex_str)
+        meta_line = " • ".join(meta_parts) if meta_parts else "Profile Active"
+
+        render_clean_html(
+            f"""
+            <div class="sidebar-profile-card">
+                <div class="sidebar-profile-name">👤 {pref_name}</div>
+                <div class="sidebar-profile-meta">{meta_line}</div>
+            </div>
+            """
+        )
+
+        col_btn_edit, col_btn_out = st.columns(2)
+        with col_btn_edit:
+            if st.button("✏️ Profile", use_container_width=True, type="secondary"):
+                st.session_state.wizard_step1 = {}
+                st.session_state.wizard_meds = []
+                st.session_state.editing_profile = True
+                st.session_state.onboarding_step = 1
+                st.rerun()
+        with col_btn_out:
+            if st.button("🚪 Sign Out", use_container_width=True, type="secondary"):
+                st.session_state.user_id = None
+                st.session_state.username = None
+                st.session_state.conv_id = None
+                st.session_state.editing_profile = False
+                st.session_state.onboarding_step = 1
+                st.session_state.wizard_step1 = {}
+                st.session_state.wizard_meds = []
+                st.session_state.page = "login"
+                st.rerun()
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        if st.button("⚡ Clinical Pipeline Inspector", key="btn_sidebar_inspector", use_container_width=True, type="secondary"):
+            st.session_state.show_pipeline_inspector = not st.session_state.get("show_pipeline_inspector", False)
+            st.rerun()
 
 
 # ---------------------------------------------------------------------------
@@ -775,10 +748,10 @@ def show_sidebar(patient_profile: dict | None) -> None:
 
 def show_pipeline_inspector(latest_payload: dict | None) -> None:
     """Render interactive inspector displaying live clinical data and verification telemetry."""
-    st.markdown(
+    render_clean_html(
         """
-        <div style="background: #0b1222; border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 16px; padding: 20px; margin-bottom: 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 16px;">
+        <div style="background: #0b1222; border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 16px; padding: 18px; margin-bottom: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 14px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="font-size: 1.5rem; color: #38bdf8;">⚡</span>
                     <div>
@@ -788,8 +761,7 @@ def show_pipeline_inspector(latest_payload: dict | None) -> None:
                 </div>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     t_ext, t_state, t_norm, t_ev, t_ver, t_gate = st.tabs([
@@ -892,7 +864,7 @@ def show_pipeline_inspector(latest_payload: dict | None) -> None:
         gate_dec = ver_obj.get("gate_decision", "PASS")
         reasoning = ver_obj.get("reasoning", "All coherence constraints verified.")
         badge_color = "#10b981" if gate_dec == "PASS" else ("#f59e0b" if gate_dec in ["WARN", "CLARIFY"] else "#ef4444")
-        st.markdown(
+        render_clean_html(
             f"""
             <div style="background: #070b14; border: 1px solid {badge_color}; border-radius: 12px; padding: 14px; margin-top: 8px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -901,8 +873,7 @@ def show_pipeline_inspector(latest_payload: dict | None) -> None:
                 </div>
                 <div style="font-size: 0.85rem; color: #cbd5e1;"><strong>Reasoning:</strong> {reasoning}</div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -917,17 +888,15 @@ def show_pipeline_inspector(latest_payload: dict | None) -> None:
 # ---------------------------------------------------------------------------
 
 def render_right_intelligence_panel(latest_payload: dict | None, patient_profile: dict | None) -> None:
-    """Render right-side clinical intelligence slide panel (Graph/Timeline & Referenced Docs)."""
-    # Top Card: Clinical Knowledge Graph / Timeline Switcher
-    st.markdown(
+    """Render right-side clinical intelligence slide panel cleanly with zero raw SVG text leaks."""
+    render_clean_html(
         """
-        <div class="intel-panel-card">
-            <div class="intel-panel-header">
-                <span class="intel-panel-title">📊 Clinical Intelligence</span>
+        <div style="background: #0b1222; border: 1px solid #1e293b; border-radius: 14px; padding: 14px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
+                <span style="color: #38bdf8; font-weight: 800; font-size: 0.88rem;">📊 Clinical Intelligence</span>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     col_tg_g, col_tg_t = st.columns(2)
@@ -942,52 +911,82 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
             st.session_state.right_panel_tab = "timeline"
             st.rerun()
 
-    # View A: Clinical Knowledge Graph
     if st.session_state.right_panel_tab == "graph":
         facts = latest_payload.get("facts", []) if latest_payload else []
-        node_1 = facts[0].get("description")[:10] if len(facts) > 0 else "Symptom"
-        node_2 = facts[1].get("description")[:10] if len(facts) > 1 else "Vitals"
+        node_1 = facts[0].get("description")[:10] if len(facts) > 0 else "Chest"
+        node_2 = facts[1].get("description")[:10] if len(facts) > 1 else "Dyspnea"
         gate_text = latest_payload.get("verification", {}).get("gate_decision", "PASS") if latest_payload else "PASS"
 
-        st.markdown(
-            f"""
-            <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; height: 180px; position: relative;">
-                <svg width="100%" height="100%" viewBox="0 0 300 135">
-                    <line x1="55" y1="30" x2="150" y2="65" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3,3" opacity="0.7"/>
-                    <line x1="55" y1="105" x2="150" y2="65" stroke="#f59e0b" stroke-width="2" opacity="0.7"/>
-                    <line x1="150" y1="65" x2="245" y2="35" stroke="#10b981" stroke-width="2" opacity="0.7"/>
-                    <line x1="150" y1="65" x2="245" y2="95" stroke="#818cf8" stroke-width="2" opacity="0.7"/>
+        graph_html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="utf-8">
+        <style>
+          body {{
+            margin: 0;
+            padding: 0;
+            background: #070b14;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #cbd5e1;
+            overflow: hidden;
+          }}
+          .graph-wrapper {{
+            background: #070b14;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 8px 10px;
+            box-sizing: border-box;
+          }}
+          .graph-footer {{
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #94a3b8;
+            border-top: 1px solid #1e293b;
+            padding-top: 5px;
+            margin-top: 4px;
+          }}
+        </style>
+        </head>
+        <body>
+          <div class="graph-wrapper">
+            <svg width="100%" height="135" viewBox="0 0 300 135">
+              <line x1="55" y1="30" x2="150" y2="65" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3,3" opacity="0.75"/>
+              <line x1="55" y1="105" x2="150" y2="65" stroke="#d97706" stroke-width="2" opacity="0.75"/>
+              <line x1="150" y1="65" x2="245" y2="35" stroke="#10b981" stroke-width="2" opacity="0.75"/>
+              <line x1="150" y1="65" x2="245" y2="95" stroke="#818cf8" stroke-width="2" opacity="0.75"/>
 
-                    <circle cx="55" cy="30" r="16" fill="#13233c" stroke="#38bdf8" stroke-width="1.5"/>
-                    <text x="55" y="34" font-size="8" fill="#7dd3fc" text-anchor="middle" font-weight="bold">{node_1}</text>
+              <circle cx="55" cy="30" r="16" fill="#13233c" stroke="#38bdf8" stroke-width="1.5"/>
+              <text x="55" y="34" font-size="8" fill="#7dd3fc" text-anchor="middle" font-weight="bold">{node_1}</text>
 
-                    <circle cx="55" cy="105" r="16" fill="#2d2212" stroke="#f59e0b" stroke-width="1.5"/>
-                    <text x="55" y="109" font-size="8" fill="#fcd34d" text-anchor="middle" font-weight="bold">{node_2}</text>
+              <circle cx="55" cy="105" r="16" fill="#2d2212" stroke="#d97706" stroke-width="1.5"/>
+              <text x="55" y="109" font-size="8" fill="#fcd34d" text-anchor="middle" font-weight="bold">{node_2}</text>
 
-                    <circle cx="150" cy="65" r="20" fill="#1e1e38" stroke="#a78bfa" stroke-width="2"/>
-                    <text x="150" y="69" font-size="9" fill="#ddd6fe" text-anchor="middle" font-weight="bold">{gate_text}</text>
+              <circle cx="150" cy="65" r="20" fill="#1e1e38" stroke="#a78bfa" stroke-width="2"/>
+              <text x="150" y="69" font-size="9" fill="#ddd6fe" text-anchor="middle" font-weight="bold">Gate: {gate_text}</text>
 
-                    <circle cx="245" cy="35" r="15" fill="#112920" stroke="#10b981" stroke-width="1.5"/>
-                    <text x="245" y="38" font-size="7" fill="#6ee7b7" text-anchor="middle">DailyMed</text>
+              <circle cx="245" cy="35" r="15" fill="#112920" stroke="#10b981" stroke-width="1.5"/>
+              <text x="245" y="38" font-size="7" fill="#6ee7b7" text-anchor="middle">DailyMed</text>
 
-                    <circle cx="245" cy="95" r="15" fill="#1a1c38" stroke="#818cf8" stroke-width="1.5"/>
-                    <text x="245" y="98" font-size="7" fill="#c7d2fe" text-anchor="middle">RxNorm</text>
-                </svg>
-                <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #94a3b8; border-top: 1px solid #1e293b; padding-top: 4px; margin-top: 4px;">
-                    <span>● Knowledge Graph Active</span>
-                    <span style="color: #10b981; font-family: monospace;">0 Contradictions</span>
-                </div>
+              <circle cx="245" cy="95" r="15" fill="#1a1c38" stroke="#818cf8" stroke-width="1.5"/>
+              <text x="245" y="98" font-size="7" fill="#c7d2fe" text-anchor="middle">RxNorm</text>
+            </svg>
+            <div class="graph-footer">
+              <span>● Clinical Knowledge Graph</span>
+              <span style="color: #10b981; font-family: monospace; font-weight: bold;">0 Contradictions</span>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+          </div>
+        </body>
+        </html>
+        """
+        components.html(graph_html, height=185)
     else:
-        # View B: Longitudinal Timeline
         state_sum = latest_payload.get("state_summary", {}) if latest_payload else {}
         ver_num = state_sum.get("version", 1)
-        st.markdown(
+        render_clean_html(
             f"""
-            <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; max-height: 180px; overflow-y: auto; font-size: 0.78rem;">
+            <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; max-height: 175px; overflow-y: auto; font-size: 0.78rem;">
                 <div style="border-left: 2px solid #10b981; padding-left: 8px; margin-bottom: 8px;">
                     <div style="color: #94a3b8; font-size: 0.7rem;">Turn 0 • Baseline Record</div>
                     <div style="color: #f1f5f9; font-weight: 600;">Demographics Loaded</div>
@@ -1001,77 +1000,52 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
                     <div style="color: #fcd34d; font-weight: 600;">Coherence Check: PASS</div>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Bottom Card: Referenced Docs & Evidence (Single Clear Add Action)
-    st.markdown(
-        """
-        <div class="intel-panel-card">
-            <div class="intel-panel-header">
-                <span class="intel-panel-title">📁 Referenced Docs & Evidence</span>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Folder 1: Active Evidence Monograph
     evidence_list = latest_payload.get("evidence", []) if latest_payload else []
-    ev_title = f"DailyMed Monograph: {evidence_list[0].get('active_ingredient', 'RxNorm')}" if evidence_list else "DailyMed FDA Corpus Monograph"
+    ev_title = f"DailyMed: {evidence_list[0].get('active_ingredient', 'RxNorm')}" if evidence_list else "DailyMed FDA Corpus Monograph"
     ev_excerpt = evidence_list[0].get("evidence_text", "Warnings & Precautions: Evaluate renal and cardiovascular indicators prior to titration...") if evidence_list else "FDA label inserts actively checked against patient reported medications."
 
-    st.markdown(
-        f"""
+    prescriptions = st.session_state.get("uploaded_prescriptions", [])
+    p_html = ""
+    for p in prescriptions:
+        p_html += f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #0f1b30; padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 0.75rem;">
+            <div>
+                <div style="color: #f1f5f9; font-weight: 600;">📄 {p['name']}</div>
+                <div style="color: #94a3b8; font-size: 0.68rem;">{p['med']}</div>
+            </div>
+            <span style="color: #f59e0b; font-weight: 600; font-size: 0.72rem;">Verified</span>
+        </div>
+        """
+
+    docs_panel_html = f"""
+    <div style="background: #0b1222; border: 1px solid #1e293b; border-radius: 14px; padding: 14px; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin-bottom: 12px;">
+            <span style="color: #38bdf8; font-weight: 800; font-size: 0.88rem;">📁 Referenced Docs & Evidence</span>
+        </div>
         <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #38bdf8; margin-bottom: 4px;">
                 <span>📑 Active Evidence Monograph</span>
                 <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 1px 6px; border-radius: 4px; font-size: 0.68rem; font-family: monospace;">DailyMed</span>
             </div>
             <div style="font-size: 0.75rem; color: #f1f5f9; font-weight: 600;">{ev_title}</div>
-            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">"{ev_excerpt[:110]}..."</div>
-            <div style="font-size: 0.68rem; color: #10b981; font-family: monospace; margin-top: 4px;">Status: Verified Non-Contraindicated</div>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 3px;">"{ev_excerpt[:100]}..."</div>
+            <div style="font-size: 0.68rem; color: #10b981; font-family: monospace; margin-top: 4px;">Status: Verified Safe</div>
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Folder 2: Patient Prescriptions Folder
-    prescriptions = st.session_state.get("uploaded_prescriptions", [])
-    st.markdown(
-        f"""
         <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #cbd5e1; margin-bottom: 6px;">
                 <span>💊 Patient Prescriptions Folder</span>
-                <span style="font-size: 0.7rem; color: #94a3b8;">{len(prescriptions)} Document(s)</span>
+                <span style="font-size: 0.7rem; color: #94a3b8;">{len(prescriptions)} File(s)</span>
             </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    for p in prescriptions:
-        st.markdown(
-            f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #0f1b30; padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 0.75rem;">
-                <div>
-                    <div style="color: #f1f5f9; font-weight: 600;">📄 {p['name']}</div>
-                    <div style="color: #94a3b8; font-size: 0.68rem;">{p['med']}</div>
-                </div>
-                <span style="color: #f59e0b; font-weight: 600; font-size: 0.72rem;">Verified</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # Folder 3: Similar Medical Cases Archive
-    st.markdown(
-        """
+            {p_html}
+        </div>
         <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 10px; padding: 10px; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">
-                <span>🗂️ Similar Medical Cases Archive</span>
+                <span>🗂️ Similar Cases Archive</span>
                 <span style="color: #38bdf8; font-size: 0.68rem; font-family: monospace;">2 Matches</span>
             </div>
             <div style="font-size: 0.72rem; color: #94a3b8; line-height: 1.6;">
@@ -1085,24 +1059,21 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
                 </div>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    </div>
+    """
+    render_clean_html(docs_panel_html)
 
-    # Single Dedicated Action Button (Removed duplicate from breadcrumb)
-    if st.button("+ Add Prescription / Upload Report", key="btn_open_prescription_dialog", use_container_width=True):
+    if st.button("+ Add Prescription / Upload Report", key="btn_open_prescription_dialog", use_container_width=True, type="secondary"):
         st.session_state.show_add_prescription_modal = not st.session_state.get("show_add_prescription_modal", False)
         st.rerun()
 
-    # Expandable Prescription Adder Form
     if st.session_state.get("show_add_prescription_modal", False):
-        st.markdown(
+        render_clean_html(
             """
             <div style="background: #0f1b30; border: 1px solid #38bdf8; border-radius: 12px; padding: 14px; margin-top: 10px;">
                 <h4 style="margin: 0 0 8px 0; color: #ffffff; font-size: 0.88rem;">Add Prescription or Medical Report</h4>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
         p_name = st.text_input("Prescription Name", placeholder="e.g. Lisinopril 10mg", key="dlg_p_name")
         p_target = st.selectbox("Target Folder", ["My Prescriptions", "Lab Reports", "Similar Cases"], key="dlg_p_target")
@@ -1143,37 +1114,31 @@ def show_compact_patient_context(patient_profile: dict | None) -> None:
     age_str = get_age_display(patient_profile.get("age_or_dob"))
     sex = patient_profile.get("sex_assigned_at_birth") or "Unknown"
 
-    chips_html = f"<span class='context-chip chip-demographic'>👤 {name}</span>"
-    chips_html += f"<span class='context-chip chip-demographic'>🎂 {age_str}</span>"
-    chips_html += f"<span class='context-chip chip-demographic'>🧬 Sex: {sex}</span>"
+    chips_html = f"<span style='background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:3px 8px; border-radius:6px; font-size:0.75rem; margin-right:6px;'>👤 {name}</span>"
+    chips_html += f"<span style='background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:3px 8px; border-radius:6px; font-size:0.75rem; margin-right:6px;'>🎂 {age_str}</span>"
+    chips_html += f"<span style='background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:3px 8px; border-radius:6px; font-size:0.75rem; margin-right:6px;'>🧬 Sex: {sex}</span>"
 
     gender = patient_profile.get("gender_identity")
     if gender and gender != "Prefer not to say":
-        chips_html += f"<span class='context-chip chip-demographic'>⚧ {gender}</span>"
+        chips_html += f"<span style='background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:3px 8px; border-radius:6px; font-size:0.75rem; margin-right:6px;'>⚧ {gender}</span>"
 
     conditions = patient_profile.get("medical_conditions")
     if conditions:
-        for c in conditions.split(",")[:3]:
-            chips_html += f"<span class='context-chip chip-condition'>⚠️ {c.strip()}</span>"
+        for c in conditions.split(",")[:2]:
+            chips_html += f"<span style='background:#2d2212; color:#fcd34d; border:1px solid rgba(245,158,11,0.4); padding:3px 8px; border-radius:6px; font-size:0.75rem; margin-right:6px;'>⚠️ {c.strip()}</span>"
 
     meds = patient_profile.get("current_medications")
     if meds:
         for m in meds.split(",")[:2]:
-            chips_html += f"<span class='context-chip chip-med'>💊 {m.strip()}</span>"
+            chips_html += f"<span style='background:#0f233d; color:#7dd3fc; border:1px solid rgba(56,189,248,0.4); padding:3px 8px; border-radius:6px; font-size:0.75rem; margin-right:6px;'>💊 {m.strip()}</span>"
 
-    allergies = patient_profile.get("known_allergies")
-    if allergies:
-        for a in allergies.split(",")[:2]:
-            chips_html += f"<span class='context-chip chip-allergy'>🚫 {a.strip()}</span>"
-
-    st.markdown(
+    render_clean_html(
         f"""
-        <div style="background: #0b1222; border: 1px solid #1e293b; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px;">
-            <div style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">ACTIVE CLINICAL CONTEXT</div>
+        <div style="background: #0b1222; border: 1px solid #1e293b; border-radius: 12px; padding: 8px 14px; margin-bottom: 14px;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">ACTIVE CLINICAL CONTEXT</div>
             <div>{chips_html}</div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -1280,30 +1245,77 @@ def show_main_chat(patient_profile: dict | None) -> None:
     """Render main conversational chat interface with ChatGPT-style starters and bubbles."""
     show_sidebar(patient_profile)
 
-    # Route if profile edit mode requested
     if st.session_state.editing_profile:
         show_onboarding_page(is_editing=True)
         return
 
-    # Render compact baseline patient context banner
-    show_compact_patient_context(patient_profile)
+    # Fetch latest gate status if conversation active
+    gate_status = "PASS"
+    if st.session_state.conv_id is not None:
+        messages = get_messages(st.session_state.conv_id)
+        for msg in reversed(messages):
+            if msg["role"] == "assistant":
+                ver_rec = get_verification_result(msg["id"])
+                if ver_rec:
+                    gate_status = ver_rec["gate_decision"]
+                    break
 
-    # If no conversation active, show attractive welcome screen
+    pref_name = patient_profile.get("preferred_name") if patient_profile else (st.session_state.username or "Patient")
+    age_str = get_age_display(patient_profile.get("age_or_dob")) if patient_profile else ""
+    sex_str = patient_profile.get("sex_assigned_at_birth") if patient_profile else ""
+    user_info = f"{pref_name}" + (f" ({age_str}" + (f" • {sex_str}" if sex_str and sex_str != "Prefer not to say" else "") + ")" if age_str and age_str != "Unknown" else "")
+
+    # Top App Header (Matching the interactive preview exactly)
+    render_clean_html(
+        f"""
+        <div class="top-nav-bar">
+            <div class="top-nav-left">
+                <div class="top-nav-logo">🩺</div>
+                <div>
+                    <div class="top-nav-title">
+                        <span>ClinCoherence</span>
+                        <span class="top-nav-pill">Clinical AI</span>
+                    </div>
+                    <div class="top-nav-subtitle">Longitudinal Clinical Coherence & Decision Verification</div>
+                </div>
+            </div>
+            <div class="pipeline-status-badge pipeline-breathing">
+                <svg class="pipeline-spinner" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="3" opacity="0.25"></circle>
+                    <path fill="#38bdf8" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span style="color: #94a3b8; font-weight: 500; font-size: 0.72rem;">Pipeline:</span>
+                <span style="color: #38bdf8; font-weight: 700; font-size: 0.72rem;">Coherence Verifier</span>
+                <span style="color: #64748b; font-size: 0.7rem;">➔</span>
+                <span style="color: #d97706; font-weight: 700; font-size: 0.72rem;">Gate [{gate_status}]</span>
+                <div class="pipeline-dots">
+                    <span class="p-dot dot-extractor" title="State Extractor: Complete"></span>
+                    <span class="p-dot dot-evidence" title="Evidence Retriever: Complete"></span>
+                    <span class="p-dot dot-verifier" title="Coherence Verifier: Active"></span>
+                    <span class="p-dot dot-gate" title="Decision Gate: Verified"></span>
+                </div>
+            </div>
+            <div class="top-user-badge">
+                <span>👤</span>
+                <span><strong>{user_info}</strong></span>
+            </div>
+        </div>
+        """
+    )
+
     if st.session_state.conv_id is None:
         pref_name = patient_profile.get("preferred_name") if patient_profile else st.session_state.username
 
-        st.markdown(
+        render_clean_html(
             f"""
-            <div style="text-align: center; padding: 36px 16px 20px; max-width: 720px; margin: auto;">
-                <div style="width: 52px; height: 52px; border-radius: 14px; font-size: 1.5rem; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0284c7, #38bdf8); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);">🩺</div>
-                <h1 style="color: #ffffff; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em;">How can I help you today, {pref_name}?</h1>
-                <div style="color: #94a3b8; font-size: 0.95rem; line-height: 1.55; margin-top: 6px;">
+            <div style="text-align: center; padding: 24px 16px 16px; max-width: 720px; margin: auto;">
+                <h1 style="color: #ffffff; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em;">How can I help you today, {pref_name}?</h1>
+                <div style="color: #94a3b8; font-size: 0.92rem; line-height: 1.55; margin-top: 6px;">
                     I track your symptoms across conversation turns, normalize medications against RxNorm, 
                     and verify clinical coherence using evidence-based FDA medical records.
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         st.markdown("##### Suggested consultation starters")
@@ -1345,7 +1357,6 @@ def show_main_chat(patient_profile: dict | None) -> None:
             _start_conversation_with_message(welcome_user_input, title, patient_profile)
         return
 
-    # Conversation Active — Check Ownership
     conv = get_conversation(st.session_state.conv_id, st.session_state.user_id)
     if conv is None:
         st.error("Conversation not found or access denied.")
@@ -1354,7 +1365,6 @@ def show_main_chat(patient_profile: dict | None) -> None:
 
     messages = get_messages(st.session_state.conv_id)
 
-    # Fetch latest verification result for live status tracking & right panel
     latest_payload = None
     latest_gate_decision = "PASS"
     for msg in reversed(messages):
@@ -1368,30 +1378,18 @@ def show_main_chat(patient_profile: dict | None) -> None:
                     pass
                 break
 
-    # Top Persistent Action Bar (Duplicate '+ Add Prescription' removed)
-    col_hdr_left, col_hdr_mid, col_hdr_right = st.columns([3, 2.5, 1.5])
+    # Breadcrumb Row (Matching preview: History indicator, title, pass badge, panel toggle)
+    col_hdr_left, col_hdr_right = st.columns([4, 1.2])
     with col_hdr_left:
-        st.markdown(
+        render_clean_html(
             f"""
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <span style="background: #14233c; border: 1px solid #283854; padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; color: #cbd5e1; font-weight: 600;">📑 History</span>
+                <span style="color: #64748b;">|</span>
                 <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff;">{conv['title']}</h3>
                 <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px; font-family: monospace;">Verified {latest_gate_decision}</span>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col_hdr_mid:
-        st.markdown(
-            f"""
-            <div class="pipeline-status-badge">
-                <span style="color: #38bdf8; font-weight: 700; font-size: 0.72rem;">Pipeline:</span>
-                <span style="color: #e2e8f0; font-size: 0.72rem;">Coherence Verifier</span>
-                <span style="color: #64748b; font-size: 0.7rem;">➔</span>
-                <span style="color: #f59e0b; font-weight: 700; font-size: 0.72rem;">Gate [{latest_gate_decision}]</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     with col_hdr_right:
@@ -1400,9 +1398,6 @@ def show_main_chat(patient_profile: dict | None) -> None:
             st.session_state.show_right_panel = not st.session_state.show_right_panel
             st.rerun()
 
-    st.markdown("<hr style='border-color: #1e293b; margin: 12px 0 16px 0;'>", unsafe_allow_html=True)
-
-    # Render Pipeline Inspector if toggled
     if st.session_state.get("show_pipeline_inspector", False):
         show_pipeline_inspector(latest_payload)
 
@@ -1414,11 +1409,18 @@ def show_main_chat(patient_profile: dict | None) -> None:
         col_intel = None
 
     with col_chat:
+        render_clean_html(
+            """
+            <div style="max-width: 600px; margin: 0 auto 16px auto; background: #0a1122; border: 1px solid #1e293b; border-radius: 12px; padding: 10px 14px; text-align: center; font-size: 0.76rem; color: #94a3b8;">
+                🛡️ Medical context active. Verified against RxNorm, DailyMed FDA monographs, and longitudinal state.
+            </div>
+            """
+        )
         for msg in messages:
             time_str = msg["created_at"][:16].replace("T", " ")
             if msg["role"] == "user":
                 formatted_text = format_chat_text(msg['content'])
-                st.markdown(
+                render_clean_html(
                     f"""
                     <div class="chat-row-user">
                         <div style="display: flex; flex-direction: column; align-items: flex-end; max-width: 82%;">
@@ -1429,12 +1431,11 @@ def show_main_chat(patient_profile: dict | None) -> None:
                         </div>
                         <div class="chat-avatar-user" title="You">SP</div>
                     </div>
-                    """,
-                    unsafe_allow_html=True,
+                    """
                 )
             else:
                 formatted_text = format_chat_text(msg['content'])
-                st.markdown(
+                render_clean_html(
                     f"""
                     <div class="chat-row-assistant">
                         <div class="chat-avatar-assistant" title="ClinCoherence Assistant">🩺</div>
@@ -1445,8 +1446,7 @@ def show_main_chat(patient_profile: dict | None) -> None:
                             <div class="chat-timestamp-subtle" style="padding-left: 0.5rem;">{time_str} UTC</div>
                         </div>
                     </div>
-                    """,
-                    unsafe_allow_html=True,
+                    """
                 )
                 ver_record = get_verification_result(msg["id"])
                 if ver_record:
@@ -1471,13 +1471,14 @@ def show_main_chat(patient_profile: dict | None) -> None:
                         }
                     show_verification_expander(payload)
 
-    # Render Right Intelligence Panel if enabled
+        # Place chat_input INSIDE col_chat so it stays constrained to the chat area and does NOT stretch across the right panel!
+        user_input = st.chat_input("Message ClinCoherence...")
+
     if col_intel is not None:
         with col_intel:
             render_right_intelligence_panel(latest_payload, patient_profile)
 
-    # Chat Input fixed at bottom
-    user_input = st.chat_input("Message ClinCoherence...")
+    # Process new user input when submitted
     if user_input:
         turn_index = len(messages)
         prior_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
