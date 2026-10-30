@@ -459,7 +459,7 @@ def show_onboarding_page(is_editing: bool = False) -> None:
 
         col_nav_l, col_nav_r = st.columns([1, 1])
         with col_nav_l:
-            if is_editing and st.button("Cancel & Return to Chat", use_container_width=True, kind="secondary"):
+            if is_editing and st.button("Cancel & Return to Chat", use_container_width=True, type="secondary"):
                 st.session_state.editing_profile = False
                 st.session_state.onboarding_step = 1
                 st.rerun()
@@ -543,7 +543,7 @@ def show_onboarding_page(is_editing: bool = False) -> None:
             )
         with col_med_btn:
             st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
-            if st.button("+ Add Medication", use_container_width=True, kind="secondary"):
+            if st.button("+ Add Medication", use_container_width=True, type="secondary"):
                 if new_med_name.strip():
                     st.session_state.wizard_meds.append({
                         "desc": f"{new_med_name.strip()} ({new_med_freq})"
@@ -583,13 +583,13 @@ def show_onboarding_page(is_editing: bool = False) -> None:
         col_act_back, col_act_skip, col_act_save = st.columns([1, 1, 1.5])
 
         with col_act_back:
-            if st.button("⬅ Back to Step 1", use_container_width=True, kind="secondary"):
+            if st.button("⬅ Back to Step 1", use_container_width=True, type="secondary"):
                 st.session_state.onboarding_step = 1
                 st.rerun()
 
         with col_act_skip:
             if not is_editing:
-                if st.button("Skip Optional & Finish", use_container_width=True, kind="secondary"):
+                if st.button("Skip Optional & Finish", use_container_width=True, type="secondary"):
                     # Save step 1 data with empty step 2
                     s1 = st.session_state.wizard_step1
                     iso_dob = s1["dob"].isoformat()
@@ -711,7 +711,7 @@ def show_sidebar(patient_profile: dict | None) -> None:
             is_active = st.session_state.conv_id == conv["id"] and not st.session_state.editing_profile
             btn_label = f"👉 {label}" if is_active else label
             if st.sidebar.button(
-                btn_label, key=f"side_conv_{conv['id']}", use_container_width=True, kind="secondary"
+                btn_label, key=f"side_conv_{conv['id']}", use_container_width=True, type="secondary"
             ):
                 st.session_state.conv_id = conv["id"]
                 st.session_state.editing_profile = False
@@ -743,14 +743,14 @@ def show_sidebar(patient_profile: dict | None) -> None:
 
     col_btn_edit, col_btn_out = st.sidebar.columns(2)
     with col_btn_edit:
-        if st.button("✏️ Profile", use_container_width=True, kind="secondary"):
+        if st.button("✏️ Profile", use_container_width=True, type="secondary"):
             st.session_state.wizard_step1 = {}
             st.session_state.wizard_meds = []
             st.session_state.editing_profile = True
             st.session_state.onboarding_step = 1
             st.rerun()
     with col_btn_out:
-        if st.button("🚪 Sign Out", use_container_width=True, kind="secondary"):
+        if st.button("🚪 Sign Out", use_container_width=True, type="secondary"):
             st.session_state.user_id = None
             st.session_state.username = None
             st.session_state.conv_id = None
@@ -906,7 +906,7 @@ def show_pipeline_inspector(latest_payload: dict | None) -> None:
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("Close Inspector ✕", key="btn_close_inspector", use_container_width=True, kind="secondary"):
+    if st.button("Close Inspector ✕", key="btn_close_inspector", use_container_width=True, type="secondary"):
         st.session_state.show_pipeline_inspector = False
         st.rerun()
     st.markdown("---")
@@ -1125,7 +1125,7 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
                 else:
                     st.error("Please provide a prescription or medication name.")
         with col_add_cancel:
-            if st.button("Cancel", key="dlg_btn_cancel_p", use_container_width=True, kind="secondary"):
+            if st.button("Cancel", key="dlg_btn_cancel_p", use_container_width=True, type="secondary"):
                 st.session_state.show_add_prescription_modal = False
                 st.rerun()
 
@@ -1396,7 +1396,7 @@ def show_main_chat(patient_profile: dict | None) -> None:
 
     with col_hdr_right:
         toggle_label = "Hide Panel" if st.session_state.show_right_panel else "Intelligence Panel"
-        if st.button(f"📊 {toggle_label}", key="btn_toggle_right_panel", use_container_width=True, kind="secondary"):
+        if st.button(f"📊 {toggle_label}", key="btn_toggle_right_panel", use_container_width=True, type="secondary"):
             st.session_state.show_right_panel = not st.session_state.show_right_panel
             st.rerun()
 
