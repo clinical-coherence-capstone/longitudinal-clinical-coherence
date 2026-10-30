@@ -1,0 +1,17 @@
+webapp/lcc_webapp.db
+__pycache__/
+
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+
+*.pyc
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+.pytest_cache/
+.streamlit/secrets.toml

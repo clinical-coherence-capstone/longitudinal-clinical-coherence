@@ -145,3 +145,45 @@ The CoherenceVerifier runs five deterministic checks against each generated resp
 - Coherence checks are deterministic keyword-based rules. No machine learning is used.
 - This is a research prototype. It is NOT clinically validated and MUST NOT be used for
   clinical decision-making.
+
+## Web Application
+
+The LCC system includes an interactive Streamlit web application with multi-user authentication, SQLite persistence, and real-time clinical coherence verification.
+
+### Prerequisites
+
+Install the updated dependencies (including `streamlit` and `bcrypt`):
+
+```bash
+pip install -r requirements.txt
+```
+
+### Launch the Application
+
+From the `lcc_system/` root directory, run:
+
+```bash
+streamlit run webapp/app.py
+```
+
+The app will start at `http://localhost:8501`.
+
+### User Flow
+
+1. **Register**: On first use, select the **Register** tab and create an account (minimum 8 characters for password). Passwords are securely hashed using bcrypt.
+2. **Log In**: Switch to the **Login** tab and sign in.
+3. **Conversations**: Click **➕ New Conversation** in the sidebar to start a new chat session. Previous conversations are saved and listed chronologically.
+4. **Chat & Verification**: Type patient symptoms, history, or queries. The assistant responds while maintaining longitudinal state across turns.
+5. **Verification Details**: Under each assistant response, expand **🔍 Verification Details** to view:
+   - Extracted Clinical Facts (symptoms/antecedents with polarity and confidence)
+   - Longitudinal Patient State Summary (version, turn, tracked medications, contradiction detection)
+   - Retrieved DailyMed Evidence records and citations
+   - Coherence Check & Decision Gate outcome (`PASS`, `CLARIFY`, `WARN`, `REFUSE`)
+
+### Database
+
+Chat histories, user credentials, patient states, and verification records are persisted automatically in `lcc_system/webapp/lcc_webapp.db` (created at runtime).
+
+### Safety Disclaimer
+
+⚠️ **Research Prototype Only**: This application is strictly an academic research prototype and is NOT a medical diagnosis or treatment advisory tool.
