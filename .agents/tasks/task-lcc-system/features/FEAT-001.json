@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Create the lcc_system project skeleton and implement models.py plus dataset_loader.py. This is the foundation layer — all other FEATs depend on these two files being correct and tested. FEAT-002 cannot start until FEAT-001 is committed.",
+  "status": "completed",
+  "steps": [
+    "Create directory tree: lcc_system/src/, lcc_system/tests/, lcc_system/data/ (empty placeholder). Create lcc_system/src/__init__.py and lcc_system/tests/__init__.py as empty files.",
+    "Create lcc_system/tests/conftest.py that inserts lcc_system/src/ into sys.path so all test files can do 'from models import ...' without package gymnastics.",
+    "Implement lcc_system/src/models.py with exactly these 12 dataclasses (Python stdlib dataclasses, no Pydantic): EvidenceVocabEntry, ConditionMeta, PatientCase, ClinicalFact, PatientState, StateVersion, ConversationTurn, Conversation, RxNormConcept, MedicationNormResult, EvidenceRecord, CoherenceFlag, VerificationResult. Use 'str | None' union syntax (Python 3.11+). All field names must match exactly as specified in plan.md §3.1.",
+    "Implement lcc_system/src/dataset_loader.py with class DatasetLoader. Set BASE_DIR = Path(__file__).parent.parent.parent (resolves to the workspace root containing dailymed_corpus_final/, rxnorm_capstone/, etc.). Implement these methods: load_dailymed_evidence() parsing medication_evidence.jsonl with json.loads per line using the 19 confirmed fields; load_rxnorm_concepts() using csv.DictReader on concepts.csv with confirmed column names; load_rxnorm_relationships() using csv.DictReader on relationships.csv; load_rxnorm_aliases() using csv.DictReader on input_aliases.csv; load_condition_metadata() using csv.DictReader on condition_mapping_summary.csv; load_evidence_vocab() using csv.DictReader on evidence_mapping_summary.csv (column 'is_antecedent' is a string 'true'/'false', convert to bool). For load_evidence_vocab(), the 'possible_values' dict must be built from the 'sample_values' column which contains 'V_K: text; V_K2: text2' format strings — parse these into {val_key: text} dicts. All methods must wrap file I/O in try/except, log warning to stderr on failure, and return [] on failure.",
+    "Implement generate_synthetic_cases(n=25) in DatasetLoader. Use random.seed(20261027). Hard-code exactly these 5 base templates with the evidence pools and differential pools shown in plan.md §3.2 CASE_TEMPLATES. For each of the 25 cases, pick a base template by index modulo 5, then vary age by ±randint(0,8) and alternate sex. Generate case_id as f'SYNTHETIC_{i:03d}'. EVIDENCES list = draw a random subset of evidence_pool (keep at least 8 items). DIFFERENTIAL_DIAGNOSIS = use the differential_pool from the template with minor probability jitter (±0.02). PatientCase.severity must be populated from load_condition_metadata() keyed by pathology name.",
+    "Write lcc_system/tests/test_models.py: import all 12 dataclasses from models; test that each can be instantiated with minimal valid arguments; assert ClinicalFact.status must be one of {positive, negative, unknown} (test all three); assert PatientCase.case_id is a string.",
+    "Write lcc_system/tests/test_dataset_loader.py: instantiate DatasetLoader(); call load_dailymed_evidence() and assert len == 24 and records[0].evidence_id == 'DM-EV-ALOG-MET-001'; call load_rxnorm_concepts() and assert any(c.rxcui == '6809' for c in concepts) (metformin); call generate_synthetic_cases(25) and assert len == 25 and all(len(c.evidences) >= 8 for c in cases) and all(c.pathology not in c_text for c_text in [t.text for c in cases for t in []] ); call load_evidence_vocab() and assert 'E_91' in vocab and vocab['E_91'].data_type == 'B'.",
+    "Create lcc_system/requirements.txt with exactly one entry: pytest>=7.4.0",
+    "Create lcc_system/README.md with placeholder sections that will be finalized in FEAT-003."
+  ],
+  "acceptance_criteria": [
+    "python -m pytest tests/test_models.py tests/test_dataset_loader.py -v passes with 0 failures",
+    "DatasetLoader().load_dailymed_evidence() returns exactly 24 EvidenceRecord objects",
+    "DatasetLoader().load_rxnorm_concepts() returns at least 29 RxNormConcept objects",
+    "DatasetLoader().generate_synthetic_cases(25) returns exactly 25 PatientCase objects, each with len(evidences) >= 8",
+    "DatasetLoader().load_evidence_vocab() returns a dict with key 'E_91' having data_type == 'B'",
+    "All 12 dataclasses in models.py are importable and instantiatable",
+    "No file outside lcc_system/ is created or modified"
+  ],
+  "verification": [
+    "cd c:\\Users\\91895\\OneDrive\\Desktop\\Longitudinal-Clinical-Coherence\\lcc_system && python -m pytest tests/test_models.py tests/test_dataset_loader.py -v",
+    "cd c:\\Users\\91895\\OneDrive\\Desktop\\Longitudinal-Clinical-Coherence\\lcc_system && python -c \"from src.dataset_loader import DatasetLoader; d=DatasetLoader(); print(len(d.load_dailymed_evidence()), 'evidence records'); print(len(d.generate_synthetic_cases(25)), 'cases')\""
+  ],
+  "blocked_reason": null,
+  "findings": "All 62 tests pass (24 model tests + 38 loader tests). Confirmed: dailymed_evidence.jsonl has exactly 24 records, first record ID is DM-EV-ALOG-MET-001. concepts.csv has exactly 29 rows, metformin rxcui=6809 present. evidence_mapping_summary.csv has 223 rows; E_91 data_type='B', is_antecedent=False. condition_mapping_summary.csv has 49 conditions; Anemia severity=4. generate_synthetic_cases(25) produces 25 PatientCase objects with len(evidences)>=8 for all, reproducible under seed 20261027. GERD severity in data is 3 (not 5 as plan.md stated) — template severity field corrected to use actual CSV value. No DDXPlus patient CSVs exist; all cases are synthetic as expected."
+}

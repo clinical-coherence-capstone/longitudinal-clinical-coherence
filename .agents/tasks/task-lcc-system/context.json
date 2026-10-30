@@ -1,0 +1,38 @@
+{
+  "project_type": "Pure Python CLI application, no web framework, no external LLM API required",
+  "language": "Python 3.11+",
+  "build_system": "No build system. All modules are plain Python files under lcc_system/src/. Run directly with `python`.",
+  "test_framework": "pytest 7.4+. Run with: python -m pytest tests/ -v  (from lcc_system/ directory)",
+  "build_command": "N/A — no compilation step",
+  "test_command": "python -m pytest tests/ -v",
+  "verification_instructions": "1. cd to lcc_system/ directory. 2. pip install -r requirements.txt (installs pytest only). 3. python -m pytest tests/ -v — all tests must pass. 4. python demo.py — must print ≥4 conversation turns, ≥1 [DECISION] line, and final state summary, exit 0.",
+  "snapshot_or_generated_files": "lcc_system/data/synthetic_cases.json — generated at runtime by DatasetLoader.generate_synthetic_cases(), NOT checked in. Do not commit it.",
+  "environment_constraints": "NEVER modify files under dailymed_corpus_final/, rxnorm_capstone/, DDXPlus_Audit_Share_Package/, or MedPRESS_Audit/. Keep all raw datasets read-only. Python stdlib only — no new packages beyond pytest. No API keys hardcoded anywhere.",
+  "contribution_requirements": "All source under lcc_system/src/. All tests under lcc_system/tests/. requirements.txt lists only pytest. README.md must have exact setup+run commands. No fabricated data. No training a new LLM.",
+  "key_patterns": "All inter-module data flows through dataclasses defined in models.py. DatasetLoader is the single point of file I/O for external datasets. Every module that needs data takes a DatasetLoader instance (or pre-loaded lists) in __init__. Error handling: missing files → log warning to stderr, return empty list, never raise. Python stdlib only (json, csv, re, dataclasses, datetime, pathlib, os, sys, argparse, copy, hashlib, time, collections, urllib.request).",
+  "relevant_files": [
+    "c:/Users/91895/OneDrive/Desktop/Longitudinal-Clinical-Coherence/dailymed_corpus_final/medication_evidence.jsonl",
+    "c:/Users/91895/OneDrive/Desktop/Longitudinal-Clinical-Coherence/rxnorm_capstone/data/concepts.csv",
+    "c:/Users/91895/OneDrive/Desktop/Longitudinal-Clinical-Coherence/rxnorm_capstone/data/relationships.csv",
+    "c:/Users/91895/OneDrive/Desktop/Longitudinal-Clinical-Coherence/rxnorm_capstone/data/input_aliases.csv",
+    "c:/Users/91895/OneDrive/Desktop/Longitudinal-Clinical-Coherence/DDXPlus_Audit_Share_Package/audit_output/condition_mapping_summary.csv",
+    "c:/Users/91895/OneDrive/Desktop/Longitudinal-Clinical-Coherence/DDXPlus_Audit_Share_Package/audit_output/evidence_mapping_summary.csv",
+    "c:/Users/91895/OneDrive/Desktop/Longitudinal-Clinical-Coherence/lcc_system/.agents/tasks/plan.md"
+  ],
+  "directory_structure": "lcc_system/ is the Python project root. lcc_system/src/ holds all modules. lcc_system/tests/ holds pytest files. lcc_system/data/ is a runtime-generated scratch dir (not committed). lcc_system/demo.py is the CLI entry point. Raw data lives in sibling directories: dailymed_corpus_final/, rxnorm_capstone/, DDXPlus_Audit_Share_Package/ — all read-only.",
+  "confirmed_data_facts": {
+    "dailymed_jsonl_fields": ["evidence_id","active_ingredient","product_name","all_active_ingredients","dosage_form","strength","labeler","dailymed_set_id","label_revision_date","access_date","section_name","evidence_text","source_url","source_locator","evidence_scope","extraction_method","verification_status","notes"],
+    "dailymed_record_count": 24,
+    "dailymed_active_ingredients": ["Metformin hydrochloride","Alogliptin","Alogliptin + Metformin hydrochloride"],
+    "rxnorm_concepts_columns": ["rxcui","rxnorm_name","tty","concept_type","concept_type_description","source_vocabulary","term_status_suppress","content_view_flag","ingredient_names","ingredient_rxcuis","precise_ingredient_names","strength_components","dose_form","quantity_factor","brand_name","match_status","match_method","source_file","source_rxaui","source_line","source_record_key","ndc_count_rxnorm","contrast_tags","inclusion_reason","dailymed_set_id","dailymed_link_status","validation_status","notes"],
+    "rxnorm_concepts_row_count": 29,
+    "key_rxcuis": {"metformin":"6809","alogliptin":"1368001","hydrochlorothiazide":"5487","metoprolol":"6918","sitagliptin":"36567"},
+    "rxnorm_relationships_columns": ["rui","subject_rxcui","subject_tty","subject_name","rela","rel","object_rxcui","object_tty","object_name","subject_selected","object_selected","in_appendix1_table","raw_rxcui1","raw_rxcui2","sab","source_file","source_line"],
+    "rxnorm_aliases_columns": ["input_name","normalized_name","input_kind","intent","expected_resolution","candidate_count","candidate_rxcuis","candidate_ttys","candidate_names","match_status","match_method","in_selected_set","expectation_met"],
+    "condition_mapping_columns": ["condition_id","condition_name_en","condition_name_fr","icd10_id","severity","symptom_count","antecedent_count","encoding_notes"],
+    "evidence_mapping_columns": ["evidence_id","name","data_type","is_antecedent","default_value","question_en","question_fr","possible_values_count","value_meanings_count","sample_values"],
+    "ddxplus_patient_columns": ["AGE","SEX","INITIAL_EVIDENCE","EVIDENCES","PATHOLOGY","DIFFERENTIAL_DIAGNOSIS"],
+    "ddxplus_patient_files_available": false,
+    "ddxplus_note": "No release_*_patients CSVs exist in workspace. All DDXPlus cases must be generated synthetically using hard-coded templates matching the confirmed schema."
+  }
+}

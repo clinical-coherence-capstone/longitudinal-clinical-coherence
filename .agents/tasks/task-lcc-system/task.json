@@ -1,0 +1,7 @@
+{
+  "task_id": "task-lcc-system",
+  "task_description": "Build the first working version of the Longitudinal Clinical Coherence (LCC) system: a real-time, state-aware verification layer for multi-turn clinical LLM conversations. Pure Python backend, modular source, CLI demo, unit tests, no API key required to run.",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}

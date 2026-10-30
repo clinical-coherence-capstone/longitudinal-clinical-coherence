@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Implement evaluation.py, demo.py, finalize requirements.txt and README.md. This feature wires all components into a runnable CLI demo and a measurable evaluation harness. It depends on FEAT-001 and FEAT-002 being complete.",
+  "status": "pending",
+  "steps": [
+    "Implement lcc_system/src/evaluation.py. Define ERROR_TYPES dict mapping 'ERR-1' through 'CTRL-6' to descriptions as in plan.md §3.11. Define TestScenario dataclass (scenario_id, source_case_id, error_type, injection_turn, injection_text, expected_decision, expected_flag_ids). Define SCENARIOS list with at least 10 hard-coded TestScenario objects: SCEN-ANEMIA-ERR1 (ERR-1, wrong entity), SCEN-ANEMIA-ERR2 (ERR-2, stale state), SCEN-ANEMIA-ERR4 (ERR-4, sycophancy), SCEN-ANEMIA-CTRL5 (CTRL-5, valid update), SCEN-NSTEMI-ERR1 (ERR-1 on cardiac case), SCEN-NSTEMI-ERR3 (ERR-3, regression), SCEN-PNEUMONIA-ERR2 (ERR-2), SCEN-PNEUMONIA-CTRL5 (CTRL-5), SCEN-GERD-ERR4 (ERR-4), SCEN-GERD-CTRL6 (CTRL-6, dual-entity). All expected_decision values must be one of PASS/CLARIFY/WARN/REFUSE based on the error_type rules.",
+    "Implement Evaluator class in evaluation.py. __init__(self, loader) builds full pipeline components (ConversationGenerator, StateExtractor, StateManager, MedicationNormalizer, EvidenceRetriever, ResponseGenerator with mock provider, CoherenceVerifier, DecisionGate). run_baseline(scenario) runs the pipeline WITHOUT calling CoherenceVerifier/DecisionGate, always returns {'decision': 'PASS', 'response_text': ..., 'latency_ms': 0}. run_lcc(scenario) runs the full pipeline: generate conversation for scenario.source_case_id; inject scenario.injection_text into conversation turn at scenario.injection_turn as a ConversationTurn with injection metadata; process all turns through extractor+state_manager; generate response; verify with CoherenceVerifier; gate with DecisionGate; record latency with time.perf_counter(). evaluate_all() iterates SCENARIOS, calls both baseline and lcc, computes detection_rate/false_positive_rate/false_negative_rate/mean_latency_ms as in plan.md §3.11. Returns dict with keys: total, correct, detection_rate, false_positive_rate, false_negative_rate, mean_latency_ms, details.",
+    "Write lcc_system/tests/test_evaluation.py: test evaluate_all() returns dict with all required keys (total, correct, detection_rate, false_positive_rate, false_negative_rate, mean_latency_ms, details); test all rates are floats in [0.0, 1.0]; test len(details) == len(SCENARIOS); test no KeyError when iterating details.",
+    "Implement lcc_system/demo.py with the 9-step flow from plan.md §5. Use argparse with --case (int, default=0), --form (str, default='gradual_reveal', choices=['complete','gradual_reveal','pushback']), --verbose (flag), --eval (flag). Step 1: print banner. Step 2: DatasetLoader(); show loading message. Step 3: select case by index. Step 4: print case header with age, sex, verbalized chief complaint, '[HIDDEN]' for pathology. Step 5: generate conversation. Step 6: initialize all pipeline components. Step 7: iterate turns — patient turns update state; doctor turns (interleaved generics) generate response, verify, gate, print [RESPONSE] and [DECISION] and [FLAGS] if any. Step 8: print final state summary. Step 9: if --eval flag, run Evaluator.evaluate_all() and print metrics table. Ensure demo.py runs from lcc_system/ directory: add sys.path.insert(0, str(Path(__file__).parent / 'src')) at top.",
+    "Finalize lcc_system/requirements.txt to contain exactly: pytest>=7.4.0",
+    "Finalize lcc_system/README.md with all required sections from plan.md §7: Setup (Python 3.11+, pip install), Run the Demo (python demo.py), Run with Different Case (python demo.py --case 2 --form pushback --verbose), Run Tests (python -m pytest tests/ -v), Run Evaluation (python demo.py --eval), Use with LLM API (set LCC_LLM_PROVIDER=openai, set LCC_API_KEY=sk-..., python demo.py). Include a one-paragraph project description mentioning the 10 components. Include a Limitations section noting the DailyMed corpus covers only the alogliptin/metformin combination product and the DDXPlus patient records are synthetic."
+  ],
+  "acceptance_criteria": [
+    "python -m pytest tests/ -v passes with 0 failures (all 11 test files including test_evaluation.py)",
+    "python demo.py exits 0 and prints at least 4 conversation turns, at least 1 [DECISION] line, and a '=== Final Patient State' block",
+    "python demo.py --case 2 --form pushback exits 0 and the output contains at least one [FLAGS] block",
+    "python demo.py --eval prints detection_rate and false_positive_rate values",
+    "python demo.py --verbose shows fact extraction details per patient turn",
+    "README.md contains exact runnable commands for setup, demo, tests, and evaluation"
+  ],
+  "verification": [
+    "cd c:\\Users\\91895\\OneDrive\\Desktop\\Longitudinal-Clinical-Coherence\\lcc_system && python -m pytest tests/ -v",
+    "cd c:\\Users\\91895\\OneDrive\\Desktop\\Longitudinal-Clinical-Coherence\\lcc_system && python demo.py",
+    "cd c:\\Users\\91895\\OneDrive\\Desktop\\Longitudinal-Clinical-Coherence\\lcc_system && python demo.py --case 2 --form pushback --verbose",
+    "cd c:\\Users\\91895\\OneDrive\\Desktop\\Longitudinal-Clinical-Coherence\\lcc_system && python demo.py --eval"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
