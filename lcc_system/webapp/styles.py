@@ -12,196 +12,54 @@ APP_CSS = """
     --muted: #94a3b8;
     --border: #1e293b;
     --border-light: #283854;
-    --primary: #d97706;
-    --primary-hover: #b45309;
+    --primary: #f59e0b;
+    --primary-hover: #d97706;
     --sky: #38bdf8;
     --sky-dark: #0284c7;
     --dock-bg: #14233c;
     --dock-input-bg: #0b1628;
 }
 
-/* HIDE STREAMLIT DEFAULT DEPLOY AND TOOLBAR ACTIONS, BUT KEEP SIDEBAR CONTROLS FULLY VISIBLE & INTERACTIVE */
-header[data-testid="stHeader"] {
-    background: transparent !important;
-    background-color: transparent !important;
-    height: 56px !important;
-    z-index: 10000000 !important;
+/* CUSTOM SCROLLBARS */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0b1120; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+/* SUPPRESS STREAMLIT DEFAULT HEADER & SIDEBAR ENTIRELY */
+header[data-testid="stHeader"],
+section[data-testid="stSidebar"],
+[data-testid="collapsedControl"],
+button[data-testid="stExpandSidebarButton"],
+#MainMenu,
+footer,
+.stDeployButton {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: absolute !important;
     pointer-events: none !important;
 }
 
-header[data-testid="stHeader"] button[data-testid="stExpandSidebarButton"],
-header[data-testid="stHeader"] button[aria-label="Expand sidebar"],
-header[data-testid="stHeader"] [data-testid="collapsedControl"],
-header[data-testid="stHeader"] [data-testid="stToolbar"] {
-    pointer-events: auto !important;
-}
-
-/* SIDEBAR EXPAND BUTTON (») WHEN SIDEBAR IS COLLAPSED — ALWAYS VISIBLE, INTERACTIVE & ELEVATED */
-button[data-testid="stExpandSidebarButton"],
-button[aria-label="Expand sidebar"],
-[data-testid="collapsedControl"] {
-    display: inline-flex !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    position: fixed !important;
-    top: 10px !important;
-    left: 12px !important;
-    z-index: 10000001 !important;
-    background: #14233c !important;
-    background-color: #14233c !important;
-    border: 1px solid rgba(56, 189, 248, 0.5) !important;
-    border-radius: 8px !important;
-    color: #38bdf8 !important;
-    width: 36px !important;
-    height: 36px !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
-    transition: all 0.2s ease-in-out !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-button[data-testid="stExpandSidebarButton"]:hover,
-button[aria-label="Expand sidebar"]:hover,
-[data-testid="collapsedControl"]:hover {
-    background: #1d3254 !important;
-    background-color: #1d3254 !important;
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 12px rgba(56, 189, 248, 0.6) !important;
-}
-
-button[data-testid="stExpandSidebarButton"] svg,
-button[aria-label="Expand sidebar"] svg,
-[data-testid="collapsedControl"] svg {
-    fill: #38bdf8 !important;
-    stroke: #38bdf8 !important;
-    color: #38bdf8 !important;
-}
-
-button[data-testid="stExpandSidebarButton"] button,
-[data-testid="collapsedControl"] button {
-    background: transparent !important;
-    border: none !important;
-    color: #38bdf8 !important;
-    width: 100% !important;
-    height: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* SIDEBAR COLLAPSE BUTTON («) INSIDE OPEN SIDEBAR */
-section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"],
-section[data-testid="stSidebar"] button[kind="header"],
-section[data-testid="stSidebar"] button[data-testid="stBaseButton-header"],
-button[data-testid="stSidebarCollapseButton"],
-button[aria-label="Collapse sidebar"] {
-    display: flex !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    color: #38bdf8 !important;
-    z-index: 10000001 !important;
-}
-
-section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] svg,
-button[data-testid="stSidebarCollapseButton"] svg,
-button[aria-label="Collapse sidebar"] svg {
-    fill: #38bdf8 !important;
-    stroke: #38bdf8 !important;
-    color: #38bdf8 !important;
-}
-
-/* HIDE ONLY DEPLOY BUTTON AND MAIN MENU, NEVER THE EXPAND/COLLAPSE CONTROLS */
-.stDeployButton,
-[data-testid="stDeployButton"],
-#MainMenu,
-[data-testid="stMainMenu"],
-[data-testid="stToolbarActions"],
-[data-testid="stDecoration"],
-footer {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-}
-
 /* GLOBAL RESET & FONTS */
-html, body, [class*="css"] {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: var(--text) !important;
+html, body, [data-testid="stAppViewContainer"] {
+    background: #070b14 !important;
+    background-color: #070b14 !important;
+    color: #f1f5f9 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    overflow-x: hidden !important;
 }
 
-.stApp,
-[data-testid="stAppViewContainer"],
-[data-testid="stMain"] {
-    background: var(--bg) !important;
-    background-color: var(--bg) !important;
-    color: var(--text) !important;
-}
-
-/* TOP APP NAVIGATION BAR (CLEAN INTEGRATED BANNER MATCHING PREVIEW) */
-.top-header-banner,
-.top-nav-bar {
-    width: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    background: #0b1222 !important;
-    border: 1px solid rgba(30, 41, 59, 0.9) !important;
-    border-radius: 14px !important;
-    padding: 8px 16px !important;
-    margin-bottom: 12px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
-    box-sizing: border-box !important;
-}
-
-button[data-testid*="btn_top_pipeline_status"] {
-    animation: breathe-glow 2.2s ease-in-out infinite !important;
-    border-radius: 9999px !important;
-    font-size: 0.78rem !important;
-    padding: 6px 14px !important;
-    font-weight: 700 !important;
-}
-
-.top-nav-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.top-nav-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #0284c7, #38bdf8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    box-shadow: 0 3px 10px rgba(56, 189, 248, 0.3);
-}
-
-.top-nav-title {
-    color: #ffffff !important;
-    font-weight: 800;
-    font-size: 1.05rem;
-    letter-spacing: -0.02em;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.top-nav-pill {
-    font-size: 0.65rem;
-    background: rgba(56, 189, 248, 0.15);
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    font-weight: 600;
-    padding: 1px 7px;
-    border-radius: 9999px;
-}
-
-.top-nav-subtitle {
-    color: var(--muted) !important;
-    font-size: 0.72rem;
+/* MAIN CONTENT CONTAINER */
+.main .block-container {
+    max-width: 100% !important;
+    padding-top: 0.65rem !important;
+    padding-bottom: 5.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
 }
 
 /* PIPELINE BREATHING GLOW BADGE & SPINNER */
@@ -227,184 +85,55 @@ button[data-testid*="btn_top_pipeline_status"] {
     animation: breathe-glow 2.2s ease-in-out infinite;
 }
 
-.pipeline-status-badge {
-    background: #080f1d;
-    border: 1px solid rgba(56, 189, 248, 0.45);
-    border-radius: 9999px;
-    padding: 5px 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.75rem;
-}
-
-.pipeline-spinner {
-    animation: spin 2s linear infinite;
-    width: 14px;
-    height: 14px;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
-.pipeline-dots {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-left: 4px;
-    padding-left: 8px;
-    border-left: 1px solid #334155;
-}
-
-.p-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.dot-extractor { background: #10b981; }
-.dot-evidence { background: #10b981; }
-.dot-verifier { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
-.dot-gate { background: #d97706; }
-
-/* TOP USER BADGE */
-.top-user-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #080d1a;
-    border: 1px solid #1e293b;
-    border-radius: 10px;
-    padding: 4px 10px;
-    font-size: 0.78rem;
-    color: #cbd5e1;
-}
-
-/* SIDEBAR — POSITIONED BELOW TOP HEADER */
-section[data-testid="stSidebar"] {
-    top: 56px !important;
-    height: calc(100vh - 56px) !important;
-    background: #0a101f !important;
-    background-color: #0a101f !important;
-    border-right: 1px solid var(--border) !important;
-    z-index: 100 !important;
-}
-
-section[data-testid="stSidebar"] * {
-    color: var(--text);
-}
-
-section[data-testid="stSidebar"] .block-container {
-    padding-top: 1rem !important;
-    padding-bottom: 2rem !important;
-}
-
-/* MAIN CONTENT CONTAINER — PADDED DOWN BELOW FIXED TOP HEADER */
-.main .block-container {
-    max-width: 100% !important;
-    padding-top: 68px !important;
-    padding-bottom: 7rem !important;
-    padding-left: 1.25rem !important;
-    padding-right: 1.25rem !important;
-}
-
-/* TEXT & TYPOGRAPHY */
-.stMarkdown,
-.stMarkdown p,
-.stMarkdown li,
-[data-testid="stMarkdownContainer"] {
-    color: var(--text);
-}
-
-.stCaption,
-small,
-[data-testid="stCaptionContainer"] {
-    color: var(--muted) !important;
-}
-
-.sidebar-profile-card {
-    background: #0b1222;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin: 14px 0 10px;
-}
-
-.sidebar-profile-name {
-    color: #ffffff !important;
-    font-weight: 700;
-    font-size: 0.88rem;
-}
-
-.sidebar-profile-meta {
-    color: var(--muted) !important;
-    font-size: 0.75rem;
-    margin-top: 2px;
-}
-
 /* BUTTONS — VELVET WARM AMBER PRIMARY & STEEL SKY SECONDARY */
 .stApp .stButton > button[data-testid*="primary"],
 .stApp button[data-testid*="primary"],
 button[data-testid*="primary"],
 button[kind="primary"],
 button[kind="primaryFormSubmit"] {
-    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+    background: #f59e0b !important;
     background-color: #f59e0b !important;
-    color: #070b14 !important;
-    border: 1px solid rgba(245, 158, 11, 0.6) !important;
+    color: #020617 !important;
+    border: none !important;
     border-radius: 10px !important;
-    font-weight: 800 !important;
-    font-size: 0.85rem !important;
-    box-shadow: 0 2px 10px rgba(217, 119, 6, 0.35) !important;
+    font-weight: 700 !important;
+    font-size: 0.82rem !important;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3) !important;
     transition: all 0.15s ease-in-out !important;
 }
 
 .stApp .stButton > button[data-testid*="primary"]:hover,
 .stApp button[data-testid*="primary"]:hover,
 button[data-testid*="primary"]:hover {
-    background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
-    color: #070b14 !important;
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5) !important;
-    transform: translateY(-1px);
+    background: #d97706 !important;
+    background-color: #d97706 !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.5) !important;
+    transform: translateY(-1px) !important;
 }
 
-.stApp .stButton > button[data-testid*="primary"] *,
-button[data-testid*="primary"] * {
-    color: #070b14 !important;
-    fill: #070b14 !important;
-    stroke: #070b14 !important;
-    font-weight: 800 !important;
-}
-
-.stApp .stButton > button,
 .stApp .stButton > button[data-testid*="secondary"],
 .stApp button[data-testid*="secondary"],
 button[data-testid*="secondary"],
 button[kind="secondary"] {
-    color: #cbd5e1 !important;
     background: #14233c !important;
     background-color: #14233c !important;
-    border: 1px solid #283854 !important;
-    border-radius: 10px !important;
+    color: #bae6fd !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    border-radius: 9px !important;
     font-weight: 600 !important;
-    font-size: 0.85rem !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+    font-size: 0.80rem !important;
     transition: all 0.15s ease-in-out !important;
 }
 
-.stApp .stButton > button:hover,
 .stApp .stButton > button[data-testid*="secondary"]:hover,
+.stApp button[data-testid*="secondary"]:hover,
 button[data-testid*="secondary"]:hover {
     background: #1d3254 !important;
+    background-color: #1d3254 !important;
     border-color: #38bdf8 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
-}
-
-.stApp .stButton > button *,
-button[data-testid*="secondary"] * {
-    color: inherit !important;
-    fill: currentColor !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.35) !important;
 }
 
 /* INPUT FIELDS */
@@ -414,7 +143,7 @@ button[data-testid*="secondary"] * {
 [data-baseweb="textarea"] textarea,
 [data-baseweb="select"] > div {
     color: #f1f5f9 !important;
-    background-color: #091122 !important;
+    background-color: #070b14 !important;
     caret-color: #38bdf8 !important;
     border-radius: 10px !important;
 }
@@ -429,7 +158,7 @@ button[data-testid*="secondary"] * {
 [data-baseweb="textarea"],
 [data-baseweb="select"] > div {
     border-color: #1e293b !important;
-    background-color: #091122 !important;
+    background-color: #070b14 !important;
     border-radius: 10px !important;
 }
 
@@ -442,9 +171,9 @@ button[data-testid*="secondary"] * {
 
 /* TABS — SLEEK SEGMENTED PILLS (ELIMINATES CLUNKY ODD GLOWING HIGHLIGHT LINE) */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 6px !important;
+    gap: 4px !important;
     background-color: #070b14 !important;
-    padding: 5px !important;
+    padding: 4px !important;
     border-radius: 12px !important;
     border: 1px solid #1e293b !important;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
@@ -463,10 +192,10 @@ button[data-testid*="secondary"] * {
 
 .stTabs [data-baseweb="tab"] {
     border-radius: 8px !important;
-    padding: 8px 20px !important;
+    padding: 7px 18px !important;
     color: #94a3b8 !important;
     font-weight: 600 !important;
-    font-size: 0.86rem !important;
+    font-size: 0.84rem !important;
     border: 1px solid transparent !important;
     background-color: transparent !important;
     transition: all 0.15s ease-in-out !important;
@@ -487,10 +216,10 @@ button[data-testid*="secondary"] * {
     font-weight: 700 !important;
 }
 
-/* CHAT MESSAGES & CARDS (MATCHING PREVIEW EXACTLY) */
+/* CHAT MESSAGES & CARDS */
 [data-testid="stChatMessage"] {
     background: transparent !important;
-    padding: 6px 0 !important;
+    padding: 4px 0 !important;
 }
 
 .chat-row-user {
@@ -498,8 +227,8 @@ button[data-testid*="secondary"] * {
     justify-content: flex-end;
     align-items: flex-start;
     gap: 12px;
-    margin-bottom: 16px;
-    max-width: 88%;
+    margin-bottom: 14px;
+    max-width: 90%;
     margin-left: auto;
 }
 
@@ -526,16 +255,16 @@ button[data-testid*="secondary"] * {
 .chat-avatar-user {
     width: 32px;
     height: 32px;
-    border-radius: 8px;
-    background: #d97706;
-    color: #ffffff !important;
+    border-radius: 50%;
+    background: #f59e0b;
+    color: #020617 !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    font-size: 0.82rem;
+    font-weight: 800;
+    font-size: 0.80rem;
     flex-shrink: 0;
-    box-shadow: 0 2px 10px rgba(217, 119, 6, 0.35);
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
 }
 
 .chat-row-assistant {
@@ -543,7 +272,7 @@ button[data-testid*="secondary"] * {
     justify-content: flex-start;
     align-items: flex-start;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     max-width: 90%;
 }
 
@@ -570,38 +299,38 @@ button[data-testid*="secondary"] * {
 .chat-avatar-assistant {
     width: 32px;
     height: 32px;
-    border-radius: 8px;
+    border-radius: 50%;
     background: #121e36;
     color: #38bdf8 !important;
     border: 1px solid rgba(56, 189, 248, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     flex-shrink: 0;
     box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
 }
 
-/* REFINED MIDNIGHT STEEL MESSAGE DOCK (BALANCED DARK TONE, ZERO EYE STRAIN) */
+/* REFINED STEEL SKY-BLUE MESSAGE DOCK */
 [data-testid="stBottom"] {
-    background: #0b1424 !important;
-    background-color: #0b1424 !important;
-    border-top: 1px solid rgba(56, 189, 248, 0.4) !important;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5), 0 -1px 3px rgba(56, 189, 248, 0.15) !important;
-    padding: 10px 16px 12px 16px !important;
-    z-index: 50 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    z-index: 100 !important;
 }
 
 [data-testid="stBottom"] > div {
-    background: transparent !important;
-    max-width: 860px !important;
-    margin: 0 auto !important;
+    background: #14233c !important;
+    background-color: #14233c !important;
+    border-top: 2px solid rgba(56, 189, 248, 0.8) !important;
+    box-shadow: 0 -4px 20px rgba(56, 189, 248, 0.25), 0 -1px 4px rgba(14, 165, 233, 0.15) !important;
+    padding: 10px 16px 8px 16px !important;
 }
 
 [data-testid="stChatInput"] {
-    background: #070e1a !important;
-    background-color: #070e1a !important;
-    border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
+    background: #0b1628 !important;
+    background-color: #0b1628 !important;
+    border: 2px solid rgba(56, 189, 248, 0.6) !important;
     border-radius: 12px !important;
     box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4) !important;
     transition: all 0.2s ease-in-out !important;
@@ -609,24 +338,29 @@ button[data-testid*="secondary"] * {
 
 [data-testid="stChatInput"]:focus-within {
     border-color: #38bdf8 !important;
-    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.4) !important;
 }
 
 [data-testid="stChatInput"] textarea {
     color: #f1f5f9 !important;
-    background: #070e1a !important;
-    background-color: #070e1a !important;
+    background: #0b1628 !important;
+    background-color: #0b1628 !important;
     border-radius: 10px !important;
-    font-size: 0.90rem !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
 }
 
 [data-testid="stChatInput"] textarea::placeholder {
-    color: #64748b !important;
+    color: #94a3b8 !important;
     opacity: 1 !important;
 }
 
 [data-testid="stChatInput"] button {
-    color: #38bdf8 !important;
+    background: #0284c7 !important;
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    border: none !important;
 }
 
 /* CARDS & EXPANDERS */
@@ -640,6 +374,28 @@ button[data-testid*="secondary"] * {
 .stApp [data-testid="stExpander"] summary span {
     color: #f1f5f9 !important;
     font-weight: 600 !important;
+}
+
+/* NATIVE DIALOG MODAL STYLING */
+div[data-testid="stDialog"] div[role="dialog"] {
+    background: #0b1222 !important;
+    border: 2px solid rgba(56, 189, 248, 0.5) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8) !important;
+    color: #f1f5f9 !important;
+}
+
+div[data-testid="stDialog"] div[role="dialog"] header {
+    border-bottom: 1px solid #1e293b !important;
+}
+
+div[data-testid="stDialog"] div[role="dialog"] button[aria-label="Close"] {
+    color: #94a3b8 !important;
+}
+
+div[data-testid="stDialog"] div[role="dialog"] button[aria-label="Close"]:hover {
+    color: #ffffff !important;
+    background: #1e293b !important;
 }
 </style>
 """

@@ -373,6 +373,21 @@ def test_no_raw_href_query_params_in_webapp():
     assert 'href="?toggle_inspector' not in content
     assert 'key="btn_top_intelligence_panel"' in content
     assert 'key="btn_top_pipeline_status"' in content
+    assert 'key="btn_toggle_history_sidebar"' in content
+
+
+def test_3_view_switcher_and_dialogs_present():
+    app_code = Path(__file__).parent.parent / "webapp" / "app.py"
+    content = app_code.read_text(encoding="utf-8")
+    assert 'nav_btn_chat' in content
+    assert 'nav_btn_login' in content
+    assert 'nav_btn_profile' in content
+    assert '@st.dialog' in content
+    assert 'open_pipeline_inspector_dialog' in content
+    assert 'open_prescription_dialog' in content
+    assert 'sidebar_toggle_hook' not in content
+    assert 'sidebar_click_listener' not in content
+
 
 
 
