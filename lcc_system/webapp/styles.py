@@ -85,6 +85,60 @@ html, body, [data-testid="stAppViewContainer"] {
     animation: breathe-glow 2.2s ease-in-out infinite;
 }
 
+/* PIPELINE BREATHING STATUS BUTTON WITH ROTATING BUFFER SPINNER & PULSING DOTS */
+.st-key-btn_top_pipeline_status button {
+    background: #080f1d !important;
+    background-color: #080f1d !important;
+    border: 1.5px solid rgba(56, 189, 248, 0.6) !important;
+    border-radius: 9999px !important;
+    color: #7dd3fc !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    padding: 6px 14px !important;
+    animation: breathe-glow 2.2s ease-in-out infinite !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.35) !important;
+    transition: all 0.2s ease-in-out !important;
+    cursor: pointer !important;
+}
+
+.st-key-btn_top_pipeline_status button:hover {
+    background: #0c162b !important;
+    background-color: #0c162b !important;
+    border-color: rgba(56, 189, 248, 0.95) !important;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.8), 0 0 10px rgba(14, 165, 233, 0.6) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ROTATING SPINNER BUFFER */
+.st-key-btn_top_pipeline_status button::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 13px !important;
+    height: 13px !important;
+    border: 2px solid rgba(56, 189, 248, 0.25) !important;
+    border-top: 2px solid #38bdf8 !important;
+    border-radius: 50% !important;
+    animation: spin 1s linear infinite !important;
+    margin-right: 8px !important;
+    flex-shrink: 0 !important;
+}
+
+/* STATUS DOTS */
+.st-key-btn_top_pipeline_status button::after {
+    content: "● ● ●" !important;
+    letter-spacing: 3px !important;
+    font-size: 8px !important;
+    color: #10b981 !important;
+    margin-left: 8px !important;
+    padding-left: 8px !important;
+    border-left: 1px solid #334155 !important;
+    text-shadow: 0 0 6px #10b981 !important;
+}
+
 /* BUTTONS — VELVET WARM AMBER PRIMARY & STEEL SKY SECONDARY */
 .stApp .stButton > button[data-testid*="primary"],
 .stApp button[data-testid*="primary"],

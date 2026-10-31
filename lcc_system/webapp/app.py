@@ -209,7 +209,7 @@ def open_prescription_dialog() -> None:
 
 def render_top_app_header(gate_status: str = "PASS", pref_name: str = "Patient") -> None:
     """Render top application navigation banner matching ui_preview.html with 3-view switcher."""
-    col_brand, col_pipe, col_views, col_intel, col_user = st.columns([0.28, 0.28, 0.23, 0.13, 0.08])
+    col_brand, col_pipe, col_views, col_intel, col_user = st.columns([0.27, 0.32, 0.22, 0.11, 0.08])
 
     with col_brand:
         render_clean_html(
@@ -231,7 +231,7 @@ def render_top_app_header(gate_status: str = "PASS", pref_name: str = "Patient")
         insp_open = st.session_state.get("show_pipeline_inspector", False)
         pipe_btn_type = "primary" if insp_open else "secondary"
         if st.button(
-            f"⚡ Pipeline: Coherence Verifier ➔ Gate [{gate_status}]",
+            f"Pipeline: Coherence Verifier ➔ Gate [{gate_status}]",
             key="btn_top_pipeline_status",
             use_container_width=True,
             type=pipe_btn_type,
@@ -831,10 +831,28 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
 
     # 1. Knowledge Graph or Timeline View
     if st.session_state.right_panel_tab == "graph":
+        col_g_hdr, col_g_btn = st.columns([0.62, 0.38])
+        with col_g_hdr:
+            render_clean_html(
+                """
+                <div style="font-size: 0.80rem; font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: 6px; padding-top: 4px;">
+                    <span>🕸️</span> Clinical Knowledge Graph
+                </div>
+                """
+            )
+        with col_g_btn:
+            if st.button("Inspect Nodes ➔", key="btn_inspect_graph_nodes", use_container_width=True, type="secondary"):
+                st.session_state.show_pipeline_inspector = True
+                st.rerun()
+
         facts = latest_payload.get("facts", []) if latest_payload else []
-        node_1 = facts[0].get("description")[:10] if len(facts) > 0 else "Chest"
-        node_2 = facts[1].get("description")[:10] if len(facts) > 1 else "Dyspnea"
+        node_1 = facts[0].get("description", "Chest")[:10] if len(facts) > 0 else "Chest"
+        node_2 = facts[1].get("description", "Dyspnea")[:10] if len(facts) > 1 else "Dyspnea"
         gate_text = latest_payload.get("verification", {}).get("gate_decision", "PASS") if latest_payload else "PASS"
+        state_sum = latest_payload.get("state_summary", {}) if latest_payload else {}
+        contradictions = state_sum.get("contradictions", [])
+        contra_text = f"⚠️ {len(contradictions)} Contradiction(s)" if contradictions else "0 Contradictions"
+        contra_color = "#ef4444" if contradictions else "#10b981"
 
         graph_html = f"""
         <!DOCTYPE html>
@@ -857,6 +875,23 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
             padding: 8px 10px;
             box-sizing: border-box;
           }}
+          @keyframes dash-pulse {{
+            to {{
+              stroke-dashoffset: -16;
+            }}
+          }}
+          .animated-edge {{
+            stroke-dasharray: 4, 4;
+            animation: dash-pulse 1.8s linear infinite;
+          }}
+          .node-circle {{
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+          }}
+          .node-circle:hover {{
+            stroke-width: 2.5;
+            filter: drop-shadow(0 0 6px #38bdf8);
+          }}
           .graph-footer {{
             display: flex;
             justify-content: space-between;
@@ -871,52 +906,62 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
         <body>
           <div class="graph-wrapper">
             <svg width="100%" height="135" viewBox="0 0 300 135">
-              <line x1="55" y1="30" x2="150" y2="65" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3,3" opacity="0.75"/>
-              <line x1="55" y1="105" x2="150" y2="65" stroke="#f59e0b" stroke-width="2" opacity="0.75"/>
-              <line x1="150" y1="65" x2="245" y2="35" stroke="#10b981" stroke-width="2" opacity="0.75"/>
-              <line x1="150" y1="65" x2="245" y2="95" stroke="#818cf8" stroke-width="2" opacity="0.75"/>
+              <!-- Animated Interconnection Edges -->
+              <line x1="55" y1="30" x2="150" y2="65" stroke="#38bdf8" stroke-width="2" class="animated-edge" opacity="0.85"/>
+              <line x1="55" y1="105" x2="150" y2="65" stroke="#f59e0b" stroke-width="2" class="animated-edge" opacity="0.85"/>
+              <line x1="150" y1="65" x2="245" y2="35" stroke="#10b981" stroke-width="2" class="animated-edge" opacity="0.85"/>
+              <line x1="150" y1="65" x2="245" y2="95" stroke="#818cf8" stroke-width="2" class="animated-edge" opacity="0.85"/>
 
-              <circle cx="55" cy="30" r="16" fill="#13233c" stroke="#38bdf8" stroke-width="1.5"/>
+              <!-- Node 1: Primary Symptom -->
+              <circle cx="55" cy="30" r="16" fill="#13233c" stroke="#38bdf8" stroke-width="1.8" class="node-circle"/>
               <text x="55" y="30" dominant-baseline="central" font-size="8.5" fill="#7dd3fc" text-anchor="middle" font-weight="bold">{node_1}</text>
 
-              <circle cx="55" cy="105" r="16" fill="#2d2212" stroke="#f59e0b" stroke-width="1.5"/>
+              <!-- Node 2: Secondary Symptom / Exertion -->
+              <circle cx="55" cy="105" r="16" fill="#2d2212" stroke="#f59e0b" stroke-width="1.8" class="node-circle"/>
               <text x="55" y="105" dominant-baseline="central" font-size="8.5" fill="#fcd34d" text-anchor="middle" font-weight="bold">{node_2}</text>
 
-              <circle cx="150" cy="65" r="20" fill="#1e1e38" stroke="#a78bfa" stroke-width="2"/>
+              <!-- Central Node: Coherence Gate Decision -->
+              <circle cx="150" cy="65" r="21" fill="#1e1e38" stroke="#a78bfa" stroke-width="2.2" class="node-circle"/>
               <text x="150" y="65" dominant-baseline="central" font-size="9.5" fill="#ddd6fe" text-anchor="middle" font-weight="bold">Gate: {gate_text}</text>
 
-              <circle cx="245" cy="35" r="15" fill="#112920" stroke="#10b981" stroke-width="1.5"/>
-              <text x="245" y="35" dominant-baseline="central" font-size="8" fill="#6ee7b7" text-anchor="middle">DailyMed</text>
+              <!-- Node 3: DailyMed FDA Evidence -->
+              <circle cx="245" cy="35" r="15" fill="#112920" stroke="#10b981" stroke-width="1.8" class="node-circle"/>
+              <text x="245" y="35" dominant-baseline="central" font-size="8" fill="#6ee7b7" text-anchor="middle" font-weight="bold">DailyMed</text>
 
-              <circle cx="245" cy="95" r="15" fill="#1a1c38" stroke="#818cf8" stroke-width="1.5"/>
-              <text x="245" y="95" dominant-baseline="central" font-size="8" fill="#c7d2fe" text-anchor="middle">RxNorm</text>
+              <!-- Node 4: RxNorm Normalized Concept -->
+              <circle cx="245" cy="95" r="15" fill="#1a1c38" stroke="#818cf8" stroke-width="1.8" class="node-circle"/>
+              <text x="245" y="95" dominant-baseline="central" font-size="8" fill="#c7d2fe" text-anchor="middle" font-weight="bold">RxNorm</text>
             </svg>
             <div class="graph-footer">
-              <span>● Click nodes to inspect</span>
-              <span style="color: #10b981; font-family: monospace; font-weight: bold;">0 Contradictions</span>
+              <span>● Click nodes or inspect button</span>
+              <span style="color: {contra_color}; font-family: monospace; font-weight: bold;">{contra_text}</span>
             </div>
           </div>
         </body>
         </html>
         """
-        components.html(graph_html, height=185)
+        components.html(graph_html, height=195)
     else:
         state_sum = latest_payload.get("state_summary", {}) if latest_payload else {}
         ver_num = state_sum.get("version", 1)
+        facts = latest_payload.get("facts", []) if latest_payload else []
+        facts_summary = ", ".join([f.get("description", "") for f in facts[:2]]) if facts else "None asserted"
+        gate_summary = latest_payload.get("verification", {}).get("gate_decision", "PASS") if latest_payload else "PASS"
+
         render_clean_html(
             f"""
-            <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; max-height: 175px; overflow-y: auto; font-size: 0.78rem;">
+            <div style="background: #070b14; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; max-height: 185px; overflow-y: auto; font-size: 0.78rem;">
                 <div style="border-left: 2px solid #10b981; padding-left: 8px; margin-bottom: 8px;">
-                    <div style="color: #94a3b8; font-size: 0.7rem;">Turn 0 • Baseline Record</div>
-                    <div style="color: #f1f5f9; font-weight: 600;">Age: 26 • Sex: Male</div>
+                    <div style="color: #94a3b8; font-size: 0.70rem;">Turn 0 • Baseline Record</div>
+                    <div style="color: #f1f5f9; font-weight: 600;">Demographics & History Loaded</div>
                 </div>
                 <div style="border-left: 2px solid #38bdf8; padding-left: 8px; margin-bottom: 8px;">
-                    <div style="color: #94a3b8; font-size: 0.7rem;">Turn 1 • Longitudinal State (v{ver_num})</div>
-                    <div style="color: #38bdf8; font-weight: 600;">+ Symptoms Asserted & Verified</div>
+                    <div style="color: #94a3b8; font-size: 0.70rem;">Turn 1 • Longitudinal State (v{ver_num})</div>
+                    <div style="color: #38bdf8; font-weight: 600;">+ Symptoms: {facts_summary}</div>
                 </div>
                 <div style="border-left: 2px solid #f59e0b; padding-left: 8px;">
-                    <div style="color: #94a3b8; font-size: 0.7rem;">Active • Safety Gate</div>
-                    <div style="color: #fcd34d; font-weight: 600;">Coherence Check: PASS</div>
+                    <div style="color: #94a3b8; font-size: 0.70rem;">Active • Safety Decision Gate</div>
+                    <div style="color: #fcd34d; font-weight: 600;">Coherence Check: {gate_summary}</div>
                 </div>
             </div>
             """
