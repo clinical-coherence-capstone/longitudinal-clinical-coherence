@@ -20,17 +20,78 @@ APP_CSS = """
     --dock-input-bg: #0b1628;
 }
 
-/* HIDE STREAMLIT DEFAULT DEPLOY HEADER & TOOLBAR COMPLETELY */
-header[data-testid="stHeader"],
-[data-testid="stHeader"],
-.stAppHeader,
-[data-testid="stDecoration"],
+/* HIDE STREAMLIT DEFAULT DEPLOY AND TOOLBAR, BUT KEEP SIDEBAR CONTROLS FULLY VISIBLE & INTERACTIVE */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    height: 56px !important;
+    z-index: 1000000 !important;
+    pointer-events: none !important;
+}
+
 [data-testid="stToolbar"],
+[data-testid="stDecoration"],
+.stDeployButton,
 #MainMenu,
 footer {
     display: none !important;
-    height: 0 !important;
     visibility: hidden !important;
+}
+
+/* SIDEBAR EXPAND BUTTON (») WHEN SIDEBAR IS COLLAPSED — ALWAYS VISIBLE, INTERACTIVE & ELEVATED */
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    position: fixed !important;
+    top: 10px !important;
+    left: 12px !important;
+    z-index: 1000001 !important;
+    background: #14233c !important;
+    border: 1px solid rgba(56, 189, 248, 0.5) !important;
+    border-radius: 8px !important;
+    color: #38bdf8 !important;
+    width: 36px !important;
+    height: 36px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+[data-testid="collapsedControl"]:hover {
+    background: #1d3254 !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.6) !important;
+}
+
+[data-testid="collapsedControl"] button {
+    background: transparent !important;
+    border: none !important;
+    color: #38bdf8 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+[data-testid="collapsedControl"] svg {
+    fill: #38bdf8 !important;
+    stroke: #38bdf8 !important;
+}
+
+/* SIDEBAR COLLAPSE BUTTON («) INSIDE OPEN SIDEBAR */
+section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"],
+section[data-testid="stSidebar"] button[kind="header"],
+section[data-testid="stSidebar"] button[data-testid="stBaseButton-header"] {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    color: #38bdf8 !important;
+}
+
+section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] svg {
+    fill: #38bdf8 !important;
+    stroke: #38bdf8 !important;
 }
 
 /* GLOBAL RESET & FONTS */
@@ -60,7 +121,7 @@ html, body, [class*="css"] {
     justify-content: space-between !important;
     background: #0b1222 !important;
     border-bottom: 1px solid rgba(30, 41, 59, 0.9) !important;
-    padding: 0 20px !important;
+    padding: 0 20px 0 54px !important;
     z-index: 999999 !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
     box-sizing: border-box !important;
@@ -248,29 +309,44 @@ small,
 }
 
 /* BUTTONS — VELVET WARM AMBER PRIMARY & STEEL SKY SECONDARY */
-.stApp .stButton > button[data-testid="baseButton-primary"],
-button[data-testid="baseButton-primary"] {
-    background: linear-gradient(135deg, #b45309, #d97706) !important;
-    background-color: #d97706 !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(245, 158, 11, 0.4) !important;
+.stApp .stButton > button[data-testid*="primary"],
+.stApp button[data-testid*="primary"],
+button[data-testid*="primary"],
+button[kind="primary"],
+button[kind="primaryFormSubmit"] {
+    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+    background-color: #f59e0b !important;
+    color: #070b14 !important;
+    border: 1px solid rgba(245, 158, 11, 0.6) !important;
     border-radius: 10px !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
     font-size: 0.85rem !important;
-    box-shadow: 0 2px 10px rgba(180, 83, 9, 0.3) !important;
+    box-shadow: 0 2px 10px rgba(217, 119, 6, 0.35) !important;
     transition: all 0.15s ease-in-out !important;
 }
 
-.stApp .stButton > button[data-testid="baseButton-primary"]:hover,
-button[data-testid="baseButton-primary"]:hover {
-    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4) !important;
+.stApp .stButton > button[data-testid*="primary"]:hover,
+.stApp button[data-testid*="primary"]:hover,
+button[data-testid*="primary"]:hover {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+    color: #070b14 !important;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5) !important;
+    transform: translateY(-1px);
+}
+
+.stApp .stButton > button[data-testid*="primary"] *,
+button[data-testid*="primary"] * {
+    color: #070b14 !important;
+    fill: #070b14 !important;
+    stroke: #070b14 !important;
+    font-weight: 800 !important;
 }
 
 .stApp .stButton > button,
-.stApp .stButton > button[data-testid="baseButton-secondary"],
-button[data-testid="baseButton-secondary"] {
+.stApp .stButton > button[data-testid*="secondary"],
+.stApp button[data-testid*="secondary"],
+button[data-testid*="secondary"],
+button[kind="secondary"] {
     color: #cbd5e1 !important;
     background: #14233c !important;
     background-color: #14233c !important;
@@ -278,17 +354,23 @@ button[data-testid="baseButton-secondary"] {
     border-radius: 10px !important;
     font-weight: 600 !important;
     font-size: 0.85rem !important;
-    box-shadow: none !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
     transition: all 0.15s ease-in-out !important;
 }
 
 .stApp .stButton > button:hover,
-.stApp .stButton > button[data-testid="baseButton-secondary"]:hover,
-button[data-testid="baseButton-secondary"]:hover {
-    background: #1c3052 !important;
+.stApp .stButton > button[data-testid*="secondary"]:hover,
+button[data-testid*="secondary"]:hover {
+    background: #1d3254 !important;
     border-color: #38bdf8 !important;
-    color: #38bdf8 !important;
-    box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+}
+
+.stApp .stButton > button *,
+button[data-testid*="secondary"] * {
+    color: inherit !important;
+    fill: currentColor !important;
 }
 
 /* INPUT FIELDS */
@@ -440,12 +522,12 @@ button[data-testid="baseButton-secondary"]:hover {
     box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
 }
 
-/* REFINED STEEL SKY-BLUE MESSAGE DOCK (MATCHING PREVIEW EXACTLY) */
+/* REFINED MIDNIGHT STEEL MESSAGE DOCK (BALANCED DARK TONE, ZERO EYE STRAIN) */
 [data-testid="stBottom"] {
-    background: #14233c !important;
-    background-color: #14233c !important;
-    border-top: 2px solid rgba(56, 189, 248, 0.8) !important;
-    box-shadow: 0 -4px 20px rgba(56, 189, 248, 0.25), 0 -1px 4px rgba(14, 165, 233, 0.15) !important;
+    background: #0b1424 !important;
+    background-color: #0b1424 !important;
+    border-top: 1px solid rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5), 0 -1px 3px rgba(56, 189, 248, 0.15) !important;
     padding: 10px 16px 12px 16px !important;
     z-index: 50 !important;
 }
@@ -457,29 +539,29 @@ button[data-testid="baseButton-secondary"]:hover {
 }
 
 [data-testid="stChatInput"] {
-    background: #0b1628 !important;
-    background-color: #0b1628 !important;
-    border: 2px solid rgba(56, 189, 248, 0.6) !important;
+    background: #070e1a !important;
+    background-color: #070e1a !important;
+    border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
     border-radius: 12px !important;
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4) !important;
     transition: all 0.2s ease-in-out !important;
 }
 
 [data-testid="stChatInput"]:focus-within {
     border-color: #38bdf8 !important;
-    box-shadow: 0 0 16px rgba(56, 189, 248, 0.45) !important;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
 }
 
 [data-testid="stChatInput"] textarea {
-    color: #f8fafc !important;
-    background: #0b1628 !important;
-    background-color: #0b1628 !important;
+    color: #f1f5f9 !important;
+    background: #070e1a !important;
+    background-color: #070e1a !important;
     border-radius: 10px !important;
-    font-size: 0.92rem !important;
+    font-size: 0.90rem !important;
 }
 
 [data-testid="stChatInput"] textarea::placeholder {
-    color: #94a3b8 !important;
+    color: #64748b !important;
     opacity: 1 !important;
 }
 

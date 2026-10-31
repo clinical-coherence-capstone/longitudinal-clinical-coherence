@@ -288,6 +288,26 @@ def delete_empty_conversations(user_id: int) -> None:
         conn.close()
 
 
+def delete_conversation(conversation_id: int, user_id: int) -> None:
+    """Permanently delete a conversation and all associated messages, verification results, and patient states."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM conversations WHERE id = ? AND user_id = ?", (conversation_id, user_id))
+        if not cursor.fetchone():
+            return
+        cursor.execute(
+            "DELETE FROM verification_results WHERE message_id IN (SELECT id FROM messages WHERE conversation_id = ?)",
+            (conversation_id,),
+        )
+        cursor.execute("DELETE FROM patient_states WHERE conversation_id = ?", (conversation_id,))
+        cursor.execute("DELETE FROM messages WHERE conversation_id = ?", (conversation_id,))
+        cursor.execute("DELETE FROM conversations WHERE id = ?", (conversation_id,))
+        conn.commit()
+    finally:
+        conn.close()
+
+
 def get_conversation(
     conversation_id: int,
     user_id: int,

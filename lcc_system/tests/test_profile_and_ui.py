@@ -323,3 +323,46 @@ def test_pipeline_inspector_payload_completeness():
     assert isinstance(res["medication_analysis"], list)
 
 
+def test_delete_conversation_cascading():
+    uid = database.create_user("delete_test_user", "securepass123")
+    cid = database.create_conversation(uid, "Test Consultation to Delete")
+
+    # Add message, verification, and state
+    mid = database.add_message(cid, "assistant", "Diagnostic reply")
+    database.save_verification_result(mid, '{"flags": []}', "PASS", "Reasoning")
+    database.save_patient_state(cid, 1, '{"version": 1}')
+
+    assert database.get_conversation(cid, uid) is not None
+    assert len(database.get_messages(cid)) == 1
+
+    # Execute deletion
+    database.delete_conversation(cid, uid)
+
+    # Verify conversation and cascade are purged
+    assert database.get_conversation(cid, uid) is None
+    assert len(database.get_messages(cid)) == 0
+    assert database.get_verification_result(mid) is None
+    assert database.get_latest_patient_state(cid) is None
+
+
+def test_sqlite3_row_dict_conversion_safe():
+    uid = database.create_user("row_dict_user", "securepass123")
+    cid = database.create_conversation(uid, "Row Dict Test")
+    mid = database.add_message(cid, "assistant", "Verified advice")
+    database.save_verification_result(mid, '{"gate_decision": "PASS", "flags": []}', "PASS", "All constraints coherent")
+
+    ver_rec = database.get_verification_result(mid)
+    assert ver_rec is not None
+    # sqlite3.Row does NOT implement .get()
+    with pytest.raises(AttributeError):
+        _ = ver_rec.get("gate_decision")
+
+    # Converting to dict(ver_rec) safely exposes .get()
+    ver_dict = dict(ver_rec)
+    assert ver_dict.get("gate_decision") == "PASS"
+    assert ver_dict.get("reasoning") == "All constraints coherent"
+    parsed_json = json.loads(ver_dict["flags_json"])
+    assert parsed_json.get("gate_decision") == "PASS"
+
+
+

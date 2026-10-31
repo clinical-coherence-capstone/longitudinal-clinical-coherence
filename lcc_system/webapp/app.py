@@ -24,6 +24,7 @@ try:
         create_conversation,
         get_conversations_for_user,
         delete_empty_conversations,
+        delete_conversation,
         get_conversation,
         add_message,
         get_messages,
@@ -42,6 +43,7 @@ except ImportError:
         create_conversation,
         get_conversations_for_user,
         delete_empty_conversations,
+        delete_conversation,
         get_conversation,
         add_message,
         get_messages,
@@ -147,6 +149,7 @@ def _init_session() -> None:
         ("right_panel_tab", "graph"),
         ("show_pipeline_inspector", False),
         ("inspector_stage", "extractor"),
+        ("pinned_conv_ids", []),
         ("show_add_prescription_modal", False),
         ("uploaded_prescriptions", [
             {"name": "Prescription_Oct2026.pdf", "med": "Metformin 500mg • Once Daily", "folder": "My Prescriptions"}
@@ -638,6 +641,49 @@ def show_onboarding_page(is_editing: bool = False) -> None:
 # Part 3: Left Sidebar
 # ---------------------------------------------------------------------------
 
+def _render_sidebar_conv_row(conv, is_pinned: bool) -> None:
+    """Render a conversation row with resume, pin, and delete controls."""
+    cid = conv["id"]
+    title = conv["title"]
+    is_active = st.session_state.conv_id == cid and not st.session_state.editing_profile
+
+    prefix = "👉 " if is_active else ("📌 " if is_pinned else "💬 ")
+    display_title = f"{prefix}{title}"
+    if len(display_title) > 26:
+        display_title = display_title[:24] + ".."
+
+    col_btn, col_pin, col_del = st.columns([0.68, 0.16, 0.16])
+    with col_btn:
+        btn_type = "primary" if is_active else "secondary"
+        if st.button(display_title, key=f"side_c_{cid}", use_container_width=True, type=btn_type, help=title):
+            st.session_state.conv_id = cid
+            st.session_state.editing_profile = False
+            st.rerun()
+
+    with col_pin:
+        pin_icon = "📍" if is_pinned else "📌"
+        pin_tip = "Unpin from top" if is_pinned else "Pin to top"
+        if st.button(pin_icon, key=f"pin_c_{cid}", use_container_width=True, type="secondary", help=pin_tip):
+            pinned_list = list(st.session_state.get("pinned_conv_ids", []))
+            if cid in pinned_list:
+                pinned_list.remove(cid)
+            else:
+                pinned_list.append(cid)
+            st.session_state.pinned_conv_ids = pinned_list
+            st.rerun()
+
+    with col_del:
+        if st.button("🗑️", key=f"del_c_{cid}", use_container_width=True, type="secondary", help="Delete consultation"):
+            delete_conversation(cid, st.session_state.user_id)
+            pinned_list = list(st.session_state.get("pinned_conv_ids", []))
+            if cid in pinned_list:
+                pinned_list.remove(cid)
+                st.session_state.pinned_conv_ids = pinned_list
+            if st.session_state.conv_id == cid:
+                st.session_state.conv_id = None
+            st.rerun()
+
+
 def show_sidebar(patient_profile: dict | None) -> None:
     """Render left sidebar with brand logo, search, conversation history, and user controls."""
     if st.session_state.user_id:
@@ -671,27 +717,27 @@ def show_sidebar(patient_profile: dict | None) -> None:
         )
         st.session_state.chat_search_query = search_q
 
-        st.caption("CONVERSATION HISTORY")
+        pinned_ids = set(st.session_state.get("pinned_conv_ids", []))
+        all_convs = get_conversations_for_user(st.session_state.user_id, search_q)
 
-        convs = get_conversations_for_user(st.session_state.user_id, search_q)
-
-        if not convs:
+        if not all_convs:
             if search_q.strip():
-                st.caption("No matching conversations found.")
+                st.caption("No matching consultations found.")
             else:
-                st.caption("No conversations yet. Start a new consultation above!")
+                st.caption("No consultations yet. Start a new consultation above!")
         else:
-            for conv in convs:
-                updated_date = conv["updated_at"][:10]
-                label = f"{conv['title']} • {updated_date}"
-                is_active = st.session_state.conv_id == conv["id"] and not st.session_state.editing_profile
-                btn_label = f"👉 {label}" if is_active else label
-                if st.button(
-                    btn_label, key=f"side_conv_{conv['id']}", use_container_width=True, type="secondary"
-                ):
-                    st.session_state.conv_id = conv["id"]
-                    st.session_state.editing_profile = False
-                    st.rerun()
+            pinned_convs = [c for c in all_convs if c["id"] in pinned_ids]
+            recent_convs = [c for c in all_convs if c["id"] not in pinned_ids]
+
+            if pinned_convs:
+                st.caption("📌 PINNED CONSULTATIONS")
+                for conv in pinned_convs:
+                    _render_sidebar_conv_row(conv, is_pinned=True)
+
+            if recent_convs:
+                st.caption("RECENT CONSULTATIONS")
+                for conv in recent_convs:
+                    _render_sidebar_conv_row(conv, is_pinned=False)
 
         st.markdown("---")
 
@@ -735,9 +781,11 @@ def show_sidebar(patient_profile: dict | None) -> None:
                 st.session_state.page = "login"
                 st.rerun()
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
-        if st.button("⚡ Clinical Pipeline Inspector", key="btn_sidebar_inspector", use_container_width=True, type="secondary"):
+        insp_label = "⚡ Hide Inspector" if st.session_state.get("show_pipeline_inspector", False) else "⚡ Clinical Pipeline Inspector"
+        insp_type = "primary" if st.session_state.get("show_pipeline_inspector", False) else "secondary"
+        if st.button(insp_label, key="btn_sidebar_inspector", use_container_width=True, type=insp_type):
             st.session_state.show_pipeline_inspector = not st.session_state.get("show_pipeline_inspector", False)
             st.rerun()
 
@@ -748,21 +796,25 @@ def show_sidebar(patient_profile: dict | None) -> None:
 
 def show_pipeline_inspector(latest_payload: dict | None) -> None:
     """Render interactive inspector displaying live clinical data and verification telemetry."""
-    render_clean_html(
-        """
-        <div style="background: #0b1222; border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 16px; padding: 18px; margin-bottom: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 14px;">
+    col_insp_title, col_insp_close = st.columns([0.84, 0.16])
+    with col_insp_title:
+        render_clean_html(
+            """
+            <div style="background: #0b1222; border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 16px; padding: 14px 18px; margin-bottom: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="font-size: 1.5rem; color: #38bdf8;">⚡</span>
                     <div>
-                        <h3 style="margin: 0; color: #ffffff; font-size: 1.15rem; font-weight: 800;">Clinical Pipeline Inspector & Diagnostics</h3>
-                        <small style="color: #94a3b8;">Inspect live extracted entities, RxNorm mappings, DailyMed FDA monographs, and coherence gates</small>
+                        <h3 style="margin: 0; color: #ffffff; font-size: 1.12rem; font-weight: 800;">Clinical Pipeline Inspector & Diagnostics</h3>
+                        <small style="color: #94a3b8;">Live extracted entities, RxNorm mappings, DailyMed FDA monographs, and coherence gates</small>
                     </div>
                 </div>
             </div>
-        </div>
-        """
-    )
+            """
+        )
+    with col_insp_close:
+        if st.button("✕ Close", key="btn_close_insp_banner", use_container_width=True, type="secondary", help="Close Pipeline Inspector"):
+            st.session_state.show_pipeline_inspector = False
+            st.rerun()
 
     t_ext, t_state, t_norm, t_ev, t_ver, t_gate = st.tabs([
         "1. Extractor",
@@ -889,25 +941,29 @@ def show_pipeline_inspector(latest_payload: dict | None) -> None:
 
 def render_right_intelligence_panel(latest_payload: dict | None, patient_profile: dict | None) -> None:
     """Render right-side clinical intelligence slide panel cleanly with zero raw SVG text leaks."""
-    render_clean_html(
-        """
-        <div style="background: #0b1222; border: 1px solid #1e293b; border-radius: 14px; padding: 14px; margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
-                <span style="color: #38bdf8; font-weight: 800; font-size: 0.88rem;">📊 Clinical Intelligence</span>
+    col_intel_hdr, col_intel_close = st.columns([0.84, 0.16])
+    with col_intel_hdr:
+        render_clean_html(
+            """
+            <div style="display: flex; align-items: center; gap: 8px; padding: 4px 0;">
+                <span style="color: #38bdf8; font-weight: 800; font-size: 0.92rem;">📊 Clinical Intelligence</span>
             </div>
-        </div>
-        """
-    )
+            """
+        )
+    with col_intel_close:
+        if st.button("✕", key="btn_close_intel_panel", use_container_width=True, type="secondary", help="Close Intelligence Panel"):
+            st.session_state.show_right_panel = False
+            st.rerun()
 
     col_tg_g, col_tg_t = st.columns(2)
     with col_tg_g:
         btn_g_type = "primary" if st.session_state.right_panel_tab == "graph" else "secondary"
-        if st.button("📈 Graph", use_container_width=True, type=btn_g_type):
+        if st.button("📈 Graph", key="tab_btn_graph", use_container_width=True, type=btn_g_type):
             st.session_state.right_panel_tab = "graph"
             st.rerun()
     with col_tg_t:
         btn_t_type = "primary" if st.session_state.right_panel_tab == "timeline" else "secondary"
-        if st.button("⏳ Timeline", use_container_width=True, type=btn_t_type):
+        if st.button("⏳ Timeline", key="tab_btn_timeline", use_container_width=True, type=btn_t_type):
             st.session_state.right_panel_tab = "timeline"
             st.rerun()
 
@@ -958,19 +1014,19 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
               <line x1="150" y1="65" x2="245" y2="95" stroke="#818cf8" stroke-width="2" opacity="0.75"/>
 
               <circle cx="55" cy="30" r="16" fill="#13233c" stroke="#38bdf8" stroke-width="1.5"/>
-              <text x="55" y="34" font-size="8" fill="#7dd3fc" text-anchor="middle" font-weight="bold">{node_1}</text>
+              <text x="55" y="30" dominant-baseline="central" font-size="8.5" fill="#7dd3fc" text-anchor="middle" font-weight="bold">{node_1}</text>
 
               <circle cx="55" cy="105" r="16" fill="#2d2212" stroke="#d97706" stroke-width="1.5"/>
-              <text x="55" y="109" font-size="8" fill="#fcd34d" text-anchor="middle" font-weight="bold">{node_2}</text>
+              <text x="55" y="105" dominant-baseline="central" font-size="8.5" fill="#fcd34d" text-anchor="middle" font-weight="bold">{node_2}</text>
 
               <circle cx="150" cy="65" r="20" fill="#1e1e38" stroke="#a78bfa" stroke-width="2"/>
-              <text x="150" y="69" font-size="9" fill="#ddd6fe" text-anchor="middle" font-weight="bold">Gate: {gate_text}</text>
+              <text x="150" y="65" dominant-baseline="central" font-size="9.5" fill="#ddd6fe" text-anchor="middle" font-weight="bold">Gate: {gate_text}</text>
 
               <circle cx="245" cy="35" r="15" fill="#112920" stroke="#10b981" stroke-width="1.5"/>
-              <text x="245" y="38" font-size="7" fill="#6ee7b7" text-anchor="middle">DailyMed</text>
+              <text x="245" y="35" dominant-baseline="central" font-size="8" fill="#6ee7b7" text-anchor="middle">DailyMed</text>
 
               <circle cx="245" cy="95" r="15" fill="#1a1c38" stroke="#818cf8" stroke-width="1.5"/>
-              <text x="245" y="98" font-size="7" fill="#c7d2fe" text-anchor="middle">RxNorm</text>
+              <text x="245" y="95" dominant-baseline="central" font-size="8" fill="#c7d2fe" text-anchor="middle">RxNorm</text>
             </svg>
             <div class="graph-footer">
               <span>● Clinical Knowledge Graph</span>
@@ -1303,6 +1359,22 @@ def show_main_chat(patient_profile: dict | None) -> None:
         """
     )
 
+    # Render Pipeline Inspector if toggled (accessible on all screens)
+    if st.session_state.get("show_pipeline_inspector", False):
+        inspector_payload = None
+        if st.session_state.conv_id is not None:
+            active_msgs = get_messages(st.session_state.conv_id)
+            for m in reversed(active_msgs):
+                if m["role"] == "assistant":
+                    vrec = get_verification_result(m["id"])
+                    if vrec:
+                        try:
+                            inspector_payload = json.loads(vrec["flags_json"])
+                        except Exception:
+                            pass
+                        break
+        show_pipeline_inspector(inspector_payload)
+
     if st.session_state.conv_id is None:
         pref_name = patient_profile.get("preferred_name") if patient_profile else st.session_state.username
 
@@ -1378,33 +1450,57 @@ def show_main_chat(patient_profile: dict | None) -> None:
                     pass
                 break
 
-    # Breadcrumb Row (Matching preview: History indicator, title, pass badge, panel toggle)
-    col_hdr_left, col_hdr_right = st.columns([4, 1.2])
+    # Breadcrumb Row (Matching preview: History indicator, title, pass badge, active state version, panel toggle)
+    state_ver = latest_payload.get("state_summary", {}).get("version", 1) if latest_payload else 1
+    col_hdr_left, col_hdr_right = st.columns([0.76, 0.24])
     with col_hdr_left:
         render_clean_html(
             f"""
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                <span style="background: #14233c; border: 1px solid #283854; padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; color: #cbd5e1; font-weight: 600;">📑 History</span>
-                <span style="color: #64748b;">|</span>
-                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff;">{conv['title']}</h3>
-                <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px; font-family: monospace;">Verified {latest_gate_decision}</span>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="background: #14233c; border: 1px solid #283854; padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; color: #cbd5e1; font-weight: 600;">📑 History</span>
+                    <span style="color: #64748b;">|</span>
+                    <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff;">{conv['title']}</h3>
+                    <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px; font-family: monospace;">Verified {latest_gate_decision}</span>
+                </div>
+                <div style="font-size: 0.72rem; color: #94a3b8; font-family: monospace;">
+                    Active Patient State: <strong style="color: #38bdf8;">v{state_ver}</strong>
+                </div>
             </div>
             """
         )
 
     with col_hdr_right:
         toggle_label = "Hide Panel" if st.session_state.show_right_panel else "Intelligence Panel"
-        if st.button(f"📊 {toggle_label}", key="btn_toggle_right_panel", use_container_width=True, type="secondary"):
+        btn_type = "secondary" if st.session_state.show_right_panel else "primary"
+        if st.button(f"📊 {toggle_label}", key="btn_toggle_right_panel", use_container_width=True, type=btn_type):
             st.session_state.show_right_panel = not st.session_state.show_right_panel
             st.rerun()
 
-    if st.session_state.get("show_pipeline_inspector", False):
-        show_pipeline_inspector(latest_payload)
-
     # Dual-Panel Layout: Chat Area (67%) | Right Intelligence Panel (33%)
+    # Constrain bottom message dock to col_chat when right intelligence panel is active so it never overlaps or stretches across
     if st.session_state.show_right_panel:
+        render_clean_html(
+            """
+            <style>
+            [data-testid="stBottom"] {
+                right: 33.5% !important;
+                border-right: 1px solid #1e293b !important;
+            }
+            </style>
+            """
+        )
         col_chat, col_intel = st.columns([67, 33])
     else:
+        render_clean_html(
+            """
+            <style>
+            [data-testid="stBottom"] {
+                right: 0 !important;
+            }
+            </style>
+            """
+        )
         col_chat = st.container()
         col_intel = None
 
@@ -1437,9 +1533,10 @@ def show_main_chat(patient_profile: dict | None) -> None:
             else:
                 formatted_text = format_chat_text(msg['content'])
                 ver_record = get_verification_result(msg["id"])
+                ver_dict = dict(ver_record) if ver_record else None
                 gate_badge = '<span style="background: rgba(14, 165, 233, 0.2); color: #38bdf8; padding: 1px 6px; border-radius: 4px; font-size: 0.68rem; font-family: monospace;">Verified AI</span>'
-                if ver_record and ver_record.get("gate_decision"):
-                    g_dec = ver_record["gate_decision"]
+                if ver_dict and ver_dict.get("gate_decision"):
+                    g_dec = ver_dict["gate_decision"]
                     g_col = "#10b981" if g_dec == "PASS" else ("#f59e0b" if g_dec in ["WARN", "CLARIFY"] else "#ef4444")
                     gate_badge = f'<span style="background: rgba(16, 185, 129, 0.15); color: {g_col}; border: 1px solid {g_col}66; padding: 1px 6px; border-radius: 4px; font-size: 0.68rem; font-family: monospace;">Gate: {g_dec}</span>'
 
@@ -1460,12 +1557,11 @@ def show_main_chat(patient_profile: dict | None) -> None:
                     </div>
                     """
                 )
-                ver_record = get_verification_result(msg["id"])
-                if ver_record:
+                if ver_dict:
                     try:
-                        raw_payload = json.loads(ver_record["flags_json"])
+                        raw_payload = json.loads(ver_dict["flags_json"])
                         payload = raw_payload if isinstance(raw_payload, dict) and "verification" in raw_payload else {
-                            "verification": {"gate_decision": ver_record["gate_decision"], "reasoning": ver_record["reasoning"], "flags": []},
+                            "verification": {"gate_decision": ver_dict["gate_decision"], "reasoning": ver_dict["reasoning"], "flags": []},
                             "facts": [],
                             "state_summary": {},
                             "evidence": [],
@@ -1474,7 +1570,7 @@ def show_main_chat(patient_profile: dict | None) -> None:
                         }
                     except Exception:
                         payload = {
-                            "verification": {"gate_decision": ver_record["gate_decision"], "reasoning": ver_record["reasoning"], "flags": []},
+                            "verification": {"gate_decision": ver_dict["gate_decision"], "reasoning": ver_dict["reasoning"], "flags": []},
                             "facts": [],
                             "state_summary": {},
                             "evidence": [],
