@@ -20,17 +20,49 @@ APP_CSS = """
     --dock-input-bg: #0b1628;
 }
 
-/* HIDE STREAMLIT DEFAULT DEPLOY HEADER & TOOLBAR COMPLETELY */
+/* Keep Streamlit header visible: the native sidebar expand/collapse
+   control is rendered inside stHeader. Hiding the header (or the whole
+   toolbar) removes the only way to reopen the left sidebar. */
 header[data-testid="stHeader"],
 [data-testid="stHeader"],
-.stAppHeader,
+.stAppHeader {
+    background: transparent !important;
+    background-color: transparent !important;
+    visibility: visible !important;
+    display: block !important;
+    height: 3rem !important;
+    min-height: 3rem !important;
+    pointer-events: auto !important;
+    z-index: 999999 !important;
+}
+
+/* Hide chrome only — never stHeader/stToolbar, which host the expand button */
 [data-testid="stDecoration"],
-[data-testid="stToolbar"],
+[data-testid="stToolbarActions"],
+[data-testid="stStatusWidget"],
+.stDeployButton,
 #MainMenu,
 footer {
     display: none !important;
     height: 0 !important;
     visibility: hidden !important;
+}
+
+/* Streamlit 1.59 renders expand in the toolbar and collapse in the sidebar header */
+[data-testid="stToolbar"] {
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+[data-testid="stHeader"] [data-testid="stExpandSidebarButton"],
+[data-testid="stToolbar"] [data-testid="stExpandSidebarButton"],
+button[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapseButton"] button {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 1000000 !important;
 }
 
 /* GLOBAL RESET & FONTS */
