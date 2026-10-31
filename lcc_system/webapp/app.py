@@ -1313,6 +1313,22 @@ def show_main_chat(patient_profile: dict | None) -> None:
         show_onboarding_page(is_editing=True)
         return
 
+    if "toggle_panel" in st.query_params:
+        st.session_state.show_right_panel = not st.session_state.get("show_right_panel", True)
+        try:
+            del st.query_params["toggle_panel"]
+        except Exception:
+            pass
+        st.rerun()
+
+    if "toggle_inspector" in st.query_params:
+        st.session_state.show_pipeline_inspector = not st.session_state.get("show_pipeline_inspector", False)
+        try:
+            del st.query_params["toggle_inspector"]
+        except Exception:
+            pass
+        st.rerun()
+
     # Fetch latest gate status if conversation active
     gate_status = "PASS"
     if st.session_state.conv_id is not None:
@@ -1329,7 +1345,23 @@ def show_main_chat(patient_profile: dict | None) -> None:
     sex_str = patient_profile.get("sex_assigned_at_birth") if patient_profile else ""
     user_info = f"{pref_name}" + (f" ({age_str}" + (f" • {sex_str}" if sex_str and sex_str != "Prefer not to say" else "") + ")" if age_str and age_str != "Unknown" else "")
 
-    # Top App Header (Matching the interactive preview exactly)
+    intel_open = st.session_state.get("show_right_panel", True)
+    if intel_open:
+        top_btn_bg = "#14233c"
+        top_btn_color = "#38bdf8"
+        top_btn_border = "rgba(56, 189, 248, 0.4)"
+        top_btn_shadow = "0 2px 8px rgba(0,0,0,0.3)"
+        top_btn_text = "Intelligence Panel"
+        top_panel_tip = "Click to close Clinical Intelligence slide panel"
+    else:
+        top_btn_bg = "linear-gradient(135deg, #d97706, #f59e0b)"
+        top_btn_color = "#070b14"
+        top_btn_border = "rgba(245, 158, 11, 0.8)"
+        top_btn_shadow = "0 0 14px rgba(245, 158, 11, 0.55)"
+        top_btn_text = "Intelligence Panel"
+        top_panel_tip = "Click to open Clinical Intelligence slide panel"
+
+    # Top App Header (Matching the interactive preview exactly with top Intelligence Panel toggle)
     render_clean_html(
         f"""
         <div class="top-nav-bar">
@@ -1343,25 +1375,37 @@ def show_main_chat(patient_profile: dict | None) -> None:
                     <div class="top-nav-subtitle">Longitudinal Clinical Coherence & Decision Verification</div>
                 </div>
             </div>
-            <div class="pipeline-status-badge pipeline-breathing">
-                <svg class="pipeline-spinner" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="3" opacity="0.25"></circle>
-                    <path fill="#38bdf8" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span style="color: #94a3b8; font-weight: 500; font-size: 0.72rem;">Pipeline:</span>
-                <span style="color: #38bdf8; font-weight: 700; font-size: 0.72rem;">Coherence Verifier</span>
-                <span style="color: #64748b; font-size: 0.7rem;">➔</span>
-                <span style="color: #d97706; font-weight: 700; font-size: 0.72rem;">Gate [{gate_status}]</span>
-                <div class="pipeline-dots">
-                    <span class="p-dot dot-extractor" title="State Extractor: Complete"></span>
-                    <span class="p-dot dot-evidence" title="Evidence Retriever: Complete"></span>
-                    <span class="p-dot dot-verifier" title="Coherence Verifier: Active"></span>
-                    <span class="p-dot dot-gate" title="Decision Gate: Verified"></span>
+            
+            <a href="?toggle_inspector=1" target="_self" title="Click to toggle Clinical Pipeline Inspector" style="text-decoration: none;">
+                <div class="pipeline-status-badge pipeline-breathing" style="cursor: pointer;">
+                    <svg class="pipeline-spinner" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="3" opacity="0.25"></circle>
+                        <path fill="#38bdf8" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span style="color: #94a3b8; font-weight: 500; font-size: 0.72rem;">Pipeline:</span>
+                    <span style="color: #38bdf8; font-weight: 700; font-size: 0.72rem;">Coherence Verifier</span>
+                    <span style="color: #64748b; font-size: 0.7rem;">➔</span>
+                    <span style="color: #d97706; font-weight: 700; font-size: 0.72rem;">Gate [{gate_status}]</span>
+                    <div class="pipeline-dots">
+                        <span class="p-dot dot-extractor" title="State Extractor: Complete"></span>
+                        <span class="p-dot dot-evidence" title="Evidence Retriever: Complete"></span>
+                        <span class="p-dot dot-verifier" title="Coherence Verifier: Active"></span>
+                        <span class="p-dot dot-gate" title="Decision Gate: Verified"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="top-user-badge">
-                <span>👤</span>
-                <span><strong>{user_info}</strong></span>
+            </a>
+
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <a href="?toggle_panel=1" target="_self" title="{top_panel_tip}"
+                   style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: {top_btn_bg}; color: {top_btn_color}; border: 1px solid {top_btn_border}; border-radius: 8px; font-size: 0.75rem; font-weight: 800; text-decoration: none; box-shadow: {top_btn_shadow}; transition: all 0.2s ease-in-out;">
+                    <span>📊</span>
+                    <span>{top_btn_text}</span>
+                </a>
+
+                <div class="top-user-badge">
+                    <span>👤</span>
+                    <span><strong>{user_info}</strong></span>
+                </div>
             </div>
         </div>
         """
