@@ -1417,17 +1417,18 @@ def show_main_chat(patient_profile: dict | None) -> None:
             """
         )
         for msg in messages:
-            time_str = msg["created_at"][:16].replace("T", " ")
+            time_str = msg["created_at"][11:16] if "T" in msg["created_at"] else msg["created_at"][:16]
             if msg["role"] == "user":
                 formatted_text = format_chat_text(msg['content'])
                 render_clean_html(
                     f"""
                     <div class="chat-row-user">
-                        <div style="display: flex; flex-direction: column; align-items: flex-end; max-width: 82%;">
-                            <div class="chat-bubble-user">
-                                {formatted_text}
+                        <div class="chat-card-user">
+                            <div class="chat-card-user-header">
+                                <span style="font-weight: 700; color: #fcd34d;">You (Patient)</span>
+                                <span style="color: #94a3b8; font-family: monospace;">{time_str}</span>
                             </div>
-                            <div class="chat-timestamp-subtle" style="text-align: right; padding-right: 0.5rem;">{time_str} UTC</div>
+                            <div style="font-size: 0.88rem; line-height: 1.55;">{formatted_text}</div>
                         </div>
                         <div class="chat-avatar-user" title="You">SP</div>
                     </div>
@@ -1435,15 +1436,26 @@ def show_main_chat(patient_profile: dict | None) -> None:
                 )
             else:
                 formatted_text = format_chat_text(msg['content'])
+                ver_record = get_verification_result(msg["id"])
+                gate_badge = '<span style="background: rgba(14, 165, 233, 0.2); color: #38bdf8; padding: 1px 6px; border-radius: 4px; font-size: 0.68rem; font-family: monospace;">Verified AI</span>'
+                if ver_record and ver_record.get("gate_decision"):
+                    g_dec = ver_record["gate_decision"]
+                    g_col = "#10b981" if g_dec == "PASS" else ("#f59e0b" if g_dec in ["WARN", "CLARIFY"] else "#ef4444")
+                    gate_badge = f'<span style="background: rgba(16, 185, 129, 0.15); color: {g_col}; border: 1px solid {g_col}66; padding: 1px 6px; border-radius: 4px; font-size: 0.68rem; font-family: monospace;">Gate: {g_dec}</span>'
+
                 render_clean_html(
                     f"""
                     <div class="chat-row-assistant">
                         <div class="chat-avatar-assistant" title="ClinCoherence Assistant">🩺</div>
-                        <div style="display: flex; flex-direction: column; align-items: flex-start; max-width: 85%; width: 100%;">
-                            <div class="chat-bubble-assistant">
-                                {formatted_text}
+                        <div class="chat-card-assistant">
+                            <div class="chat-card-assistant-header">
+                                <span style="font-weight: 700; color: #7dd3fc; display: flex; align-items: center; gap: 6px;">
+                                    ClinCoherence Assistant
+                                    {gate_badge}
+                                </span>
+                                <span style="color: #94a3b8; font-family: monospace;">{time_str}</span>
                             </div>
-                            <div class="chat-timestamp-subtle" style="padding-left: 0.5rem;">{time_str} UTC</div>
+                            <div style="font-size: 0.88rem; line-height: 1.55;">{formatted_text}</div>
                         </div>
                     </div>
                     """

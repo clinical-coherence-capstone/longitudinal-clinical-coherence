@@ -1,4 +1,4 @@
-"""ClinCoherence — Deep Dark Blue & Soft Warm Amber / Steel Sky Blue UI styling."""
+"""ClinCoherence — Deep Dark Blue & Velvet Warm Amber / Steel Sky Blue UI styling."""
 
 APP_CSS = """
 <style>
@@ -47,25 +47,23 @@ html, body, [class*="css"] {
     color: var(--text) !important;
 }
 
-.main .block-container {
-    max-width: 100% !important;
-    padding-top: 0.35rem !important;
-    padding-bottom: 2rem !important;
-    padding-left: 1.25rem !important;
-    padding-right: 1.25rem !important;
-}
-
-/* TOP APP NAVIGATION BAR (MATCHING PREVIEW EXACTLY) */
+/* TOP APP NAVIGATION BAR (STICKY FULL-WIDTH ACROSS ENTIRE VIEWPORT MATCHING PREVIEW) */
 .top-nav-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #0b1222;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 10px 18px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 56px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #0b1222 !important;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.9) !important;
+    padding: 0 20px !important;
+    z-index: 999999 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+    box-sizing: border-box !important;
 }
 
 .top-nav-left {
@@ -75,21 +73,21 @@ html, body, [class*="css"] {
 }
 
 .top-nav-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     background: linear-gradient(135deg, #0284c7, #38bdf8);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
-    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+    font-size: 1.1rem;
+    box-shadow: 0 3px 10px rgba(56, 189, 248, 0.3);
 }
 
 .top-nav-title {
     color: #ffffff !important;
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     letter-spacing: -0.02em;
     display: flex;
     align-items: center;
@@ -97,18 +95,18 @@ html, body, [class*="css"] {
 }
 
 .top-nav-pill {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     background: rgba(56, 189, 248, 0.15);
     color: #38bdf8;
     border: 1px solid rgba(56, 189, 248, 0.3);
     font-weight: 600;
-    padding: 2px 7px;
+    padding: 1px 7px;
     border-radius: 9999px;
 }
 
 .top-nav-subtitle {
     color: var(--muted) !important;
-    font-size: 0.74rem;
+    font-size: 0.72rem;
 }
 
 /* PIPELINE BREATHING GLOW BADGE & SPINNER */
@@ -174,7 +172,7 @@ html, body, [class*="css"] {
 .dot-verifier { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
 .dot-gate { background: #d97706; }
 
-/* USER CHIP IN HEADER */
+/* TOP USER BADGE */
 .top-user-badge {
     display: flex;
     align-items: center;
@@ -185,6 +183,34 @@ html, body, [class*="css"] {
     padding: 4px 10px;
     font-size: 0.78rem;
     color: #cbd5e1;
+}
+
+/* SIDEBAR — POSITIONED BELOW TOP HEADER */
+section[data-testid="stSidebar"] {
+    top: 56px !important;
+    height: calc(100vh - 56px) !important;
+    background: #0a101f !important;
+    background-color: #0a101f !important;
+    border-right: 1px solid var(--border) !important;
+    z-index: 100 !important;
+}
+
+section[data-testid="stSidebar"] * {
+    color: var(--text);
+}
+
+section[data-testid="stSidebar"] .block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 2rem !important;
+}
+
+/* MAIN CONTENT CONTAINER — PADDED DOWN BELOW FIXED TOP HEADER */
+.main .block-container {
+    max-width: 100% !important;
+    padding-top: 68px !important;
+    padding-bottom: 7rem !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
 }
 
 /* TEXT & TYPOGRAPHY */
@@ -199,56 +225,6 @@ html, body, [class*="css"] {
 small,
 [data-testid="stCaptionContainer"] {
     color: var(--muted) !important;
-}
-
-/* SIDEBAR */
-section[data-testid="stSidebar"] {
-    background: #0a101f !important;
-    background-color: #0a101f !important;
-    border-right: 1px solid var(--border);
-}
-
-section[data-testid="stSidebar"] * {
-    color: var(--text);
-}
-
-section[data-testid="stSidebar"] .block-container {
-    padding-top: 1.25rem;
-    padding-bottom: 2rem;
-}
-
-.brand-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 14px;
-    margin-bottom: 14px;
-    border-bottom: 1px solid var(--border);
-}
-
-.brand-logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    font-weight: 700;
-    color: #ffffff !important;
-    background: linear-gradient(135deg, #0284c7, #38bdf8);
-    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
-}
-
-.brand-text-title {
-    color: #ffffff !important;
-    font-size: 1.15rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-}
-
-.brand-text-sub {
-    color: var(--muted) !important;
-    font-size: 0.76rem;
 }
 
 .sidebar-profile-card {
@@ -271,7 +247,7 @@ section[data-testid="stSidebar"] .block-container {
     margin-top: 2px;
 }
 
-/* BUTTONS — VELVET AMBER PRIMARY (NO EYE STRAIN) & STEEL SKY SECONDARY */
+/* BUTTONS — VELVET WARM AMBER PRIMARY & STEEL SKY SECONDARY */
 .stApp .stButton > button[data-testid="baseButton-primary"],
 button[data-testid="baseButton-primary"] {
     background: linear-gradient(135deg, #b45309, #d97706) !important;
@@ -369,7 +345,7 @@ button[data-testid="baseButton-secondary"]:hover {
     color: #38bdf8 !important;
 }
 
-/* CHAT BUBBLES */
+/* CHAT MESSAGES & CARDS (MATCHING PREVIEW EXACTLY) */
 [data-testid="stChatMessage"] {
     background: transparent !important;
     padding: 6px 0 !important;
@@ -381,31 +357,41 @@ button[data-testid="baseButton-secondary"]:hover {
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 16px;
+    max-width: 88%;
+    margin-left: auto;
 }
 
-.chat-bubble-user {
-    background: #1b2842;
-    border: 1px solid rgba(217, 119, 6, 0.45);
+.chat-card-user {
+    background: #1b253b;
+    border: 1px solid rgba(245, 158, 11, 0.4);
     border-radius: 16px 16px 4px 16px;
-    padding: 12px 18px;
+    padding: 12px 16px;
     color: #f1f5f9;
-    max-width: 100%;
-    word-break: break-word;
-    font-size: 0.94rem;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    width: 100%;
+}
+
+.chat-card-user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+    font-size: 0.72rem;
 }
 
 .chat-avatar-user {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     background: #d97706;
     color: #ffffff !important;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     flex-shrink: 0;
     box-shadow: 0 2px 10px rgba(217, 119, 6, 0.35);
 }
@@ -416,61 +402,72 @@ button[data-testid="baseButton-secondary"]:hover {
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 16px;
+    max-width: 90%;
 }
 
-.chat-bubble-assistant {
+.chat-card-assistant {
     background: #0f172a;
     border: 1px solid #1e293b;
     border-radius: 16px 16px 16px 4px;
     padding: 14px 18px;
     color: #e2e8f0;
-    max-width: 100%;
-    word-break: break-word;
-    font-size: 0.94rem;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    width: 100%;
+}
+
+.chat-card-assistant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+    font-size: 0.72rem;
 }
 
 .chat-avatar-assistant {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     background: #121e36;
     color: #38bdf8 !important;
     border: 1px solid rgba(56, 189, 248, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     flex-shrink: 0;
     box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
 }
 
-.chat-timestamp-subtle {
-    color: #64748b !important;
-    font-size: 0.72rem;
-    margin-top: 5px;
-}
-
-/* CHAT INPUT STYLING — REFINED STEEL SKY-BLUE DOCK (#14233c) */
-/* Eliminate full-width glowing cyan border across the screen */
-[data-testid="stBottom"],
-[data-testid="stBottom"] > div {
-    background: transparent !important;
-    background-color: transparent !important;
-    border-top: none !important;
-    box-shadow: none !important;
-}
-
-/* Restrict chat input width so it does not blow out edge-to-edge */
-[data-testid="stChatInput"] {
-    max-width: 820px !important;
-    margin: 8px auto 14px auto !important;
+/* REFINED STEEL SKY-BLUE MESSAGE DOCK (MATCHING PREVIEW EXACTLY) */
+[data-testid="stBottom"] {
     background: #14233c !important;
     background-color: #14233c !important;
-    border: 1.5px solid rgba(56, 189, 248, 0.6) !important;
-    border-radius: 14px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 14px rgba(56, 189, 248, 0.2) !important;
+    border-top: 2px solid rgba(56, 189, 248, 0.8) !important;
+    box-shadow: 0 -4px 20px rgba(56, 189, 248, 0.25), 0 -1px 4px rgba(14, 165, 233, 0.15) !important;
+    padding: 10px 16px 12px 16px !important;
+    z-index: 50 !important;
+}
+
+[data-testid="stBottom"] > div {
+    background: transparent !important;
+    max-width: 860px !important;
+    margin: 0 auto !important;
+}
+
+[data-testid="stChatInput"] {
+    background: #0b1628 !important;
+    background-color: #0b1628 !important;
+    border: 2px solid rgba(56, 189, 248, 0.6) !important;
+    border-radius: 12px !important;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3) !important;
     transition: all 0.2s ease-in-out !important;
+}
+
+[data-testid="stChatInput"]:focus-within {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.45) !important;
 }
 
 [data-testid="stChatInput"] textarea {
@@ -486,57 +483,8 @@ button[data-testid="baseButton-secondary"]:hover {
     opacity: 1 !important;
 }
 
-[data-testid="stChatInput"]:focus-within {
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.45) !important;
-}
-
 [data-testid="stChatInput"] button {
     color: #38bdf8 !important;
-}
-
-/* RIGHT INTELLIGENCE PANEL CONTAINER & CARDS */
-.intel-panel-card {
-    background: #0b1222;
-    border: 1px solid #1e293b;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-}
-
-.intel-panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #1e293b;
-    padding-bottom: 8px;
-}
-
-.intel-panel-title {
-    color: #38bdf8 !important;
-    font-size: 0.88rem;
-    font-weight: 700;
-}
-
-.doc-folder-item {
-    background: #070b14;
-    border: 1px solid #1e293b;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.doc-badge-dailymed {
-    background: rgba(56, 189, 248, 0.15);
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    font-size: 0.68rem;
-    font-family: monospace;
-    font-weight: 600;
-    padding: 1px 6px;
-    border-radius: 4px;
 }
 
 /* CARDS & EXPANDERS */
