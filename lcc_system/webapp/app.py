@@ -783,10 +783,18 @@ def show_sidebar(patient_profile: dict | None) -> None:
 
         st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
-        insp_label = "⚡ Hide Inspector" if st.session_state.get("show_pipeline_inspector", False) else "⚡ Clinical Pipeline Inspector"
-        insp_type = "primary" if st.session_state.get("show_pipeline_inspector", False) else "secondary"
-        if st.button(insp_label, key="btn_sidebar_inspector", use_container_width=True, type=insp_type):
-            st.session_state.show_pipeline_inspector = not st.session_state.get("show_pipeline_inspector", False)
+        intel_open = st.session_state.get("show_right_panel", True)
+        intel_label = "📊 Hide Intelligence Panel" if intel_open else "📊 Open Intelligence Panel"
+        intel_type = "secondary" if intel_open else "primary"
+        if st.button(intel_label, key="btn_sidebar_intelligence", use_container_width=True, type=intel_type, help="Toggle Clinical Intelligence Right Slide Panel"):
+            st.session_state.show_right_panel = not intel_open
+            st.rerun()
+
+        insp_open = st.session_state.get("show_pipeline_inspector", False)
+        insp_label = "⚡ Hide Inspector" if insp_open else "⚡ Clinical Pipeline Inspector"
+        insp_type = "primary" if insp_open else "secondary"
+        if st.button(insp_label, key="btn_sidebar_inspector", use_container_width=True, type=insp_type, help="Toggle Clinical Pipeline Inspector & Diagnostics"):
+            st.session_state.show_pipeline_inspector = not insp_open
             st.rerun()
 
 
@@ -1376,57 +1384,101 @@ def show_main_chat(patient_profile: dict | None) -> None:
         show_pipeline_inspector(inspector_payload)
 
     if st.session_state.conv_id is None:
-        pref_name = patient_profile.get("preferred_name") if patient_profile else st.session_state.username
+        # Header action row on welcome screen
+        col_w_title, col_w_toggle = st.columns([0.72, 0.28])
+        with col_w_title:
+            st.caption("Active Session • Ready to Consult")
+        with col_w_toggle:
+            intel_open = st.session_state.get("show_right_panel", True)
+            w_toggle_label = "Hide Panel" if intel_open else "Open Intelligence Panel"
+            w_btn_type = "secondary" if intel_open else "primary"
+            w_icon = "✕" if intel_open else "📊"
+            if st.button(f"{w_icon} {w_toggle_label}", key="btn_welcome_toggle_panel", use_container_width=True, type=w_btn_type):
+                st.session_state.show_right_panel = not intel_open
+                st.rerun()
 
-        render_clean_html(
-            f"""
-            <div style="text-align: center; padding: 24px 16px 16px; max-width: 720px; margin: auto;">
-                <h1 style="color: #ffffff; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em;">How can I help you today, {pref_name}?</h1>
-                <div style="color: #94a3b8; font-size: 0.92rem; line-height: 1.55; margin-top: 6px;">
-                    I track your symptoms across conversation turns, normalize medications against RxNorm, 
-                    and verify clinical coherence using evidence-based FDA medical records.
+        if st.session_state.show_right_panel:
+            render_clean_html(
+                """
+                <style>
+                [data-testid="stBottom"] {
+                    right: 33.5% !important;
+                    border-right: 1px solid #1e293b !important;
+                }
+                </style>
+                """
+            )
+            col_welcome_main, col_welcome_intel = st.columns([67, 33])
+        else:
+            render_clean_html(
+                """
+                <style>
+                [data-testid="stBottom"] {
+                    right: 0 !important;
+                }
+                </style>
+                """
+            )
+            col_welcome_main = st.container()
+            col_welcome_intel = None
+
+        with col_welcome_main:
+            pref_name = patient_profile.get("preferred_name") if patient_profile else st.session_state.username
+
+            render_clean_html(
+                f"""
+                <div style="text-align: center; padding: 24px 16px 16px; max-width: 720px; margin: auto;">
+                    <h1 style="color: #ffffff; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em;">How can I help you today, {pref_name}?</h1>
+                    <div style="color: #94a3b8; font-size: 0.92rem; line-height: 1.55; margin-top: 6px;">
+                        I track your symptoms across conversation turns, normalize medications against RxNorm, 
+                        and verify clinical coherence using evidence-based FDA medical records.
+                    </div>
                 </div>
-            </div>
-            """
-        )
+                """
+            )
 
-        st.markdown("##### Suggested consultation starters")
-        col_s1, col_s2 = st.columns(2)
+            st.markdown("##### Suggested consultation starters")
+            col_s1, col_s2 = st.columns(2)
 
-        with col_s1:
-            if st.button("Describe symptoms\n\nI have had a fever and mild fatigue for two days", use_container_width=True):
-                _start_conversation_with_message(
-                    "I have had a fever and mild fatigue for two days",
-                    "Fever & Fatigue Consultation",
-                    patient_profile,
-                )
+            with col_s1:
+                if st.button("Describe symptoms\n\nI have had a fever and mild fatigue for two days", use_container_width=True):
+                    _start_conversation_with_message(
+                        "I have had a fever and mild fatigue for two days",
+                        "Fever & Fatigue Consultation",
+                        patient_profile,
+                    )
 
-            if st.button("Update health history\n\nI want to report an update on my medical conditions", use_container_width=True):
-                _start_conversation_with_message(
-                    "I would like to update my active health profile and report my current symptoms",
-                    "Health History Update",
-                    patient_profile,
-                )
+                if st.button("Update health history\n\nI want to report an update on my medical conditions", use_container_width=True):
+                    _start_conversation_with_message(
+                        "I would like to update my active health profile and report my current symptoms",
+                        "Health History Update",
+                        patient_profile,
+                    )
 
-        with col_s2:
-            if st.button("Discuss a medication\n\nI am taking Metformin 500mg and have questions about side effects", use_container_width=True):
-                _start_conversation_with_message(
-                    "I am taking Metformin 500mg and feeling slightly dizzy",
-                    "Metformin Query",
-                    patient_profile,
-                )
+            with col_s2:
+                if st.button("Discuss a medication\n\nI am taking Metformin 500mg and have questions about side effects", use_container_width=True):
+                    _start_conversation_with_message(
+                        "I am taking Metformin 500mg and feeling slightly dizzy",
+                        "Metformin Query",
+                        patient_profile,
+                    )
 
-            if st.button("Follow-up discussion\n\nLet's follow up on symptoms from my previous discussion", use_container_width=True):
-                _start_conversation_with_message(
-                    "Can we review my baseline health profile and discuss follow-up care?",
-                    "Follow-up Consultation",
-                    patient_profile,
-                )
+                if st.button("Follow-up discussion\n\nLet's follow up on symptoms from my previous discussion", use_container_width=True):
+                    _start_conversation_with_message(
+                        "Can we review my baseline health profile and discuss follow-up care?",
+                        "Follow-up Consultation",
+                        patient_profile,
+                    )
 
-        welcome_user_input = st.chat_input("Message ClinCoherence...")
-        if welcome_user_input:
-            title = welcome_user_input[:35].strip() + ("..." if len(welcome_user_input.strip()) > 35 else "")
-            _start_conversation_with_message(welcome_user_input, title, patient_profile)
+            welcome_user_input = st.chat_input("Message ClinCoherence...")
+            if welcome_user_input:
+                title = welcome_user_input[:35].strip() + ("..." if len(welcome_user_input.strip()) > 35 else "")
+                _start_conversation_with_message(welcome_user_input, title, patient_profile)
+
+        if col_welcome_intel is not None:
+            with col_welcome_intel:
+                render_right_intelligence_panel(None, patient_profile)
+
         return
 
     conv = get_conversation(st.session_state.conv_id, st.session_state.user_id)
@@ -1471,10 +1523,12 @@ def show_main_chat(patient_profile: dict | None) -> None:
         )
 
     with col_hdr_right:
-        toggle_label = "Hide Panel" if st.session_state.show_right_panel else "Intelligence Panel"
-        btn_type = "secondary" if st.session_state.show_right_panel else "primary"
-        if st.button(f"📊 {toggle_label}", key="btn_toggle_right_panel", use_container_width=True, type=btn_type):
-            st.session_state.show_right_panel = not st.session_state.show_right_panel
+        intel_open = st.session_state.get("show_right_panel", True)
+        toggle_label = "Hide Panel" if intel_open else "Open Intelligence Panel"
+        btn_type = "secondary" if intel_open else "primary"
+        btn_icon = "✕" if intel_open else "📊"
+        if st.button(f"{btn_icon} {toggle_label}", key="btn_toggle_right_panel", use_container_width=True, type=btn_type, help="Toggle Right Clinical Intelligence Slide Panel"):
+            st.session_state.show_right_panel = not intel_open
             st.rerun()
 
     # Dual-Panel Layout: Chat Area (67%) | Right Intelligence Panel (33%)
