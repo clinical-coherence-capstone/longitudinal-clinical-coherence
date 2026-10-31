@@ -1378,68 +1378,19 @@ def show_main_chat(patient_profile: dict | None) -> None:
                     pass
                 break
 
-    # Breadcrumb Row: History is a real Streamlit button that expands the
-    # native left sidebar (conversation history lives there).
+    # Breadcrumb Row (Matching preview: History indicator, title, pass badge, panel toggle)
     col_hdr_left, col_hdr_right = st.columns([4, 1.2])
     with col_hdr_left:
-        history_col, title_col = st.columns([0.72, 4.0], vertical_alignment="center")
-        with history_col:
-            if st.button("📑 History", key="btn_open_history", type="secondary"):
-                st.session_state["_reveal_conversation_history"] = True
-
-        if st.session_state.get("_reveal_conversation_history"):
-            st.session_state["_reveal_conversation_history"] = False
-            components.html(
-                """
-                <script>
-                (() => {
-                    const doc = window.parent.document;
-                    const expandSelectors = [
-                        'button[data-testid="stExpandSidebarButton"]',
-                        '[data-testid="stExpandSidebarButton"]',
-                        '[data-testid="stSidebarCollapsedControl"] button',
-                        '[data-testid="stSidebarCollapsedControl"]',
-                        '[data-testid="collapsedControl"] button',
-                        '[data-testid="collapsedControl"]'
-                    ];
-                    function sidebarExpanded() {
-                        const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
-                        if (!sidebar) return false;
-                        const style = window.parent.getComputedStyle(sidebar);
-                        const width = sidebar.getBoundingClientRect().width;
-                        return style.display !== 'none' && style.visibility !== 'hidden' && width > 8;
-                    }
-                    function expandSidebar() {
-                        if (sidebarExpanded()) return true;
-                        for (const selector of expandSelectors) {
-                            const el = doc.querySelector(selector);
-                            if (el) {
-                                el.click();
-                                return sidebarExpanded();
-                            }
-                        }
-                        return false;
-                    }
-                    expandSidebar();
-                    setTimeout(expandSidebar, 80);
-                    setTimeout(expandSidebar, 250);
-                    setTimeout(expandSidebar, 600);
-                })();
-                </script>
-                """,
-                height=1,
-                width=1,
-            )
-        with title_col:
-            render_clean_html(
-                f"""
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                    <span style="color: #64748b;">|</span>
-                    <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff;">{html.escape(str(conv['title']))}</h3>
-                    <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px; font-family: monospace;">Verified {html.escape(str(latest_gate_decision))}</span>
-                </div>
-                """
-            )
+        render_clean_html(
+            f"""
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <span style="background: #14233c; border: 1px solid #283854; padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; color: #cbd5e1; font-weight: 600;">📑 History</span>
+                <span style="color: #64748b;">|</span>
+                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff;">{conv['title']}</h3>
+                <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px; font-family: monospace;">Verified {latest_gate_decision}</span>
+            </div>
+            """
+        )
 
     with col_hdr_right:
         toggle_label = "Hide Panel" if st.session_state.show_right_panel else "Intelligence Panel"
