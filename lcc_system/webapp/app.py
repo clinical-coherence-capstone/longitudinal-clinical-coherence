@@ -207,10 +207,16 @@ def show_auth_page() -> None:
                         st.session_state.username = login_user_input.strip()
                         st.session_state.page = "main"
                         st.session_state.conv_id = None
+                        st.session_state.show_right_panel = True
+                        st.session_state.show_pipeline_inspector = False
                         st.session_state.editing_profile = False
                         st.session_state.onboarding_step = 1
                         st.session_state.wizard_step1 = {}
                         st.session_state.wizard_meds = []
+                        try:
+                            st.query_params.clear()
+                        except Exception:
+                            pass
                         st.rerun()
                     else:
                         st.error(msg)
@@ -1302,100 +1308,80 @@ def show_main_chat(patient_profile: dict | None) -> None:
     """Render main conversational chat interface with ChatGPT-style starters and bubbles."""
     show_sidebar(patient_profile)
 
+    # Ensure sidebar toggle hook and click listeners run in MAIN window context
     if st.session_state.get("toggle_sidebar_requested", False):
         st.session_state.toggle_sidebar_requested = False
-        components.html(
+        render_clean_html(
             """
-            <script>
-            (function() {
-                try {
-                    const doc = window.parent.document;
-                    const expandBtn = doc.querySelector('button[data-testid="stExpandSidebarButton"]')
-                                   || doc.querySelector('[data-testid="collapsedControl"] button')
-                                   || doc.querySelector('[data-testid="collapsedControl"]')
-                                   || doc.querySelector('button[aria-label="Expand sidebar"]');
-                    const collapseBtn = doc.querySelector('button[data-testid="stSidebarCollapseButton"]')
-                                     || doc.querySelector('button[aria-label="Collapse sidebar"]')
-                                     || doc.querySelector('section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]')
-                                     || doc.querySelector('section[data-testid="stSidebar"] button');
-                    const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
-                    const isCollapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false' || sidebar.offsetWidth <= 0;
-                    if (isCollapsed && expandBtn) {
-                        expandBtn.click();
-                    } else if (!isCollapsed && collapseBtn) {
-                        collapseBtn.click();
-                    } else if (expandBtn) {
-                        expandBtn.click();
-                    } else if (collapseBtn) {
-                        collapseBtn.click();
+            <img src="sidebar_toggle_hook" style="display:none;" onerror="
+                (function() {
+                    try {
+                        var exp = document.querySelector('button[data-testid=\\'stExpandSidebarButton\\']')
+                               || document.querySelector('button[aria-label=\\'Expand sidebar\\']')
+                               || document.querySelector('[data-testid=\\'collapsedControl\\'] button');
+                        var col = document.querySelector('button[data-testid=\\'stSidebarCollapseButton\\']')
+                               || document.querySelector('button[aria-label=\\'Collapse sidebar\\']')
+                               || document.querySelector('section[data-testid=\\'stSidebar\\'] [data-testid=\\'stSidebarCollapseButton\\']');
+                        var sb = document.querySelector('section[data-testid=\\'stSidebar\\']');
+                        var isClosed = !sb || sb.getAttribute('aria-expanded') === 'false' || sb.offsetWidth <= 0;
+                        if (isClosed && exp) { exp.click(); }
+                        else if (!isClosed && col) { col.click(); }
+                        else if (exp) { exp.click(); }
+                        else if (col) { col.click(); }
+                    } catch(err) {
+                        console.error('Sidebar toggle error:', err);
                     }
-                } catch(e) {
-                    console.error('Sidebar toggle error:', e);
-                }
-            })();
-            </script>
-            """,
-            height=0,
-            width=0,
-        )
-    else:
-        components.html(
+                })();
+                this.remove();
+            ">
             """
-            <script>
-            (function() {
-                try {
-                    const doc = window.parent.document;
-                    if (!window.parent.__sidebarListenerAttached) {
-                        window.parent.__sidebarListenerAttached = true;
-                        doc.addEventListener('click', function(e) {
-                            const btn = e.target.closest('button');
-                            if (btn && (btn.innerText.includes('History') || btn.getAttribute('data-testid')?.includes('toggle_history') || btn.id === 'btn_toggle_history_sidebar')) {
-                                setTimeout(function() {
-                                    const expandBtn = doc.querySelector('button[data-testid="stExpandSidebarButton"]')
-                                                   || doc.querySelector('[data-testid="collapsedControl"] button')
-                                                   || doc.querySelector('[data-testid="collapsedControl"]')
-                                                   || doc.querySelector('button[aria-label="Expand sidebar"]');
-                                    const collapseBtn = doc.querySelector('button[data-testid="stSidebarCollapseButton"]')
-                                                     || doc.querySelector('button[aria-label="Collapse sidebar"]')
-                                                     || doc.querySelector('section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]');
-                                    const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
-                                    const isCollapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false' || sidebar.offsetWidth <= 0;
-                                    if (isCollapsed && expandBtn) {
-                                        expandBtn.click();
-                                    } else if (!isCollapsed && collapseBtn) {
-                                        collapseBtn.click();
-                                    }
-                                }, 20);
-                            }
-                        }, true);
-                    }
-                } catch(e) {}
-            })();
-            </script>
-            """,
-            height=0,
-            width=0,
         )
+
+    render_clean_html(
+        """
+        <img src="sidebar_click_listener" style="display:none;" onerror="
+            if (!window.__sidebarClickDelegated) {
+                window.__sidebarClickDelegated = true;
+                document.addEventListener('click', function(e) {
+                    var btn = e.target.closest('button');
+                    if (btn && (btn.innerText.indexOf('History') !== -1 || (btn.getAttribute('data-testid') && btn.getAttribute('data-testid').indexOf('history') !== -1))) {
+                        setTimeout(function() {
+                            var exp = document.querySelector('button[data-testid=\\'stExpandSidebarButton\\']')
+                                   || document.querySelector('button[aria-label=\\'Expand sidebar\\']')
+                                   || document.querySelector('[data-testid=\\'collapsedControl\\'] button');
+                            var col = document.querySelector('button[data-testid=\\'stSidebarCollapseButton\\']')
+                                   || document.querySelector('button[aria-label=\\'Collapse sidebar\\']')
+                                   || document.querySelector('section[data-testid=\\'stSidebar\\'] [data-testid=\\'stSidebarCollapseButton\\']');
+                            var sb = document.querySelector('section[data-testid=\\'stSidebar\\']');
+                            var isClosed = !sb || sb.getAttribute('aria-expanded') === 'false' || sb.offsetWidth <= 0;
+                            if (isClosed && exp) { exp.click(); }
+                            else if (!isClosed && col) { col.click(); }
+                            else if (exp) { exp.click(); }
+                            else if (col) { col.click(); }
+                        }, 10);
+                    }
+                }, true);
+            }
+            this.remove();
+        ">
+        """
+    )
 
     if st.session_state.editing_profile:
         show_onboarding_page(is_editing=True)
         return
 
+    # Clean any accidental query parameters
     if "toggle_panel" in st.query_params:
-        st.session_state.show_right_panel = not st.session_state.get("show_right_panel", True)
         try:
             del st.query_params["toggle_panel"]
         except Exception:
             pass
-        st.rerun()
-
     if "toggle_inspector" in st.query_params:
-        st.session_state.show_pipeline_inspector = not st.session_state.get("show_pipeline_inspector", False)
         try:
             del st.query_params["toggle_inspector"]
         except Exception:
             pass
-        st.rerun()
 
     # Fetch latest gate status if conversation active
     gate_status = "PASS"
@@ -1413,74 +1399,63 @@ def show_main_chat(patient_profile: dict | None) -> None:
     sex_str = patient_profile.get("sex_assigned_at_birth") if patient_profile else ""
     user_info = f"{pref_name}" + (f" ({age_str}" + (f" • {sex_str}" if sex_str and sex_str != "Prefer not to say" else "") + ")" if age_str and age_str != "Unknown" else "")
 
-    toggle_nonce = int(datetime.now().timestamp() * 1000)
-    insp_nonce = toggle_nonce + 1
-
     intel_open = st.session_state.get("show_right_panel", True)
-    if intel_open:
-        top_btn_bg = "#14233c"
-        top_btn_color = "#38bdf8"
-        top_btn_border = "rgba(56, 189, 248, 0.4)"
-        top_btn_shadow = "0 2px 8px rgba(0,0,0,0.3)"
-        top_btn_text = "Intelligence Panel"
-        top_panel_tip = "Click to close Clinical Intelligence slide panel"
-    else:
-        top_btn_bg = "linear-gradient(135deg, #d97706, #f59e0b)"
-        top_btn_color = "#070b14"
-        top_btn_border = "rgba(245, 158, 11, 0.8)"
-        top_btn_shadow = "0 0 14px rgba(245, 158, 11, 0.55)"
-        top_btn_text = "Intelligence Panel"
-        top_panel_tip = "Click to open Clinical Intelligence slide panel"
+    top_panel_label = "📊 Intelligence Panel" if not intel_open else "✕ Hide Panel"
+    top_panel_type = "primary" if not intel_open else "secondary"
 
-    # Top App Header (Matching the interactive preview exactly with top Intelligence Panel toggle)
-    render_clean_html(
-        f"""
-        <div class="top-nav-bar">
-            <div class="top-nav-left">
-                <div class="top-nav-logo">🩺</div>
+    # Top App Header (Native interactive Streamlit elements matching preview exactly)
+    col_t_left, col_t_mid, col_t_right = st.columns([0.42, 0.36, 0.22])
+    with col_t_left:
+        render_clean_html(
+            f"""
+            <div style="display: flex; align-items: center; gap: 10px; padding: 4px 0;">
+                <div style="width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, #0284c7, #38bdf8); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);">🩺</div>
                 <div>
-                    <div class="top-nav-title">
-                        <span>ClinCoherence</span>
-                        <span class="top-nav-pill">Clinical AI</span>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-weight: 800; font-size: 1.1rem; color: #ffffff; letter-spacing: -0.01em;">ClinCoherence</span>
+                        <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 9999px;">Clinical AI</span>
                     </div>
-                    <div class="top-nav-subtitle">Longitudinal Clinical Coherence & Decision Verification</div>
+                    <div style="font-size: 0.68rem; color: #94a3b8; line-height: 1.15;">Longitudinal Clinical Coherence & Decision Verification</div>
                 </div>
             </div>
-            
-            <a href="?toggle_inspector={insp_nonce}" target="_self" title="Click to toggle Clinical Pipeline Inspector" style="text-decoration: none;">
-                <div class="pipeline-status-badge pipeline-breathing" style="cursor: pointer;">
-                    <svg class="pipeline-spinner" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="3" opacity="0.25"></circle>
-                        <path fill="#38bdf8" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span style="color: #94a3b8; font-weight: 500; font-size: 0.72rem;">Pipeline:</span>
-                    <span style="color: #38bdf8; font-weight: 700; font-size: 0.72rem;">Coherence Verifier</span>
-                    <span style="color: #64748b; font-size: 0.7rem;">➔</span>
-                    <span style="color: #d97706; font-weight: 700; font-size: 0.72rem;">Gate [{gate_status}]</span>
-                    <div class="pipeline-dots">
-                        <span class="p-dot dot-extractor" title="State Extractor: Complete"></span>
-                        <span class="p-dot dot-evidence" title="Evidence Retriever: Complete"></span>
-                        <span class="p-dot dot-verifier" title="Coherence Verifier: Active"></span>
-                        <span class="p-dot dot-gate" title="Decision Gate: Verified"></span>
-                    </div>
-                </div>
-            </a>
+            """
+        )
 
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <a href="?toggle_panel={toggle_nonce}" id="btn_top_intelligence_toggle" target="_self" title="{top_panel_tip}"
-                   style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: {top_btn_bg}; color: {top_btn_color}; border: 1px solid {top_btn_border}; border-radius: 8px; font-size: 0.75rem; font-weight: 800; text-decoration: none; box-shadow: {top_btn_shadow}; transition: all 0.2s ease-in-out;">
-                    <span>📊</span>
-                    <span>{top_btn_text}</span>
-                </a>
+    with col_t_mid:
+        insp_open = st.session_state.get("show_pipeline_inspector", False)
+        pipe_btn_type = "primary" if insp_open else "secondary"
+        if st.button(
+            f"⚡ Pipeline: Coherence Verifier ➔ Gate [{gate_status}]",
+            key="btn_top_pipeline_status",
+            use_container_width=True,
+            type=pipe_btn_type,
+            help="Toggle Clinical Pipeline Inspector & Diagnostics",
+        ):
+            st.session_state.show_pipeline_inspector = not insp_open
+            st.rerun()
 
-                <div class="top-user-badge">
-                    <span>👤</span>
-                    <span><strong>{user_info}</strong></span>
+    with col_t_right:
+        col_t_panel, col_t_user = st.columns([0.62, 0.38])
+        with col_t_panel:
+            if st.button(
+                top_panel_label,
+                key="btn_top_intelligence_panel",
+                use_container_width=True,
+                type=top_panel_type,
+                help="Toggle Right Clinical Intelligence slide panel",
+            ):
+                st.session_state.show_right_panel = not intel_open
+                st.rerun()
+        with col_t_user:
+            render_clean_html(
+                f"""
+                <div style="height: 38px; display: flex; align-items: center; justify-content: flex-end; padding-top: 2px;">
+                    <span style="background: #0b1222; border: 1px solid #1e293b; color: #cbd5e1; font-size: 0.76rem; font-weight: 700; padding: 5px 10px; border-radius: 8px; white-space: nowrap;">
+                        👤 {pref_name}
+                    </span>
                 </div>
-            </div>
-        </div>
-        """
-    )
+                """
+            )
 
     # Render Pipeline Inspector if toggled (accessible on all screens)
     if st.session_state.get("show_pipeline_inspector", False):
@@ -1797,6 +1772,12 @@ def show_main_chat(patient_profile: dict | None) -> None:
 def main() -> None:
     """Application router."""
     _init_session()
+
+    # Clear legacy query params so they never interfere with session state
+    if "toggle_panel" in st.query_params:
+        del st.query_params["toggle_panel"]
+    if "toggle_inspector" in st.query_params:
+        del st.query_params["toggle_inspector"]
 
     if st.session_state.page == "login" or st.session_state.user_id is None:
         show_auth_page()

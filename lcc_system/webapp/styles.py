@@ -137,23 +137,28 @@ html, body, [class*="css"] {
     color: var(--text) !important;
 }
 
-/* TOP APP NAVIGATION BAR (STICKY FULL-WIDTH ACROSS ENTIRE VIEWPORT MATCHING PREVIEW) */
+/* TOP APP NAVIGATION BAR (CLEAN INTEGRATED BANNER MATCHING PREVIEW) */
+.top-header-banner,
 .top-nav-bar {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100vw !important;
-    height: 56px !important;
+    width: 100% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     background: #0b1222 !important;
-    border-bottom: 1px solid rgba(30, 41, 59, 0.9) !important;
-    padding: 0 20px 0 54px !important;
-    z-index: 999999 !important;
+    border: 1px solid rgba(30, 41, 59, 0.9) !important;
+    border-radius: 14px !important;
+    padding: 8px 16px !important;
+    margin-bottom: 12px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
     box-sizing: border-box !important;
+}
+
+button[data-testid*="btn_top_pipeline_status"] {
+    animation: breathe-glow 2.2s ease-in-out infinite !important;
+    border-radius: 9999px !important;
+    font-size: 0.78rem !important;
+    padding: 6px 14px !important;
+    font-weight: 700 !important;
 }
 
 .top-nav-left {

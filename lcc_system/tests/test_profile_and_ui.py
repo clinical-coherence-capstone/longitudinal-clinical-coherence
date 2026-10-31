@@ -4,6 +4,7 @@ Gender Identity independence, Password visibility handling, and Chatbot UI verif
 import sys
 import os
 import json
+from pathlib import Path
 from datetime import date, datetime, timezone
 import pytest
 
@@ -363,6 +364,16 @@ def test_sqlite3_row_dict_conversion_safe():
     assert ver_dict.get("reasoning") == "All constraints coherent"
     parsed_json = json.loads(ver_dict["flags_json"])
     assert parsed_json.get("gate_decision") == "PASS"
+
+
+def test_no_raw_href_query_params_in_webapp():
+    app_code = Path(__file__).parent.parent / "webapp" / "app.py"
+    content = app_code.read_text(encoding="utf-8")
+    assert 'href="?toggle_panel' not in content
+    assert 'href="?toggle_inspector' not in content
+    assert 'key="btn_top_intelligence_panel"' in content
+    assert 'key="btn_top_pipeline_status"' in content
+
 
 
 
