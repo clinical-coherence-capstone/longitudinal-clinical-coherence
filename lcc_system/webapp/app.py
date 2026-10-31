@@ -783,13 +783,6 @@ def show_sidebar(patient_profile: dict | None) -> None:
 
         st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
-        intel_open = st.session_state.get("show_right_panel", True)
-        intel_label = "📊 Hide Intelligence Panel" if intel_open else "📊 Open Intelligence Panel"
-        intel_type = "secondary" if intel_open else "primary"
-        if st.button(intel_label, key="btn_sidebar_intelligence", use_container_width=True, type=intel_type, help="Toggle Clinical Intelligence Right Slide Panel"):
-            st.session_state.show_right_panel = not intel_open
-            st.rerun()
-
         insp_open = st.session_state.get("show_pipeline_inspector", False)
         insp_label = "⚡ Hide Inspector" if insp_open else "⚡ Clinical Pipeline Inspector"
         insp_type = "primary" if insp_open else "secondary"
@@ -1309,6 +1302,81 @@ def show_main_chat(patient_profile: dict | None) -> None:
     """Render main conversational chat interface with ChatGPT-style starters and bubbles."""
     show_sidebar(patient_profile)
 
+    if st.session_state.get("toggle_sidebar_requested", False):
+        st.session_state.toggle_sidebar_requested = False
+        components.html(
+            """
+            <script>
+            (function() {
+                try {
+                    const doc = window.parent.document;
+                    const expandBtn = doc.querySelector('button[data-testid="stExpandSidebarButton"]')
+                                   || doc.querySelector('[data-testid="collapsedControl"] button')
+                                   || doc.querySelector('[data-testid="collapsedControl"]')
+                                   || doc.querySelector('button[aria-label="Expand sidebar"]');
+                    const collapseBtn = doc.querySelector('button[data-testid="stSidebarCollapseButton"]')
+                                     || doc.querySelector('button[aria-label="Collapse sidebar"]')
+                                     || doc.querySelector('section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]')
+                                     || doc.querySelector('section[data-testid="stSidebar"] button');
+                    const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+                    const isCollapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false' || sidebar.offsetWidth <= 0;
+                    if (isCollapsed && expandBtn) {
+                        expandBtn.click();
+                    } else if (!isCollapsed && collapseBtn) {
+                        collapseBtn.click();
+                    } else if (expandBtn) {
+                        expandBtn.click();
+                    } else if (collapseBtn) {
+                        collapseBtn.click();
+                    }
+                } catch(e) {
+                    console.error('Sidebar toggle error:', e);
+                }
+            })();
+            </script>
+            """,
+            height=0,
+            width=0,
+        )
+    else:
+        components.html(
+            """
+            <script>
+            (function() {
+                try {
+                    const doc = window.parent.document;
+                    if (!window.parent.__sidebarListenerAttached) {
+                        window.parent.__sidebarListenerAttached = true;
+                        doc.addEventListener('click', function(e) {
+                            const btn = e.target.closest('button');
+                            if (btn && (btn.innerText.includes('History') || btn.getAttribute('data-testid')?.includes('toggle_history') || btn.id === 'btn_toggle_history_sidebar')) {
+                                setTimeout(function() {
+                                    const expandBtn = doc.querySelector('button[data-testid="stExpandSidebarButton"]')
+                                                   || doc.querySelector('[data-testid="collapsedControl"] button')
+                                                   || doc.querySelector('[data-testid="collapsedControl"]')
+                                                   || doc.querySelector('button[aria-label="Expand sidebar"]');
+                                    const collapseBtn = doc.querySelector('button[data-testid="stSidebarCollapseButton"]')
+                                                     || doc.querySelector('button[aria-label="Collapse sidebar"]')
+                                                     || doc.querySelector('section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]');
+                                    const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+                                    const isCollapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false' || sidebar.offsetWidth <= 0;
+                                    if (isCollapsed && expandBtn) {
+                                        expandBtn.click();
+                                    } else if (!isCollapsed && collapseBtn) {
+                                        collapseBtn.click();
+                                    }
+                                }, 20);
+                            }
+                        }, true);
+                    }
+                } catch(e) {}
+            })();
+            </script>
+            """,
+            height=0,
+            width=0,
+        )
+
     if st.session_state.editing_profile:
         show_onboarding_page(is_editing=True)
         return
@@ -1345,6 +1413,9 @@ def show_main_chat(patient_profile: dict | None) -> None:
     sex_str = patient_profile.get("sex_assigned_at_birth") if patient_profile else ""
     user_info = f"{pref_name}" + (f" ({age_str}" + (f" • {sex_str}" if sex_str and sex_str != "Prefer not to say" else "") + ")" if age_str and age_str != "Unknown" else "")
 
+    toggle_nonce = int(datetime.now().timestamp() * 1000)
+    insp_nonce = toggle_nonce + 1
+
     intel_open = st.session_state.get("show_right_panel", True)
     if intel_open:
         top_btn_bg = "#14233c"
@@ -1376,7 +1447,7 @@ def show_main_chat(patient_profile: dict | None) -> None:
                 </div>
             </div>
             
-            <a href="?toggle_inspector=1" target="_self" title="Click to toggle Clinical Pipeline Inspector" style="text-decoration: none;">
+            <a href="?toggle_inspector={insp_nonce}" target="_self" title="Click to toggle Clinical Pipeline Inspector" style="text-decoration: none;">
                 <div class="pipeline-status-badge pipeline-breathing" style="cursor: pointer;">
                     <svg class="pipeline-spinner" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="3" opacity="0.25"></circle>
@@ -1396,7 +1467,7 @@ def show_main_chat(patient_profile: dict | None) -> None:
             </a>
 
             <div style="display: flex; align-items: center; gap: 12px;">
-                <a href="?toggle_panel=1" target="_self" title="{top_panel_tip}"
+                <a href="?toggle_panel={toggle_nonce}" id="btn_top_intelligence_toggle" target="_self" title="{top_panel_tip}"
                    style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: {top_btn_bg}; color: {top_btn_color}; border: 1px solid {top_btn_border}; border-radius: 8px; font-size: 0.75rem; font-weight: 800; text-decoration: none; box-shadow: {top_btn_shadow}; transition: all 0.2s ease-in-out;">
                     <span>📊</span>
                     <span>{top_btn_text}</span>
@@ -1428,18 +1499,21 @@ def show_main_chat(patient_profile: dict | None) -> None:
         show_pipeline_inspector(inspector_payload)
 
     if st.session_state.conv_id is None:
-        # Header action row on welcome screen
-        col_w_title, col_w_toggle = st.columns([0.72, 0.28])
-        with col_w_title:
-            st.caption("Active Session • Ready to Consult")
-        with col_w_toggle:
-            intel_open = st.session_state.get("show_right_panel", True)
-            w_toggle_label = "Hide Panel" if intel_open else "Open Intelligence Panel"
-            w_btn_type = "secondary" if intel_open else "primary"
-            w_icon = "✕" if intel_open else "📊"
-            if st.button(f"{w_icon} {w_toggle_label}", key="btn_welcome_toggle_panel", use_container_width=True, type=w_btn_type):
-                st.session_state.show_right_panel = not intel_open
+        # Action bar on welcome screen (matching preview)
+        col_w_hist, col_w_title = st.columns([0.14, 0.86])
+        with col_w_hist:
+            if st.button("📑 History", key="btn_welcome_toggle_history", use_container_width=True, type="secondary", help="Open or close conversation history sidebar"):
+                st.session_state.toggle_sidebar_requested = True
                 st.rerun()
+        with col_w_title:
+            render_clean_html(
+                """
+                <div style="display: flex; align-items: center; gap: 8px; padding-top: 5px;">
+                    <span style="color: #64748b;">|</span>
+                    <span style="font-size: 0.84rem; color: #94a3b8; font-weight: 600;">Active Session • Ready to Consult</span>
+                </div>
+                """
+            )
 
         if st.session_state.show_right_panel:
             render_clean_html(
@@ -1546,15 +1620,18 @@ def show_main_chat(patient_profile: dict | None) -> None:
                     pass
                 break
 
-    # Breadcrumb Row (Matching preview: History indicator, title, pass badge, active state version, panel toggle)
+    # Breadcrumb Row (Matching preview: History button, title, pass badge, active state version — duplicate panel toggle removed)
     state_ver = latest_payload.get("state_summary", {}).get("version", 1) if latest_payload else 1
-    col_hdr_left, col_hdr_right = st.columns([0.76, 0.24])
-    with col_hdr_left:
+    col_hist, col_title_state = st.columns([0.14, 0.86])
+    with col_hist:
+        if st.button("📑 History", key="btn_toggle_history_sidebar", use_container_width=True, type="secondary", help="Open or close conversation history sidebar"):
+            st.session_state.toggle_sidebar_requested = True
+            st.rerun()
+    with col_title_state:
         render_clean_html(
             f"""
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 4px; margin-bottom: 8px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="background: #14233c; border: 1px solid #283854; padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; color: #cbd5e1; font-weight: 600;">📑 History</span>
                     <span style="color: #64748b;">|</span>
                     <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff;">{conv['title']}</h3>
                     <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px; font-family: monospace;">Verified {latest_gate_decision}</span>
@@ -1565,15 +1642,6 @@ def show_main_chat(patient_profile: dict | None) -> None:
             </div>
             """
         )
-
-    with col_hdr_right:
-        intel_open = st.session_state.get("show_right_panel", True)
-        toggle_label = "Hide Panel" if intel_open else "Open Intelligence Panel"
-        btn_type = "secondary" if intel_open else "primary"
-        btn_icon = "✕" if intel_open else "📊"
-        if st.button(f"{btn_icon} {toggle_label}", key="btn_toggle_right_panel", use_container_width=True, type=btn_type, help="Toggle Right Clinical Intelligence Slide Panel"):
-            st.session_state.show_right_panel = not intel_open
-            st.rerun()
 
     # Dual-Panel Layout: Chat Area (67%) | Right Intelligence Panel (33%)
     # Constrain bottom message dock to col_chat when right intelligence panel is active so it never overlaps or stretches across

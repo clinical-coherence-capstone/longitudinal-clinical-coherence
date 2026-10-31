@@ -20,34 +20,35 @@ APP_CSS = """
     --dock-input-bg: #0b1628;
 }
 
-/* HIDE STREAMLIT DEFAULT DEPLOY AND TOOLBAR, BUT KEEP SIDEBAR CONTROLS FULLY VISIBLE & INTERACTIVE */
+/* HIDE STREAMLIT DEFAULT DEPLOY AND TOOLBAR ACTIONS, BUT KEEP SIDEBAR CONTROLS FULLY VISIBLE & INTERACTIVE */
 header[data-testid="stHeader"] {
     background: transparent !important;
     background-color: transparent !important;
     height: 56px !important;
-    z-index: 1000000 !important;
+    z-index: 10000000 !important;
     pointer-events: none !important;
 }
 
-[data-testid="stToolbar"],
-[data-testid="stDecoration"],
-.stDeployButton,
-#MainMenu,
-footer {
-    display: none !important;
-    visibility: hidden !important;
+header[data-testid="stHeader"] button[data-testid="stExpandSidebarButton"],
+header[data-testid="stHeader"] button[aria-label="Expand sidebar"],
+header[data-testid="stHeader"] [data-testid="collapsedControl"],
+header[data-testid="stHeader"] [data-testid="stToolbar"] {
+    pointer-events: auto !important;
 }
 
 /* SIDEBAR EXPAND BUTTON (») WHEN SIDEBAR IS COLLAPSED — ALWAYS VISIBLE, INTERACTIVE & ELEVATED */
+button[data-testid="stExpandSidebarButton"],
+button[aria-label="Expand sidebar"],
 [data-testid="collapsedControl"] {
-    display: flex !important;
+    display: inline-flex !important;
     visibility: visible !important;
     pointer-events: auto !important;
     position: fixed !important;
     top: 10px !important;
     left: 12px !important;
-    z-index: 1000001 !important;
+    z-index: 10000001 !important;
     background: #14233c !important;
+    background-color: #14233c !important;
     border: 1px solid rgba(56, 189, 248, 0.5) !important;
     border-radius: 8px !important;
     color: #38bdf8 !important;
@@ -55,14 +56,28 @@ footer {
     height: 36px !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
     transition: all 0.2s ease-in-out !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
+button[data-testid="stExpandSidebarButton"]:hover,
+button[aria-label="Expand sidebar"]:hover,
 [data-testid="collapsedControl"]:hover {
     background: #1d3254 !important;
+    background-color: #1d3254 !important;
     border-color: #38bdf8 !important;
     box-shadow: 0 0 12px rgba(56, 189, 248, 0.6) !important;
 }
 
+button[data-testid="stExpandSidebarButton"] svg,
+button[aria-label="Expand sidebar"] svg,
+[data-testid="collapsedControl"] svg {
+    fill: #38bdf8 !important;
+    stroke: #38bdf8 !important;
+    color: #38bdf8 !important;
+}
+
+button[data-testid="stExpandSidebarButton"] button,
 [data-testid="collapsedControl"] button {
     background: transparent !important;
     border: none !important;
@@ -74,24 +89,38 @@ footer {
     justify-content: center !important;
 }
 
-[data-testid="collapsedControl"] svg {
-    fill: #38bdf8 !important;
-    stroke: #38bdf8 !important;
-}
-
 /* SIDEBAR COLLAPSE BUTTON («) INSIDE OPEN SIDEBAR */
 section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"],
 section[data-testid="stSidebar"] button[kind="header"],
-section[data-testid="stSidebar"] button[data-testid="stBaseButton-header"] {
+section[data-testid="stSidebar"] button[data-testid="stBaseButton-header"],
+button[data-testid="stSidebarCollapseButton"],
+button[aria-label="Collapse sidebar"] {
     display: flex !important;
     visibility: visible !important;
     pointer-events: auto !important;
     color: #38bdf8 !important;
+    z-index: 10000001 !important;
 }
 
-section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] svg {
+section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] svg,
+button[data-testid="stSidebarCollapseButton"] svg,
+button[aria-label="Collapse sidebar"] svg {
     fill: #38bdf8 !important;
     stroke: #38bdf8 !important;
+    color: #38bdf8 !important;
+}
+
+/* HIDE ONLY DEPLOY BUTTON AND MAIN MENU, NEVER THE EXPAND/COLLAPSE CONTROLS */
+.stDeployButton,
+[data-testid="stDeployButton"],
+#MainMenu,
+[data-testid="stMainMenu"],
+[data-testid="stToolbarActions"],
+[data-testid="stDecoration"],
+footer {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
 }
 
 /* GLOBAL RESET & FONTS */
@@ -406,25 +435,51 @@ button[data-testid*="secondary"] * {
     box-shadow: 0 0 0 1px #38bdf8 !important;
 }
 
-/* TABS */
+/* TABS — SLEEK SEGMENTED PILLS (ELIMINATES CLUNKY ODD GLOWING HIGHLIGHT LINE) */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 8px;
-    background-color: #091122;
-    padding: 4px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
+    gap: 6px !important;
+    background-color: #070b14 !important;
+    padding: 5px !important;
+    border-radius: 12px !important;
+    border: 1px solid #1e293b !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+.stTabs [data-baseweb="tab-border"],
+.stTabs [data-baseweb="tab-highlight"],
+[data-baseweb="tab-highlight"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .stTabs [data-baseweb="tab"] {
-    border-radius: 8px;
-    padding: 8px 16px;
-    color: var(--muted) !important;
-    font-weight: 600;
+    border-radius: 8px !important;
+    padding: 8px 20px !important;
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+    font-size: 0.86rem !important;
+    border: 1px solid transparent !important;
+    background-color: transparent !important;
+    transition: all 0.15s ease-in-out !important;
 }
 
+.stTabs [data-baseweb="tab"]:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.stTabs [data-baseweb="tab"][aria-selected="true"],
 .stTabs [aria-selected="true"] {
+    background: #14233c !important;
     background-color: #14233c !important;
     color: #38bdf8 !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+    font-weight: 700 !important;
 }
 
 /* CHAT MESSAGES & CARDS (MATCHING PREVIEW EXACTLY) */
