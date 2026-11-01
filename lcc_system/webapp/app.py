@@ -968,9 +968,17 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
         )
 
     # 2. Referenced Docs & Evidence
+    # ev_title and ev_excerpt are derived ONLY from genuinely retrieved evidence for the
+    # current consultation.  No fallback medication name or excerpt is fabricated.
     evidence_list = latest_payload.get("evidence", []) if latest_payload else []
-    ev_title = f"DailyMed Monograph: {evidence_list[0].get('active_ingredient', 'Metformin HCl')}" if evidence_list else "DailyMed Monograph #DM-0492: Metformin HCl"
-    ev_excerpt = evidence_list[0].get("evidence_text", "Warnings & Precautions: Evaluate cardiovascular and renal indicators prior to titration...") if evidence_list else "Warnings & Precautions: Evaluate cardiovascular and renal indicators prior to titration..."
+    if evidence_list:
+        ev_title = f"DailyMed Monograph: {evidence_list[0].get('active_ingredient', 'Unknown')}"
+        ev_excerpt = evidence_list[0].get("evidence_text", "")
+        ev_available = True
+    else:
+        ev_title = "No matching medication evidence available for this consultation."
+        ev_excerpt = "The local DailyMed corpus could not retrieve evidence for the active medication context."
+        ev_available = False
 
     prescriptions = st.session_state.get("uploaded_prescriptions", [])
     p_html = ""
@@ -996,8 +1004,8 @@ def render_right_intelligence_panel(latest_payload: dict | None, patient_profile
                 <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 1px 6px; border-radius: 4px; font-size: 0.68rem; font-family: monospace;">DailyMed</span>
             </div>
             <div style="font-size: 0.74rem; color: #f1f5f9; font-weight: 600;">{ev_title}</div>
-            <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 3px;">"{ev_excerpt[:90]}..."</div>
-            <div style="font-size: 0.68rem; color: #10b981; font-family: monospace; margin-top: 4px;">Status: Verified Safe</div>
+            <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 3px;">"{ev_excerpt[:90]}{"..." if len(ev_excerpt) > 90 else ""}"</div>
+            {"<div style='font-size: 0.68rem; color: #10b981; font-family: monospace; margin-top: 4px;'>Status: Retrieved &amp; Verified</div>" if ev_available else "<div style='font-size: 0.68rem; color: #64748b; font-family: monospace; margin-top: 4px;'>Status: No evidence retrieved</div>"}
         </div>
         <div style="background: #080d1a; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; margin-bottom: 8px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 700; color: #cbd5e1; margin-bottom: 6px;">

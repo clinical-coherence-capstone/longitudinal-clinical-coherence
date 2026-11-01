@@ -105,6 +105,147 @@ def build_conversation(
     )
 
 
+def detect_medication_correction(
+    user_message: str,
+    current_medications: list[str],
+    normalizer: MedicationNormalizer,
+) -> tuple[list[str], list[str]]:
+    """Detect explicit medication corrections in user input.
+
+    Patterns detected (case-insensitive):
+      "actually, I meant X not Y"
+      "I mean X not Y"
+      "I take X not Y"
+      "I take X, not Y"
+      "correction: X not Y"
+      "replace Y with X"
+      "instead of Y, I take X"
+      "not Y, X"
+
+    Returns:
+        (retracted_meds, new_meds) — lists of medication strings to mark
+        as retracted and to add, respectively. Both lists may be empty.
+
+    Only applies when the user's wording *explicitly* signals a correction.
+    Adding a new medication without a correction phrase is NOT treated as a correction.
+    """
+    lower_msg = user_message.lower()
+
+    # Correction trigger phrases (must be present for this function to act)
+    correction_triggers = [
+        r"actually[,\s]+i\s+meant?\s+",
+        r"i\s+mean[,\s]+",
+        r"i\s+take\s+\w[\w\s]*,?\s+not\s+",
+        r"correction[:\s]+",
+        r"replace\s+",
+        r"instead\s+of\s+",
+        r"not\s+\w[\w\s]+,\s+",
+        r"i\s+said\s+\w[\w\s]+\s+but\s+i\s+meant?\s+",
+        r"i\s+meant\s+",
+    ]
+
+    is_correction = any(re.search(pat, lower_msg) for pat in correction_triggers)
+    if not is_correction:
+        return [], []
+
+    # Extract all medication mentions from the correction message
+    mentioned_in_msg = extract_medication_mentions(user_message)
+    if len(mentioned_in_msg) < 2:
+        # Need at least two mentions to identify old vs new
+        # or one mention paired with something in current state
+        if not mentioned_in_msg:
+            return [], []
+
+    # Determine which currently-tracked medications are being superseded.
+    # Strategy: any medication currently in state that also appears in the correction
+    # message (in a "not X" position) is being retracted.
+    retracted: list[str] = []
+    added: list[str] = []
+
+    # Build a lookup of current med names (normalized where possible)
+    current_med_names_lower = {}
+    for m in current_medications:
+        if m.startswith("[RETRACTED]"):
+            continue
+        clean = m.replace("Medication: ", "").strip().lower()
+        current_med_names_lower[clean] = m  # lowercase → original string
+
+    # Parse "not X" and "X not Y" patterns to find the old (rejected) medication
+    # Pattern: new_med ... not ... old_med
+    not_pattern = re.compile(
+        r"(\w[\w\s\-]*?)\s+not\s+(\w[\w\s\-]*?)(?:\.|,|$|\s+and|\s+but)",
+        re.IGNORECASE,
+    )
+    swap_pattern = re.compile(
+        r"(?:instead\s+of|replace|not)\s+(\w[\w\s\-]+?)(?:\s*,|\s+with|\s+i\s+take|\s+but)\s+(\w[\w\s\-]+)",
+        re.IGNORECASE,
+    )
+
+    # Also handle "actually I meant X not Y" — new_med=X, old_med=Y
+    meant_pattern = re.compile(
+        r"(?:meant?|mean)\s+(\w[\w\s\-]+?)\s*(?:,?\s*not\s+(\w[\w\s\-]+?))?(?:\.|,|$)",
+        re.IGNORECASE,
+    )
+
+    candidates_new: list[str] = []
+    candidates_old: list[str] = []
+
+    for match in not_pattern.finditer(user_message):
+        candidates_new.append(match.group(1).strip())
+        candidates_old.append(match.group(2).strip())
+
+    for match in swap_pattern.finditer(user_message):
+        candidates_old.append(match.group(1).strip())
+        candidates_new.append(match.group(2).strip())
+
+    for match in meant_pattern.finditer(user_message):
+        if match.group(1):
+            candidates_new.append(match.group(1).strip())
+        if match.group(2):
+            candidates_old.append(match.group(2).strip())
+
+    # Map candidates to current state medications and newly mentioned ones
+    def _matches_current(candidate: str) -> str | None:
+        """Return the original current-state medication string if candidate matches it."""
+        cand_lower = candidate.lower()
+        for low, orig in current_med_names_lower.items():
+            if cand_lower in low or low in cand_lower:
+                return orig
+            # Also try normalization overlap
+            norm_cand = normalizer.normalize(candidate)
+            norm_cur = normalizer.normalize(low)
+            if (norm_cand.rxcui and norm_cur.rxcui
+                    and norm_cand.rxcui == norm_cur.rxcui):
+                return orig
+        return None
+
+    for old_cand in candidates_old:
+        matched_orig = _matches_current(old_cand)
+        if matched_orig and matched_orig not in retracted:
+            retracted.append(matched_orig)
+
+    # If we found medications in the message but couldn't match old candidates,
+    # fall back: any currently-tracked med that appears verbatim in the message
+    # in a "not <med>" position is a retraction candidate.
+    if not retracted and current_medications:
+        not_simple = re.compile(r"\bnot\s+(\w+)", re.IGNORECASE)
+        for match in not_simple.finditer(user_message):
+            negated = match.group(1).strip()
+            matched_orig = _matches_current(negated)
+            if matched_orig and matched_orig not in retracted:
+                retracted.append(matched_orig)
+
+    # The "new" medications are those mentioned in the message that are NOT being retracted
+    retracted_lower_set = {r.replace("Medication: ", "").strip().lower() for r in retracted}
+    for m in mentioned_in_msg:
+        if m.lower() not in retracted_lower_set:
+            # Check it isn't already in current state as active
+            if m.lower() not in current_med_names_lower:
+                added.append(m)
+
+    return retracted, added
+
+
 def extract_medication_mentions(text: str) -> list[str]:
     """Identify medication mentions from free-text patient input."""
     if not text:
@@ -128,6 +269,14 @@ def extract_medication_mentions(text: str) -> list[str]:
         r"\b(advil)\b",
         r"\b(ibuprofen)\b",
         r"\b(aspirin)\b",
+        r"\b(cetirizine)\b",
+        r"\b(loratadine)\b",
+        r"\b(diphenhydramine)\b",
+        r"\b(antihistamine)\b",
+        r"\b(amoxicillin)\b",
+        r"\b(lisinopril)\b",
+        r"\b(atorvastatin)\b",
+        r"\b(omeprazole)\b",
     ]
 
     for pat in patterns:
@@ -242,6 +391,24 @@ def generate_conversational_response(
     # Collect medication names
     med_names = [m["mention"] for m in medication_analyses]
 
+    # Separate active from retracted medications for honest reporting (used in section 3 and correction ack)
+    active_meds_in_state = [
+        m for m in state.medications
+        if not m.startswith("[RETRACTED]")
+    ]
+    retracted_meds_in_state = [
+        m.replace("[RETRACTED] ", "") for m in state.medications
+        if m.startswith("[RETRACTED]")
+    ]
+
+    # Detect summary/list request (evaluated here so it's available throughout)
+    summary_triggers = [
+        "summarize", "summary", "list", "what medicines", "what medications",
+        "what meds", "mentioned so far", "mentioned", "talked about",
+        "all the meds", "all the medicines", "all the medications",
+    ]
+    is_summary_request = any(t in lower_msg for t in summary_triggers)
+
     parts = []
 
     # 1. Acknowledgment
@@ -262,7 +429,38 @@ def generate_conversational_response(
         neg_text = ", ".join(new_negative)
         parts.append(f"I have updated your record to note that you do not have / have resolved {neg_text}.")
 
+    # Acknowledge medication corrections if any retractions occurred this turn
+    if retracted_meds_in_state and not is_summary_request:
+        for r in retracted_meds_in_state:
+            # Only acknowledge if it was just retracted (i.e., appears in current_turn input)
+            r_lower = r.replace("Medication: ", "").strip().lower()
+            if r_lower in lower_msg:
+                parts.append(
+                    f"I have updated your record to reflect your correction: "
+                    f"'{r.replace('Medication: ', '').strip()}' has been marked as superseded."
+                )
+
     # 3. Medication acknowledgment
+    if is_summary_request and (active_meds_in_state or retracted_meds_in_state):
+        lines = ["Here is a summary of the medication mentions in our conversation:"]
+        if active_meds_in_state:
+            lines.append(
+                f"**Active / currently discussed:** "
+                f"{', '.join(active_meds_in_state)}"
+            )
+        if retracted_meds_in_state:
+            lines.append(
+                f"**Retracted / superseded:** "
+                f"{', '.join(retracted_meds_in_state)} "
+                f"(mentioned earlier but corrected by you)"
+            )
+        lines.append(
+            "Note: being mentioned in our conversation does not mean you are currently taking these medications — "
+            "I track only what you have explicitly reported."
+        )
+        lines.append("\n*(Note: Generated by Mock Clinical Assistant for demonstration)*")
+        return "\n\n".join(lines)
+
     for med_analysis in medication_analyses:
         med_mention = med_analysis["mention"]
         if "dolo" in med_mention.lower() or "paracetamol" in med_mention.lower() or "acetaminophen" in med_mention.lower():
@@ -317,6 +515,7 @@ def run_pipeline(
 
     # Track state before this turn for delta calculation
     prior_facts = dict(sm.current_state.facts)
+    prior_medications = list(sm.current_state.medications)  # snapshot before any mutation
 
     # If first turn and patient profile provided, seed antecedents and baseline medications
     if sm.current_version == 0 and patient_profile:
@@ -376,9 +575,26 @@ def run_pipeline(
     med_mentions = extract_medication_mentions(user_message)
     medication_analyses = analyze_medications(med_mentions, normalizer)
 
-    # Add detected medications to state
+    # Detect explicit corrections before updating state
+    retracted_meds, correction_additions = detect_medication_correction(
+        user_message, list(sm.current_state.medications), normalizer
+    )
+
+    # Mark retracted medications as superseded (prefix, not deletion — preserves history)
+    for retracted_orig in retracted_meds:
+        if retracted_orig in sm.current_state.medications:
+            idx = sm.current_state.medications.index(retracted_orig)
+            sm.current_state.medications[idx] = f"[RETRACTED] {retracted_orig}"
+
+    # Add detected medications to state — skip any being retracted in this same turn
+    retracted_lower = {r.replace("Medication: ", "").strip().lower() for r in retracted_meds}
     for med_an in medication_analyses:
         display_med = med_an["normalized_name"] or med_an["mention"]
+        display_med_lower = display_med.lower()
+        mention_lower = med_an["mention"].lower()
+        # Don't re-add a retracted medication
+        if display_med_lower in retracted_lower or mention_lower in retracted_lower:
+            continue
         if display_med not in sm.current_state.medications:
             sm.current_state.medications.append(display_med)
 
@@ -394,6 +610,18 @@ def run_pipeline(
             change_parts.append(
                 f"Changed: {fid} ({prior_facts[fid].status} → {fact.status})"
             )
+    for retracted_orig in retracted_meds:
+        change_parts.append(
+            f"Retracted medication: '{retracted_orig}' (marked superseded by correction)"
+        )
+    # Detect newly added medications (not present before this turn, not retracted this turn)
+    prior_meds_lower = {m.lower() for m in prior_medications}
+    retracted_lower_set = {r.lower() for r in retracted_meds}
+    for m in updated_state.medications:
+        if m.startswith("[RETRACTED]"):
+            continue  # retraction events already recorded above
+        if m.lower() not in prior_meds_lower and m.lower() not in retracted_lower_set:
+            change_parts.append(f"Medication added: '{m}'")
     changes_summary = "; ".join(change_parts) if change_parts else "No state changes from previous turn."
 
     # 6. Persist updated state to database

@@ -249,13 +249,18 @@ class CoherenceVerifier:
         turn_index: int,
         conversation: Conversation,
     ) -> CoherenceFlag | None:
-        """Flag if evidence records refer to medications not in patient state."""
-        if not evidence_used:
-            return None
-
+        """Flag if evidence records refer to medications not in patient state,
+        or if medications are present but no matching evidence could be retrieved."""
         state = self.sm.get_current_state()
-        if not state.medications:
-            # Evidence retrieved but patient has no medications recorded
+
+        # Collect active (non-retracted) medications from state
+        active_meds = [
+            m for m in state.medications
+            if not (isinstance(m, str) and m.startswith("[RETRACTED]"))
+        ]
+
+        # Case A: evidence retrieved but no medications in state
+        if evidence_used and not active_meds:
             return CoherenceFlag(
                 check_id="EVIDENCE_MED_MISMATCH",
                 severity="WARNING",
@@ -266,9 +271,54 @@ class CoherenceVerifier:
                 evidence=f"{len(evidence_used)} evidence record(s) retrieved.",
             )
 
+        # Case B: medications present but evidence is empty → cannot verify alignment
+        if active_meds and not evidence_used:
+            # Only flag this if at least one active med was mentioned in the current turn
+            # (avoid spurious flags when user message has no drug content at all)
+            current_turn_text = ""
+            for t in conversation.turns:
+                if t.turn_index == turn_index and t.speaker in ("patient", "user"):
+                    current_turn_text = t.text.lower()
+                    break
+            # Check if any active medication keyword appears in the current turn text
+            med_in_current_turn = any(
+                m.replace("Medication: ", "").replace("[RETRACTED]", "").strip().lower()
+                in current_turn_text
+                for m in active_meds
+            )
+            # Also check via normalizer against unresolved active meds
+            if not med_in_current_turn:
+                for m in active_meds:
+                    clean = m.replace("Medication: ", "").strip()
+                    if clean.lower() in current_turn_text:
+                        med_in_current_turn = True
+                        break
+
+            if med_in_current_turn:
+                return CoherenceFlag(
+                    check_id="EVIDENCE_MED_MISMATCH",
+                    severity="WARNING",
+                    description=(
+                        f"Medication mentioned ({', '.join(active_meds[:3])}) but no "
+                        f"matching evidence could be retrieved from the local DailyMed corpus. "
+                        f"Evidence alignment cannot be verified."
+                    ),
+                    turn_index=turn_index,
+                    evidence=(
+                        f"Active medications: {active_meds}; "
+                        f"DailyMed corpus covers only Alogliptin/Metformin combination product."
+                    ),
+                )
+            return None
+
+        # Case C: no evidence and no active meds — nothing to check
+        if not evidence_used:
+            return None
+
+        # Case D: both evidence and medications present — check they match
         # Normalize state medications to rxcuis
         state_rxcuis: set[str] = set()
-        for med_text in state.medications:
+        for med_text in active_meds:
             clean = med_text.replace("Medication: ", "").strip()
             res = self.norm.normalize(clean)
             if res.rxcui:
@@ -283,10 +333,10 @@ class CoherenceVerifier:
             ev_result = self.norm.normalize(record.active_ingredient)
             if ev_result.rxcui and ev_result.rxcui in state_rxcuis:
                 return None  # At least one match found → no mismatch
-            # Also check ingredient names
+            # Also check ingredient names via substring
             if ev_result.rxnorm_name:
                 ev_ing_name = ev_result.rxnorm_name.lower()
-                for med_text in state.medications:
+                for med_text in active_meds:
                     clean = med_text.replace("Medication: ", "").strip().lower()
                     if clean in ev_ing_name or ev_ing_name in clean:
                         return None
@@ -301,7 +351,7 @@ class CoherenceVerifier:
             evidence=(
                 f"Evidence ingredients: "
                 f"{[r.active_ingredient for r in evidence_used[:3]]}; "
-                f"State medications: {state.medications}"
+                f"Active state medications: {active_meds}"
             ),
         )
 
