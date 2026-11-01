@@ -7,7 +7,7 @@ import pytest
 from dataset_loader import DatasetLoader
 from medication_normalizer import MedicationNormalizer
 from evidence_retriever import EvidenceRetriever
-from response_generator import MockLLMProvider, ResponseGenerator
+from response_generator import MockLLMProvider, ResponseGenerator, MOCK_PROVIDER_LABEL
 from state_manager import StateManager
 from models import Conversation, PatientState
 from datetime import datetime, timezone
@@ -108,10 +108,15 @@ def test_mock_provider_template_selection():
 
 def test_mock_provider_handles_missing_keys():
     provider = MockLLMProvider()
-    # Provide minimal context — missing keys should become '[unknown]'
+    # Provide minimal context — new provider uses intent classification;
+    # with no recognisable intent it returns a helpful general response.
     result = provider.generate("", {"symptoms": "fever"})
     assert isinstance(result, str)
-    assert "[unknown]" in result or "fever" in result
+    assert len(result) > 0, "MockLLMProvider.generate must return a non-empty string"
+    # The response must carry the mock provider label
+    assert MOCK_PROVIDER_LABEL in result, (
+        f"Mock provider label missing from response: {result}"
+    )
 
 
 # ---------------------------------------------------------------------------

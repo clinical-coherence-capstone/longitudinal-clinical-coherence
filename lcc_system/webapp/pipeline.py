@@ -30,9 +30,27 @@ from state_extractor import StateExtractor, KEYWORD_MAP
 from state_manager import StateManager
 from medication_normalizer import MedicationNormalizer
 from evidence_retriever import EvidenceRetriever
-from response_generator import ResponseGenerator, ConfigurableProvider
+from response_generator import (
+    ResponseGenerator,
+    ConfigurableProvider,
+    MockLLMProvider,
+    classify_intent,
+    MOCK_PROVIDER_LABEL,
+)
 from coherence_verifier import CoherenceVerifier
 from decision_gate import DecisionGate
+
+# Safe neutral message shown to the user when the decision gate returns REFUSE.
+# The original draft is preserved in the pipeline result for audit/evaluation
+# but is never stored in the database or rendered in the chat.
+REFUSE_SAFE_MESSAGE = (
+    "⚠️ I was unable to provide a response to this message because a coherence "
+    "issue was detected. This may indicate that the response could be clinically "
+    "inconsistent, reference incorrect medication evidence, or contradict established "
+    "patient facts. Please rephrase your question, provide more detail, or consult "
+    "your healthcare provider directly.\n\n"
+    "[ClinCoherence safety gate — response withheld]"
+)
 
 try:
     from .database import get_latest_patient_state, save_patient_state
@@ -328,7 +346,7 @@ def analyze_medications(
     return analyses
 
 
-def generate_conversational_response(
+def build_clinical_response(
     user_message: str,
     turn_index: int,
     state: PatientState,
@@ -337,9 +355,35 @@ def generate_conversational_response(
     evidence_used: list[EvidenceRecord],
     patient_profile: dict | None,
     has_err4_injection: bool,
+    retracted_meds: list[str],
+    prior_medications: list[str],
 ) -> str:
-    """Generate a conversational, empathetic response acknowledging patient input."""
-    # Sycophancy pushback injection check
+    """Generate a context-aware clinical response using MockLLMProvider.
+
+    Replaces the former generate_conversational_response() branch-template function.
+    Assembles structured context and delegates to MockLLMProvider.generate(), which
+    classifies intent and composes a direct, question-answering response.
+
+    Architecture position:
+        Patient State → Evidence Retrieval → [this function] → CoherenceVerifier → Gate
+
+    The verifier and gate run AFTER this function in run_pipeline(). This function
+    never bypasses them.
+
+    Args:
+        user_message: The raw text of the current user turn.
+        turn_index: Zero-based index of this turn.
+        state: The updated PatientState after this turn's facts were merged.
+        new_facts: ClinicalFacts extracted from the current turn.
+        medication_analyses: List of medication normalization dicts for this turn.
+        evidence_used: EvidenceRecords retrieved for the current patient state.
+        patient_profile: Optional patient profile dict (preferred_name, etc.).
+        has_err4_injection: True when a sycophancy pushback injection was detected.
+        retracted_meds: Medication strings retracted THIS turn (for correction ack).
+        prior_medications: State.medications snapshot BEFORE this turn (for delta).
+    """
+    # ERR-4 sycophancy path — generate deliberately sycophantic text for the
+    # verifier to catch and flag.  This is the test fixture path only.
     if has_err4_injection:
         positive_syms = [
             f.description
@@ -347,157 +391,86 @@ def generate_conversational_response(
             if f.status == "positive" and not f.is_antecedent
         ]
         syms_str = ", ".join(positive_syms) if positive_syms else "your reported symptoms"
-        return (
-            f"You're right, probably nothing serious. "
-            f"I agree we can skip the additional workup for now. "
-            f"Based on {syms_str}, I would say just pain management is likely sufficient."
-        )
+        provider = MockLLMProvider()
+        return provider.generate("", {
+            "template": "pushback_response",
+            "symptoms": syms_str,
+        })
 
+    # --- Build structured context ---
     preferred_name = patient_profile.get("preferred_name") if patient_profile else None
-    name_str = f" {preferred_name}" if preferred_name else ""
-    lower_msg = user_message.lower().strip()
 
-    # 1. Greetings
-    greeting_words = {"hi", "hello", "hey", "good morning", "good afternoon", "good evening", "greetings", "hi there", "hello there"}
-    if lower_msg in greeting_words and len(new_facts) == 0 and len(medication_analyses) == 0:
-        if turn_index == 0:
-            return (
-                f"Hello{name_str}! I am your clinical conversational assistant. "
-                f"I'm here to listen to your health concerns, track your symptoms over time, and help organize your clinical history. "
-                f"How are you feeling today, or what symptoms would you like to discuss?\n\n"
-                f"*(Note: Generated by Mock Clinical Assistant for demonstration)*"
-            )
-        else:
-            return (
-                f"Hello again{name_str}! How can I assist you right now? "
-                f"Feel free to share any symptom changes or ask questions about your health.\n\n"
-                f"*(Note: Generated by Mock Clinical Assistant for demonstration)*"
-            )
-
-    # 2. Conversational acknowledgments ("thank you", "thanks", "ok", "got it", etc.)
-    ack_words = {"thanks", "thank you", "thank you so much", "ok", "okay", "understood", "got it", "great", "alright", "perfect", "goodbye", "bye"}
-    if lower_msg in ack_words and len(new_facts) == 0 and len(medication_analyses) == 0:
-        return (
-            f"You're very welcome{name_str}! I will continue tracking your clinical profile. "
-            f"Please let me know if you experience any new symptoms or have further questions.\n\n"
-            f"*(Note: Generated by Mock Clinical Assistant for demonstration)*"
-        )
-
-    # Identify positive and negative symptoms from this turn and overall state
-    new_positive = [f.description for f in new_facts if f.status == "positive" and not f.is_antecedent]
-    new_negative = [f.description for f in new_facts if f.status == "negative" and not f.is_antecedent]
-    all_positive = [f.description for f in state.facts.values() if f.status == "positive" and not f.is_antecedent]
-
-    # Collect medication names
-    med_names = [m["mention"] for m in medication_analyses]
-
-    # Separate active from retracted medications for honest reporting (used in section 3 and correction ack)
+    # Separate active from retracted medications
     active_meds_in_state = [
         m for m in state.medications
         if not m.startswith("[RETRACTED]")
     ]
     retracted_meds_in_state = [
-        m.replace("[RETRACTED] ", "") for m in state.medications
+        m.replace("[RETRACTED] ", "")
+        for m in state.medications
         if m.startswith("[RETRACTED]")
     ]
 
-    # Detect summary/list request (evaluated here so it's available throughout)
-    summary_triggers = [
-        "summarize", "summary", "list", "what medicines", "what medications",
-        "what meds", "mentioned so far", "mentioned", "talked about",
-        "all the meds", "all the medicines", "all the medications",
+    # New medications added this turn (not in prior state, not retracted)
+    prior_meds_lower = {m.lower() for m in prior_medications}
+    retracted_lower_set = {r.replace("Medication: ", "").strip().lower() for r in retracted_meds}
+    newly_added_meds = [
+        m for m in active_meds_in_state
+        if m.lower() not in prior_meds_lower and m.lower() not in retracted_lower_set
     ]
-    is_summary_request = any(t in lower_msg for t in summary_triggers)
 
-    parts = []
+    # Symptoms
+    new_positive = [
+        f.description for f in new_facts
+        if f.status == "positive" and not f.is_antecedent
+    ]
+    new_negative = [
+        f.description for f in new_facts
+        if f.status == "negative" and not f.is_antecedent
+    ]
+    all_positive = [
+        f.description for f in state.facts.values()
+        if f.status == "positive" and not f.is_antecedent
+    ]
 
-    # 1. Acknowledgment
-    if preferred_name:
-        parts.append(f"Thank you for sharing that with me, {preferred_name}.")
-    else:
-        parts.append("Thank you for sharing that with me.")
+    # Medication mentions for this turn (from medication_analyses)
+    med_mentions_this_turn = [m["mention"] for m in medication_analyses]
 
-    # 2. Symptom recognition & Longitudinal update
-    if new_positive:
-        syms_text = ", ".join(new_positive)
-        parts.append(f"I have noted that you are experiencing {syms_text}.")
-    elif all_positive and turn_index > 0:
-        syms_text = ", ".join(all_positive)
-        parts.append(f"Regarding your ongoing discussion concerning {syms_text}:")
+    # Evidence records as dicts for the provider
+    evidence_records_as_dicts = [
+        {
+            "evidence_id": e.evidence_id,
+            "active_ingredient": e.active_ingredient,
+            "section_name": e.section_name,
+            "evidence_text": e.evidence_text,
+            "source_url": e.source_url,
+        }
+        for e in evidence_used
+    ]
 
-    if new_negative:
-        neg_text = ", ".join(new_negative)
-        parts.append(f"I have updated your record to note that you do not have / have resolved {neg_text}.")
+    intent = classify_intent(user_message)
 
-    # Acknowledge medication corrections if any retractions occurred this turn
-    if retracted_meds_in_state and not is_summary_request:
-        for r in retracted_meds_in_state:
-            # Only acknowledge if it was just retracted (i.e., appears in current_turn input)
-            r_lower = r.replace("Medication: ", "").strip().lower()
-            if r_lower in lower_msg:
-                parts.append(
-                    f"I have updated your record to reflect your correction: "
-                    f"'{r.replace('Medication: ', '').strip()}' has been marked as superseded."
-                )
+    context = {
+        "intent": intent,
+        "user_question": user_message,
+        "preferred_name": preferred_name or "",
+        "turn_index": turn_index,
+        # Symptoms
+        "positive_symptoms": all_positive,
+        "new_positive_symptoms": new_positive,
+        "new_negative_symptoms": new_negative,
+        # Medications
+        "medication_mentions": med_mentions_this_turn,
+        "active_meds": active_meds_in_state,
+        "retracted_meds": retracted_meds_in_state,
+        "newly_added_meds": newly_added_meds,
+        # Evidence
+        "evidence_records": evidence_records_as_dicts,
+        "evidence_available": len(evidence_used) > 0,
+    }
 
-    # 3. Medication acknowledgment
-    if is_summary_request and (active_meds_in_state or retracted_meds_in_state):
-        lines = ["Here is a summary of the medication mentions in our conversation:"]
-        if active_meds_in_state:
-            lines.append(
-                f"**Active / currently discussed:** "
-                f"{', '.join(active_meds_in_state)}"
-            )
-        if retracted_meds_in_state:
-            lines.append(
-                f"**Retracted / superseded:** "
-                f"{', '.join(retracted_meds_in_state)} "
-                f"(mentioned earlier but corrected by you)"
-            )
-        lines.append(
-            "Note: being mentioned in our conversation does not mean you are currently taking these medications — "
-            "I track only what you have explicitly reported."
-        )
-        lines.append("\n*(Note: Generated by Mock Clinical Assistant for demonstration)*")
-        return "\n\n".join(lines)
-
-    for med_analysis in medication_analyses:
-        med_mention = med_analysis["mention"]
-        if "dolo" in med_mention.lower() or "paracetamol" in med_mention.lower() or "acetaminophen" in med_mention.lower():
-            parts.append(
-                f"Regarding {med_mention}: this is commonly used as an antipyretic for fever relief and mild pain. "
-                f"Please ensure you follow the recommended dosing guidelines and avoid combining it with other paracetamol-containing products."
-            )
-        elif med_analysis["resolved"]:
-            parts.append(
-                f"I have recorded your medication {med_mention} (RxNorm: {med_analysis['normalized_name']}, RxCUI: {med_analysis['rxcui']}). "
-                f"Relevant safety and clinical indications have been reviewed."
-            )
-        else:
-            parts.append(
-                f"I have noted your mention of '{med_mention}'. "
-                f"Please verify the exact formulation and dosage with your healthcare provider."
-            )
-
-    # 4. Clinical inquiry / next steps
-    if all_positive or med_names:
-        parts.append(
-            "To better evaluate your symptoms, could you let me know how long this has been going on, "
-            "how severe it feels, and whether you've noticed any other changes?"
-        )
-    else:
-        parts.append(
-            "I have documented your message. Could you tell me more about your specific health concerns or symptoms?"
-        )
-
-    # 5. Safety reminder
-    parts.append(
-        "Please remember that if your symptoms worsen, or if you experience warning signs such as severe pain, "
-        "shortness of breath, or high fever, you should consult an in-person physician immediately."
-    )
-
-    body = " ".join(parts)
-    return f"{body}\n\n*(Note: Generated by Mock Clinical Assistant for demonstration)*"
+    provider = MockLLMProvider()
+    return provider.generate(user_message, context)
 
 
 def run_pipeline(
@@ -653,13 +626,39 @@ def run_pipeline(
         for t in conversation.turns
     )
 
-    # 9. Response Generation (configurable vs natural conversational mock)
+    # 9. Response Generation
+    # Mock path: build_clinical_response() → MockLLMProvider (no API key needed)
+    # Real path: ResponseGenerator with ConfigurableProvider (requires LCC_API_KEY)
+    # Both paths feed into step 10 (CoherenceVerifier) and step 11 (DecisionGate).
     api_key = os.environ.get("LCC_API_KEY")
     if api_key:
+        # Real LLM path — build context with upstream medication_analyses and
+        # new_facts so all three Fix B gaps are addressed; pass upstream evidence
+        # so no second retrieve_for_state call is made (Fix C).
         resp_gen = ResponseGenerator(sm, retriever, provider="configurable")
-        response_text, _ = resp_gen.generate_response(conversation)
+        structured_ctx = resp_gen._build_context(
+            updated_state,
+            evidence_used,
+            conversation,
+            medication_analyses=medication_analyses,
+            new_facts=new_facts,
+        )
+        # Inject newly_added_meds (Fix B-1) — available here but not inside _build_context
+        prior_meds_lower_for_ctx = {m.lower() for m in prior_medications}
+        retracted_lower_for_ctx = {r.lower() for r in retracted_meds}
+        structured_ctx["newly_added_meds"] = [
+            m for m in updated_state.medications
+            if not m.startswith("[RETRACTED]")
+            and m.lower() not in prior_meds_lower_for_ctx
+            and m.lower() not in retracted_lower_for_ctx
+        ]
+        response_text, _ = resp_gen.generate_response(
+            conversation,
+            structured_context=structured_ctx,
+            upstream_evidence=evidence_used,   # Fix C: reuse, don't re-fetch
+        )
     else:
-        response_text = generate_conversational_response(
+        response_text = build_clinical_response(
             user_message=user_message,
             turn_index=turn_index,
             state=updated_state,
@@ -668,6 +667,8 @@ def run_pipeline(
             evidence_used=evidence_used,
             patient_profile=patient_profile,
             has_err4_injection=has_err4,
+            retracted_meds=retracted_meds,
+            prior_medications=prior_medications,
         )
 
     # 10. Coherence verification
@@ -677,6 +678,16 @@ def run_pipeline(
     # 11. Decision gate
     gate = DecisionGate()
     decision_str, reasoning_str = gate.evaluate(flags)
+
+    # Fix A: enforce REFUSE at the user-facing boundary.
+    # The original draft is preserved in `response_text` for audit/evaluation.
+    # `display_text` is what gets stored in the database and shown to the user.
+    # When the gate returns REFUSE, display_text carries the safe neutral message;
+    # the draft is never written to the chat history.
+    if decision_str == "REFUSE":
+        display_text = REFUSE_SAFE_MESSAGE
+    else:
+        display_text = response_text
 
     # 12. Verification payload
     verification = {
@@ -742,7 +753,8 @@ def run_pipeline(
     ]
 
     return {
-        "response_text": response_text,
+        "response_text": display_text,          # safe for DB storage and display
+        "draft_response_text": response_text,   # original draft; for audit/eval only
         "verification": verification,
         "facts": facts_display,
         "state_summary": state_summary,
